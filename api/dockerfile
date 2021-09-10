@@ -4,11 +4,13 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install --only=development
+RUN npm ci --development
 
 COPY . .
 
 RUN npm run build
+
+RUN npm run test
 
 FROM node:12.13-alpine as production
 
@@ -19,7 +21,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm ci --production
 
 COPY . .
 
