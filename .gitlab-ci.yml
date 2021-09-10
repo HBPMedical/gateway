@@ -8,8 +8,8 @@ stages:
   - deploy
 
 variables:
-  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+  CONTAINER_BASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:stable
   CONTAINER_QA_IMAGE: $CI_REGISTRY_IMAGE:nightly
 
 before_script:
@@ -18,27 +18,9 @@ before_script:
 build:
   stage: build
   script:
-    - docker build -t $CONTAINER_TEST_IMAGE ./api
-    - docker push $CONTAINER_TEST_IMAGE
+    - docker build --pull -t $CONTAINER_BASE_IMAGE .
+    - docker push $CONTAINER_BASE_IMAGE
   only:
     - main
     - develop
     - /^release-.*$/
-
-release_prod:
-  stage: release
-  script:
-    - docker pull $CONTAINER_TEST_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker push $CONTAINER_RELEASE_IMAGE
-  only:
-    - main
-
-release_qa:
-  stage: release
-  script:
-    - docker pull $CONTAINER_TEST_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker push $CONTAINER_QA_IMAGE
-  only:
-    - develop
