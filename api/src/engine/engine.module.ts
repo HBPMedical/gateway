@@ -4,7 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
-import { IEngineOptions, IEngineService } from './engine.interface';
+import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { EngineResolver } from './engine.resolver';
 
 @Global()
