@@ -18,7 +18,7 @@ before_script:
 build:
   stage: build
   script:
-    - docker build -t $CONTAINER_TEST_IMAGE .
+    - docker build -t $CONTAINER_TEST_IMAGE ./api
     - docker push $CONTAINER_TEST_IMAGE
   only:
     - main
