@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ENGINE_SERVICE } from './engine.constants';
-import { IEngineService } from './engine.interface';
+import { IEngineService } from './engine.interfaces';
 
 @Controller()
 export class EngineController {

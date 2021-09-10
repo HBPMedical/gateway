@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { Query, Resolver } from '@nestjs/graphql';
 import { ENGINE_SERVICE } from './engine.constants';
-import { IEngineService } from './engine.interface';
+import { IEngineService } from './engine.interfaces';
 
 @Resolver()
 export class EngineResolver {
