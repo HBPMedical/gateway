@@ -9,8 +9,6 @@ stages:
 
 variables:
   CONTAINER_BASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:stable
-  CONTAINER_QA_IMAGE: $CI_REGISTRY_IMAGE:nightly
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -18,7 +16,7 @@ before_script:
 build:
   stage: build
   script:
-    - docker build --pull -t $CONTAINER_BASE_IMAGE .
+    - docker build -t $CONTAINER_BASE_IMAGE .
     - docker push $CONTAINER_BASE_IMAGE
   only:
     - main
