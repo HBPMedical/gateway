@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Inject } from '@nestjs/common';
+import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
 
@@ -10,5 +11,10 @@ export class EngineController {
   @Get("/test")
   getTest(): string {
     return this.engineService.demo();
+  }
+
+  @Get('/algorithms')
+  getAlgorithms(): Observable<string> {
+    return this.engineService.getAlgorithms();
   }
 }
