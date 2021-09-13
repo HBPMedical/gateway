@@ -5,6 +5,14 @@ import { IEngineOptions, IEngineService } from "src/engine/engine.interfaces";
 export default class ExaremeService implements IEngineService {
     constructor(private readonly options: IEngineOptions, private readonly httpService: HttpService) { }
 
+    getExperiments(): Observable<string> {
+        const path = this.options.baseurl + "experiments";
+
+        return this.httpService.get<string>(path).pipe(
+            map(response => response.data)
+        );
+    }
+
     getAlgorithms(): Observable<string> {
         const path = this.options.baseurl + "algorithms";
         

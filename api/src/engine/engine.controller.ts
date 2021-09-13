@@ -1,12 +1,13 @@
 import { HttpService } from '@nestjs/axios';
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
 
 @Controller()
 export class EngineController {
-  constructor(@Inject(ENGINE_SERVICE) private readonly engineService: IEngineService, private readonly httpService: HttpService) { }
+  constructor(@Inject(ENGINE_SERVICE) private readonly engineService: IEngineService) { }
 
   @Get("/test")
   getTest(): string {
@@ -14,7 +15,13 @@ export class EngineController {
   }
 
   @Get('/algorithms')
-  getAlgorithms(): Observable<string> {
-    return this.engineService.getAlgorithms();
+  getAlgorithms(@Req() request: Request): Observable<string> {
+    return this.engineService.getAlgorithms(request);
   }
+
+  @Get('/experiments')
+  getExperiments(@Req() request: Request): Observable<string> {
+    return this.engineService.getExperiments(request);
+  }
+
 }
