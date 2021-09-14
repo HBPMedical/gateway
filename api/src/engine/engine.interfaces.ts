@@ -1,25 +1,25 @@
-import { Request } from "express";
-import { Observable } from "rxjs";
+import { Request } from 'express';
+import { Observable } from 'rxjs';
 
 export interface IEngineOptions {
-    type: string;
-    baseurl: string;
+  type: string;
+  baseurl: string;
 }
 
 export interface IEngineService {
-    demo(): string;
+  demo(): string;
 
-    getAlgorithms(request: Request): Observable<string>;
+  getAlgorithms(request: Request): Observable<string>;
 
-    getExperiments(request: Request): Observable<string>;
+  getExperiments(request: Request): Observable<string>;
 
-    getExperiment(uuid: string): Observable<string>;
-  
-    deleteExperiment(uuid: string, request: Request): Observable<string>;
-  
-    editExperiment(uuid: string, request: Request): Observable<string>;
-  
-    startExperimentTransient(request: Request): Observable<string>;
-  
-    startExperiment(request: Request): Observable<string>;
+  getExperiment(uuid: string): Observable<string>;
+
+  deleteExperiment(uuid: string, request: Request): Observable<string>;
+
+  editExperiment(uuid: string, request: Request): Observable<string>;
+
+  startExperimentTransient(request: Request): Observable<string>;
+
+  startExperiment(request: Request): Observable<string>;
 }

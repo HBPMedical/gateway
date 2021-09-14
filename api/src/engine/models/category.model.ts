@@ -1,10 +1,10 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Category {
-    @Field()
-    id: string
+  @Field()
+  id: string;
 
-    @Field()
-    label: string;
+  @Field()
+  label: string;
 }

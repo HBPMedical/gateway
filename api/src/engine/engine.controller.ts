@@ -1,4 +1,13 @@
-import { Controller, Delete, Get, Inject, Param, Patch, Post, Req } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
@@ -6,9 +15,11 @@ import { IEngineService } from './engine.interfaces';
 
 @Controller()
 export class EngineController {
-  constructor(@Inject(ENGINE_SERVICE) private readonly engineService: IEngineService) { }
+  constructor(
+    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+  ) {}
 
-  @Get("/test")
+  @Get('/test')
   getTest(): string {
     return this.engineService.demo();
   }
@@ -23,27 +34,33 @@ export class EngineController {
     return this.engineService.getExperiments(request);
   }
 
-  @Get("/experiments/:uuid")
+  @Get('/experiments/:uuid')
   getExperiment(@Param('uuid') uuid: string): Observable<string> {
     return this.engineService.getExperiment(uuid);
   }
 
-  @Delete("/experiments/:uuid")
-  deleteExperiment(@Param('uuid') uuid: string, @Req() request: Request): Observable<string> {
+  @Delete('/experiments/:uuid')
+  deleteExperiment(
+    @Param('uuid') uuid: string,
+    @Req() request: Request,
+  ): Observable<string> {
     return this.engineService.deleteExperiment(uuid, request);
   }
 
-  @Patch("/experiments/:uuid")
-  editExperiment(@Param('uuid') uuid: string, @Req() request: Request): Observable<string> {
+  @Patch('/experiments/:uuid')
+  editExperiment(
+    @Param('uuid') uuid: string,
+    @Req() request: Request,
+  ): Observable<string> {
     return this.engineService.editExperiment(uuid, request);
   }
 
-  @Post("experiments/transient")
+  @Post('experiments/transient')
   startExperimentTransient(@Req() request: Request): Observable<string> {
     return this.engineService.startExperimentTransient(request);
   }
 
-  @Post("experiments")
+  @Post('experiments')
   startExperiment(@Req() request: Request): Observable<string> {
     return this.engineService.startExperiment(request);
   }

@@ -19,9 +19,9 @@ export class EngineModule {
     const engineProvider = {
       provide: ENGINE_SERVICE,
       useFactory: async (httpService: HttpService) => {
-        return await this.createEngineConnection(options, httpService)
+        return await this.createEngineConnection(options, httpService);
       },
-      inject: [HttpService]
+      inject: [HttpService],
     };
 
     return {
@@ -32,22 +32,18 @@ export class EngineModule {
           autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         }),
       ],
-      providers: [
-        optionsProvider,
-        engineProvider,
-        EngineResolver
-      ],
-      controllers: [
-        EngineController
-      ],
+      providers: [optionsProvider, engineProvider, EngineResolver],
+      controllers: [EngineController],
       exports: [optionsProvider, engineProvider],
-    }
+    };
   }
 
-  private static async createEngineConnection(options: IEngineOptions, httpService: HttpService): Promise<IEngineService> {
-    let service = await import(`./connectors/${options.type}/main.connector`);
+  private static async createEngineConnection(
+    options: IEngineOptions,
+    httpService: HttpService,
+  ): Promise<IEngineService> {
+    const service = await import(`./connectors/${options.type}/main.connector`);
 
     return new service.default(options, httpService);
   }
-
 }
