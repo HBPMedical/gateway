@@ -8,13 +8,14 @@ import { AppService } from './app.service';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.defaults']
+      envFilePath: ['.env', '.env.defaults'],
     }),
     EngineModule.forRootAsync({
       type: process.env.ENGINE_TYPE,
       baseurl: process.env.ENGINE_BASE_URL,
-    })],
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

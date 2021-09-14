@@ -6,19 +6,21 @@ import { Domain } from './models/domain.model';
 
 @Resolver()
 export class EngineResolver {
-    constructor(@Inject(ENGINE_SERVICE) private readonly engineService: IEngineService) { }
+  constructor(
+    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+  ) {}
 
-    @Query(() => Domain)
-    async hello() {
-        let dummy: Domain = {
-            id: "test",
-            label: "test",
-            description: "test",
-            groups: [],
-            variables: [],
-            datasets: []
-        }
+  @Query(() => Domain)
+  async hello() {
+    const dummy: Domain = {
+      id: 'test',
+      label: 'test',
+      description: 'test',
+      groups: [],
+      variables: [],
+      datasets: [],
+    };
 
-        return dummy;
-    }
+    return dummy;
+  }
 }
