@@ -1,5 +1,4 @@
 import { HttpService } from '@nestjs/axios';
-import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 
@@ -13,23 +12,23 @@ export default class DataShieldService implements IEngineService {
     return 'datashield';
   }
 
-  getExperiment(uuid: string): Observable<string> {
+  getExperiment(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 
-  deleteExperiment(uuid: string, request: Request): Observable<string> {
+  deleteExperiment(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 
-  editExperiment(uuid: string, request: Request): Observable<string> {
+  editExperiment(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 
-  startExperimentTransient(request: Request): Observable<string> {
+  startExperimentTransient(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 
-  startExperiment(request: Request): Observable<string> {
+  startExperiment(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 

@@ -12,9 +12,9 @@ export class Group {
   @Field({ nullable: true })
   description?: string;
 
-  @Field((type) => [Group])
+  @Field(() => [Group])
   groups: Group[];
 
-  @Field((type) => [Variable])
+  @Field(() => [Variable])
   variables: Variable[];
 }

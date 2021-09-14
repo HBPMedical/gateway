@@ -4,6 +4,6 @@ import { Group } from './group.model';
 
 @ObjectType()
 export class Domain extends Group {
-  @Field((type) => [Category])
+  @Field(() => [Category])
   datasets: Category[];
 }

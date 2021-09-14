@@ -16,9 +16,9 @@ export class Variable {
   @Field({ nullable: true })
   description?: string;
 
-  @Field((type) => [Category])
+  @Field(() => [Category])
   enumerations: Category[];
 
-  @Field((type) => [Group])
+  @Field(() => [Group])
   groups: Group[];
 }

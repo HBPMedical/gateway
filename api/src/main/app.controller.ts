@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
