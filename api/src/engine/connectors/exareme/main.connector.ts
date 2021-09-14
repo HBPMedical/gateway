@@ -1,5 +1,5 @@
 import { HttpService } from "@nestjs/axios";
-import { Request, response } from "express";
+import { Request } from "express";
 import { map, Observable } from "rxjs";
 import { IEngineOptions, IEngineService } from "src/engine/engine.interfaces";
 
@@ -18,9 +18,8 @@ export default class ExaremeService implements IEngineService {
         );
     }
 
-    deleteExperiment(uuid: string, request: Request): Observable<string> {
+    deleteExperiment(uuid: string): Observable<string> {
         const path = this.options.baseurl + `experiments/${uuid}`;
-        //request.query
 
         return this.httpService.delete(path).pipe(
             map(response => response.data)
@@ -30,19 +29,25 @@ export default class ExaremeService implements IEngineService {
     editExperiment(uuid: string, request: Request): Observable<string> {
         const path = this.options.baseurl + `experiments/${uuid}`;
 
-        throw new Error("Method not implemented.");
+        return this.httpService.post(path,request.body).pipe(
+            map(response => response.data)
+        )
     }
 
     startExperimentTransient(request: Request): Observable<string> {
-        const path = this.options.baseurl + "experiments";
+        const path = this.options.baseurl + "experiments/transient";
 
-        throw new Error("Method not implemented.");
+        return this.httpService.post(path, request.body).pipe(
+            map(response => response.data)
+        )
     }
 
     startExperiment(request: Request): Observable<string> {
-        const path = this.options.baseurl + "experiments/transient";
+        const path = this.options.baseurl + "experiments";
 
-        throw new Error("Method not implemented.");
+        return this.httpService.post(path, request.body).pipe(
+            map(response => response.data)
+        )
     }
 
     getExperiments(): Observable<string> {
