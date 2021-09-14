@@ -2,6 +2,37 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Category {
+  id: String!
+  label: String!
+}
+
+type Variable {
+  id: String!
+  label: String
+  type: String!
+  description: String
+  enumerations: [Category!]!
+  groups: [Group!]!
+}
+
+type Group {
+  id: String!
+  label: String!
+  description: String
+  groups: [Group!]!
+  variables: [Variable!]!
+}
+
+type Domain {
+  id: String!
+  label: String!
+  description: String
+  groups: [Group!]!
+  variables: [Variable!]!
+  datasets: [Category!]!
+}
+
 type Query {
-  hello: String!
+  hello: Domain!
 }
