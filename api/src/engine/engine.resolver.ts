@@ -10,11 +10,11 @@ export class EngineResolver {
 
     @Query(() => Domain)
     async hello() {
-        let dummy : Domain = {  
+        let dummy: Domain = {
             id: "test",
             label: "test",
             description: "test",
-            groups:[],
+            groups: [],
             variables: [],
             datasets: []
         }

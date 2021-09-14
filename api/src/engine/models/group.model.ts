@@ -9,7 +9,7 @@ export class Group {
     @Field()
     label: string;
 
-    @Field({ nullable: true})
+    @Field({ nullable: true })
     description?: string;
 
     @Field(type => [Group])

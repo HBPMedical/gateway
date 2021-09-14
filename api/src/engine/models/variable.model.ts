@@ -13,7 +13,7 @@ export class Variable {
     @Field()
     type: string;
 
-    @Field({ nullable: true})
+    @Field({ nullable: true })
     description?: string;
 
     @Field(type => [Category])

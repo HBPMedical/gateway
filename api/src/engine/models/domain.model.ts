@@ -3,7 +3,7 @@ import { Category } from "./category.model";
 import { Group } from "./group.model";
 
 @ObjectType()
-export class Domain extends Group{
+export class Domain extends Group {
     @Field(type => [Category])
     datasets: Category[];
 }
