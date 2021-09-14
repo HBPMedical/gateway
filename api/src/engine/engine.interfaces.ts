@@ -22,4 +22,8 @@ export interface IEngineService {
   startExperimentTransient(request: Request): Observable<string>;
 
   startExperiment(request: Request): Observable<string>;
+
+  getActiveUser(request: Request): Observable<string>;
+
+  editActiveUser(request: Request): Observable<string>;
 }

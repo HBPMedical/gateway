@@ -13,6 +13,22 @@ export default class ExaremeService implements IEngineService {
     return 'exareme';
   }
 
+  getActiveUser(): Observable<string> {
+    const path = this.options.baseurl + 'activeUser';
+
+    return this.httpService
+      .get<string>(path)
+      .pipe(map((response) => response.data));
+  }
+
+  editActiveUser(request: Request): Observable<string> {
+    const path = this.options.baseurl + 'activeUser/agreeNDA';
+
+    return this.httpService
+      .post<string>(path, request.body)
+      .pipe(map((response) => response.data));
+  }
+
   getExperiment(uuid: string): Observable<string> {
     const path = this.options.baseurl + `experiments/${uuid}`;
 

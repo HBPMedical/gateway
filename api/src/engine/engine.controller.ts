@@ -64,4 +64,14 @@ export class EngineController {
   startExperiment(@Req() request: Request): Observable<string> {
     return this.engineService.startExperiment(request);
   }
+
+  @Get('activeUser')
+  getActiveUser(@Req() request: Request): Observable<string> {
+    return this.engineService.getActiveUser(request);
+  }
+
+  @Post('activeUser/agreeNDA')
+  agreeNDA(@Req() request: Request): Observable<string> {
+    return this.engineService.editActiveUser(request);
+  }
 }
