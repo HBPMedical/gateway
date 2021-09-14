@@ -17,10 +17,7 @@ export class Variable {
     description?: string;
 
     @Field(type => [Category])
-    categories: Category[];
-
-    @Field(type => Boolean)
-    isCategorical: boolean;
+    enumerations: Category[];
 
     @Field(type => [Group])
     groups: Group[];

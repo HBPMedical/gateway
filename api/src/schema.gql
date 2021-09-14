@@ -12,8 +12,7 @@ type Variable {
   label: String
   type: String!
   description: String
-  categories: [Category!]!
-  isCategorical: Boolean!
+  enumerations: [Category!]!
   groups: [Group!]!
 }
 
