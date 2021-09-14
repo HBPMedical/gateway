@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { Observable } from "rxjs";
 
 export interface IEngineOptions {
@@ -8,5 +9,17 @@ export interface IEngineOptions {
 export interface IEngineService {
     demo(): string;
 
-    getAlgorithms(): Observable<string>;
+    getAlgorithms(request: Request): Observable<string>;
+
+    getExperiments(request: Request): Observable<string>;
+
+    getExperiment(uuid: string): Observable<string>;
+  
+    deleteExperiment(uuid: string, request: Request): Observable<string>;
+  
+    editExperiment(uuid: string, request: Request): Observable<string>;
+  
+    startExperimentTransient(request: Request): Observable<string>;
+  
+    startExperiment(request: Request): Observable<string>;
 }
