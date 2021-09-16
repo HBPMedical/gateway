@@ -14,7 +14,7 @@ export default class ExaremeService implements IEngineService {
   constructor(
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
 
   async getDomains(ids: string[]): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
