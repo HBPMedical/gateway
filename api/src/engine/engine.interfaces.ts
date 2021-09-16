@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { Domain } from './models/domain.model';
 
 export interface IEngineOptions {
   type: string;
@@ -8,6 +9,8 @@ export interface IEngineOptions {
 
 export interface IEngineService {
   demo(): string;
+
+  getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
   getAlgorithms(request: Request): Observable<string>;
 

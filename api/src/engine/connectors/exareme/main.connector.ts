@@ -1,13 +1,51 @@
 import { HttpService } from '@nestjs/axios';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Request } from 'express';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
+import { Domain } from 'src/engine/models/domain.model';
+import { Group } from 'src/engine/models/group.model';
+import { Variable } from 'src/engine/models/variable.model';
+import { dataToCategory, dataToGroup, dataToVariable } from './converters';
+import { Hierarchy } from './interfaces/hierarchy.interface';
+import { Pathology } from './interfaces/pathology.interface';
 
 export default class ExaremeService implements IEngineService {
   constructor(
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
+
+  async getDomains(ids: string[]): Promise<Domain[]> {
+    const path = this.options.baseurl + 'pathologies';
+
+    try {
+      const data = await firstValueFrom(
+        this.httpService.get<Pathology[]>(path),
+      );
+
+      return data.data
+        .filter((data) => !ids || ids.length == 0 || ids.includes(data.code))
+        .map((data): Domain => {
+          const groups = this.flattenGroups(data.metadataHierarchy);
+
+          return {
+            id: data.code,
+            label: data.label,
+            groups: groups,
+            datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
+            variables: data.metadataHierarchy
+              ? this.flattenVariables(data.metadataHierarchy, groups)
+              : [],
+          };
+        });
+    } catch {
+      throw new HttpException(
+        `Connexion to the connector ${this.options.type} failed`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
 
   demo(): string {
     return 'exareme';
@@ -82,4 +120,31 @@ export default class ExaremeService implements IEngineService {
       .get<string>(path)
       .pipe(map((response) => response.data));
   }
+
+  private flattenGroups = (data: Hierarchy): Group[] => {
+    let groups: Group[] = [dataToGroup(data)];
+
+    if (data.groups) {
+      groups = groups.concat(data.groups.flatMap(this.flattenGroups));
+    }
+
+    return groups;
+  };
+
+  private flattenVariables = (data: Hierarchy, groups: Group[]): Variable[] => {
+    const group = groups.find((group) => group.id == data.code);
+    let variables = data.variables ? data.variables.map(dataToVariable) : [];
+
+    variables.forEach((variable) => (variable.groups = group ? [group] : []));
+
+    if (data.groups) {
+      variables = variables.concat(
+        data.groups.flatMap((hierarchy) =>
+          this.flattenVariables(hierarchy, groups),
+        ),
+      );
+    }
+
+    return variables;
+  };
 }

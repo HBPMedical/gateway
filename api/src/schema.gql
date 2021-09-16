@@ -34,5 +34,5 @@ type Domain {
 }
 
 type Query {
-  hello: Domain!
+  domains(ids: [String!] = []): [Domain!]!
 }
