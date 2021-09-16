@@ -1,13 +1,14 @@
 import { HttpService } from '@nestjs/axios';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
-import { Dictionary } from 'src/common/interfaces/utilities.interface';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Group } from 'src/engine/models/group.model';
-import { Hierarchy } from './interfaces/Hierarchy.interface';
+import { Variable } from 'src/engine/models/variable.model';
+import { dataToCategory, dataToGroup, dataToVariable } from './converters';
+import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
-import { VariableEntity } from './interfaces/variable-entity.interface';
 
 export default class ExaremeService implements IEngineService {
   constructor(
@@ -15,42 +16,35 @@ export default class ExaremeService implements IEngineService {
     private readonly httpService: HttpService,
   ) { }
 
-  private hierarchyToGroup = (data: Hierarchy): Group => {
-    return {
-      id: data.code,
-      label: data.label,
-      groups: data.groups ? data.groups.map((child: Hierarchy) => this.hierarchyToGroup(child)) : [],
-      variables: []
-    }
-  }
-
-  private flattenGroups = (data: Hierarchy): Group[] => {
-    let groups: Group[] = [this.hierarchyToGroup(data)];
-
-    if (data.groups) {
-      groups = groups.concat(data.groups.flatMap(this.flattenGroups));
-    }
-
-    return groups;
-  }
-
-
-  async getDomain(): Promise<Domain[]> {
+  async getDomains(ids: string[]): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
 
-    const data = await firstValueFrom(this.httpService.get(path));
+    try {
+      const data = await firstValueFrom(
+        this.httpService.get<Pathology[]>(path),
+      );
 
-    const domains = data.data.map((data: Pathology): Domain => {
-      return {
-        id: data.code,
-        label: data.label,
-        groups: data.metadataHierarchy.groups.flatMap(this.flattenGroups),
-        datasets: [],
-        variables: [],
-      }
-    })
+      return data.data
+        .filter((data) => !ids || ids.length == 0 || ids.includes(data.code))
+        .map((data): Domain => {
+          const groups = this.flattenGroups(data.metadataHierarchy);
 
-    return domains;
+          return {
+            id: data.code,
+            label: data.label,
+            groups: groups,
+            datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
+            variables: data.metadataHierarchy
+              ? this.flattenVariables(data.metadataHierarchy, groups)
+              : [],
+          };
+        });
+    } catch {
+      throw new HttpException(
+        `Connexion to the connector ${this.options.type} failed`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   demo(): string {
@@ -127,48 +121,30 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  private pathologiesHierarchies = (
-    json: Pathology[]
-  ): Dictionary<Hierarchy> => {
-    const pathologiesDatasets: Dictionary<Hierarchy> = {};
-    json.forEach(pathology => {
-      pathologiesDatasets[pathology.code] = pathology.metadataHierarchy;
-    });
+  private flattenGroups = (data: Hierarchy): Group[] => {
+    let groups: Group[] = [dataToGroup(data)];
 
-    return pathologiesDatasets;
+    if (data.groups) {
+      groups = groups.concat(data.groups.flatMap(this.flattenGroups));
+    }
+
+    return groups;
   };
 
-  private pathologiesVariables = (json: Pathology[]): Dictionary<VariableEntity[]> => {
-    const pathologiesVariables: Dictionary<VariableEntity[]> = {};
-    json.forEach(pathology => {
-      let variables: VariableEntity[] = [];
+  private flattenVariables = (data: Hierarchy, groups: Group[]): Variable[] => {
+    const group = groups.find((group) => group.id == data.code);
+    let variables = data.variables ? data.variables.map(dataToVariable) : [];
 
-      const dummyAccumulator = (node: any): void => {
-        if (node.variables) {
-          variables = [...variables, ...node.variables];
-        }
+    variables.forEach((variable) => (variable.groups = group ? [group] : []));
 
-        if (node.groups) {
-          return node.groups.map(dummyAccumulator);
-        }
-      };
+    if (data.groups) {
+      variables = variables.concat(
+        data.groups.flatMap((hierarchy) =>
+          this.flattenVariables(hierarchy, groups),
+        ),
+      );
+    }
 
-      if (pathology) {
-        dummyAccumulator(pathology.metadataHierarchy);
-      }
-
-      pathologiesVariables[pathology.code] = variables;
-    });
-
-    return pathologiesVariables;
-  };
-
-  private pathologiesDatasets = (json: Pathology[]): Dictionary<VariableEntity[]> => {
-    const pathologiesDatasets: Dictionary<VariableEntity[]> = {};
-    json.forEach(pathology => {
-      pathologiesDatasets[pathology.code] = pathology.datasets;
-    });
-
-    return pathologiesDatasets;
+    return variables;
   };
 }

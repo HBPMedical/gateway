@@ -10,7 +10,7 @@ export interface IEngineOptions {
 export interface IEngineService {
   demo(): string;
 
-  getDomain(): Domain[] | Promise<Domain[]>;
+  getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
   getAlgorithms(request: Request): Observable<string>;
 

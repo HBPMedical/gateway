@@ -3,7 +3,7 @@ import { IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 
 export default class DataShieldService implements IEngineService {
-  getDomain(): Domain[] {
+  getDomains(): Domain[] {
     throw new Error('Method not implemented.');
   }
 
