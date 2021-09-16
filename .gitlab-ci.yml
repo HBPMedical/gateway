@@ -4,21 +4,40 @@ services:
 
 stages:
   - build
+  - test
   - release
   - deploy
 
 variables:
-  CONTAINER_BASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_PREFIX_NAME: $CI_REGISTRY_IMAGE/gateway
+  CONTAINER_LATEST_IMAGE: $CONTAINER_PREFIX_NAME:latest
+  CONTAINER_STABLE_IMAGE: $CONTAINER_PREFIX_NAME:stable
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - export VERSION=$(cat ./api/package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+  - export CONTAINER_NAME_IMAGE=$CONTAINER_PREFIX_NAME:$VERSION
 
 build:
   stage: build
   script:
-    - docker build -t $CONTAINER_BASE_IMAGE ./api
-    - docker push $CONTAINER_BASE_IMAGE
+    - docker build --pull -t $CONTAINER_NAME_IMAGE ./api
+    - docker push $CONTAINER_NAME_IMAGE
+
+release-qa:
+  stage: release
+  script:
+    - docker pull $CONTAINER_NAME_IMAGE
+    - docker tag $CONTAINER_NAME_IMAGE $CONTAINER_LATEST_IMAGE
+    - docker push $CONTAINER_LATEST_IMAGE
+  only:
+    - develop
+
+release-prod:
+  stage: release
+  script:
+    - docker pull $CONTAINER_NAME_IMAGE
+    - docker tag $CONTAINER_NAME_IMAGE $CONTAINER_STABLE_IMAGE
+    - docker push $CONTAINER_STABLE_IMAGE
   only:
     - main
-    - develop
-    - /^release-.*$/
