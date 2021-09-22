@@ -42,7 +42,7 @@ export default class ExaremeService implements IEngineService {
         });
     } catch {
       throw new HttpException(
-        `Connexion to the connector ${this.options.type} failed`,
+        `Connection to the engine ${this.options.type} failed`,
         HttpStatus.NOT_FOUND,
       );
     }
