@@ -33,6 +33,7 @@ export default class ExaremeService implements IEngineService {
             id: data.code,
             label: data.label,
             groups: groups,
+            rootGroup: dataToGroup(data.metadataHierarchy),
             datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
             variables: data.metadataHierarchy
               ? this.flattenVariables(data.metadataHierarchy, groups)

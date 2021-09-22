@@ -6,4 +6,7 @@ import { Group } from './group.model';
 export class Domain extends Group {
   @Field(() => [Category])
   datasets: Category[];
+
+  @Field(() => Group)
+  rootGroup: Group;
 }
