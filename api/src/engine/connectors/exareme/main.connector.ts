@@ -86,7 +86,7 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + `experiments/${uuid}`;
 
     return this.httpService
-      .post(path, request.body)
+      .patch(path, request.body)
       .pipe(map((response) => response.data));
   }
 
