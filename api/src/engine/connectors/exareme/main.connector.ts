@@ -106,11 +106,11 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  getExperiments(): Observable<string> {
+  getExperiments(request: Request): Observable<string> {
     const path = this.options.baseurl + 'experiments';
 
     return this.httpService
-      .get<string>(path)
+      .get<string>(path, { params: request.query })
       .pipe(map((response) => response.data));
   }
 
