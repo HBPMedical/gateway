@@ -5,6 +5,8 @@ import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Group } from 'src/engine/models/group.model';
+import { TransientCreateInput } from 'src/engine/models/transient/transient-create.input';
+import { Transient } from 'src/engine/models/transient/transient.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { dataToCategory, dataToGroup, dataToVariable } from './converters';
 import { Hierarchy } from './interfaces/hierarchy.interface';
@@ -15,6 +17,13 @@ export default class ExaremeService implements IEngineService {
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
+
+  createTransient(data: TransientCreateInput): Transient | Promise<Transient> {
+    return {
+      id: 'test',
+      label: 'test',
+    };
+  }
 
   async getDomains(ids: string[]): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';

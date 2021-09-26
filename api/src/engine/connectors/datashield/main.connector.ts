@@ -1,8 +1,14 @@
 import { Observable } from 'rxjs';
 import { IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
+import { TransientCreateInput } from 'src/engine/models/transient/transient-create.input';
+import { Transient } from 'src/engine/models/transient/transient.model';
 
 export default class DataShieldService implements IEngineService {
+  createTransient(data: TransientCreateInput): Promise<Transient> | Transient {
+    throw new Error('Method not implemented.');
+  }
+
   getDomains(): Domain[] {
     throw new Error('Method not implemented.');
   }

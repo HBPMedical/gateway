@@ -4,7 +4,7 @@
 
 type Category {
   id: String!
-  label: String!
+  label: String
 }
 
 type Variable {
@@ -18,7 +18,7 @@ type Variable {
 
 type Group {
   id: String!
-  label: String!
+  label: String
   description: String
   groups: [Group!]!
   variables: [Variable!]!
@@ -26,7 +26,7 @@ type Group {
 
 type Domain {
   id: String!
-  label: String!
+  label: String
   description: String
   groups: [Group!]!
   variables: [Variable!]!
@@ -34,6 +34,19 @@ type Domain {
   rootGroup: Group!
 }
 
+type Transient {
+  id: String!
+  label: String
+}
+
 type Query {
   domains(ids: [String!] = []): [Domain!]!
+}
+
+type Mutation {
+  createTransient(data: TransientCreateInput!): Transient!
+}
+
+input TransientCreateInput {
+  name: String!
 }
