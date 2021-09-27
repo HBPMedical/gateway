@@ -34,9 +34,20 @@ type Domain {
   rootGroup: Group!
 }
 
+type MetaData {
+  name: String!
+  type: String!
+}
+
+type TableResult {
+  name: String!
+  data: [[String!]!]!
+  metadatas: [MetaData!]!
+}
+
 type Transient {
-  id: String!
-  label: String
+  title: String!
+  result: [TableResult!]!
 }
 
 type Query {
@@ -48,5 +59,9 @@ type Mutation {
 }
 
 input TransientCreateInput {
-  name: String!
+  extradata: String
+  datasets: [String!]!
+  variables: [String!]!
+  filter: String
+  domain: String!
 }

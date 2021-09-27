@@ -8,9 +8,16 @@ import { Group } from 'src/engine/models/group.model';
 import { TransientCreateInput } from 'src/engine/models/transient/transient-create.input';
 import { Transient } from 'src/engine/models/transient/transient.model';
 import { Variable } from 'src/engine/models/variable.model';
-import { dataToCategory, dataToGroup, dataToVariable } from './converters';
+import {
+  dataToCategory,
+  dataToGroup,
+  dataToTransient,
+  dataToVariable,
+  transientInputToData,
+} from './converters';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
+import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
 
 export default class ExaremeService implements IEngineService {
   constructor(
@@ -18,11 +25,157 @@ export default class ExaremeService implements IEngineService {
     private readonly httpService: HttpService,
   ) {}
 
-  createTransient(data: TransientCreateInput): Transient | Promise<Transient> {
-    return {
-      id: 'test',
-      label: 'test',
-    };
+  async createTransient(data: TransientCreateInput): Promise<Transient> {
+    const form = transientInputToData(data);
+
+    const path = this.options.baseurl + 'experiments/transient';
+
+    const result = {
+      name: 'Descriptive statistics',
+      result: [
+        {
+          data: {
+            single: {
+              'Left inferior temporal gyrus': {
+                ppmi: {
+                  data: {
+                    std: 1.2048783713787277,
+                    max: 15.0815,
+                    min: 7.6335,
+                    mean: 11.38076218487395,
+                  },
+                  num_datapoints: 714,
+                  num_total: 714,
+                  num_nulls: 0,
+                },
+                edsd: {
+                  data: {
+                    std: 1.3274694970555183,
+                    max: 14.593,
+                    min: 5.4301,
+                    mean: 10.647539816933637,
+                  },
+                  num_datapoints: 437,
+                  num_total: 474,
+                  num_nulls: 37,
+                },
+                'desd-synthdata': {
+                  data: {
+                    std: 1.3479276642860987,
+                    max: 14.593,
+                    min: 5.4301,
+                    mean: 10.685619565217392,
+                  },
+                  num_datapoints: 920,
+                  num_total: 1000,
+                  num_nulls: 80,
+                },
+              },
+              'Left posterior insula': {
+                ppmi: {
+                  data: {
+                    std: 0.25046887396228024,
+                    max: 3.0882,
+                    min: 1.7073,
+                    mean: 2.358402521008403,
+                  },
+                  num_datapoints: 714,
+                  num_total: 714,
+                  num_nulls: 0,
+                },
+                edsd: {
+                  data: {
+                    std: 0.2716090949138581,
+                    max: 3.1971,
+                    min: 1.2675,
+                    mean: 2.2726512585812357,
+                  },
+                  num_datapoints: 437,
+                  num_total: 474,
+                  num_nulls: 37,
+                },
+                'desd-synthdata': {
+                  data: {
+                    std: 0.2619310561946756,
+                    max: 3.1971,
+                    min: 1.2675,
+                    mean: 2.27014597826087,
+                  },
+                  num_datapoints: 920,
+                  num_total: 1000,
+                  num_nulls: 80,
+                },
+              },
+            },
+            model: {
+              ppmi: {
+                num_datapoints: 714,
+                data: {
+                  'Left inferior temporal gyrus': {
+                    std: 1.2048783713787277,
+                    max: 15.0815,
+                    min: 7.6335,
+                    mean: 11.38076218487395,
+                  },
+                  'Left posterior insula': {
+                    std: 0.25046887396228024,
+                    max: 3.0882,
+                    min: 1.7073,
+                    mean: 2.358402521008403,
+                  },
+                },
+                num_total: 714,
+                num_nulls: 0,
+              },
+              edsd: {
+                num_datapoints: 437,
+                data: {
+                  'Left inferior temporal gyrus': {
+                    std: 1.3274694970555183,
+                    max: 14.593,
+                    min: 5.4301,
+                    mean: 10.647539816933637,
+                  },
+                  'Left posterior insula': {
+                    std: 0.2716090949138581,
+                    max: 3.1971,
+                    min: 1.2675,
+                    mean: 2.2726512585812357,
+                  },
+                },
+                num_total: 474,
+                num_nulls: 37,
+              },
+              'desd-synthdata': {
+                num_datapoints: 920,
+                data: {
+                  'Left inferior temporal gyrus': {
+                    std: 1.3479276642860987,
+                    max: 14.593,
+                    min: 5.4301,
+                    mean: 10.685619565217392,
+                  },
+                  'Left posterior insula': {
+                    std: 0.2619310561946756,
+                    max: 3.1971,
+                    min: 1.2675,
+                    mean: 2.27014597826087,
+                  },
+                },
+                num_total: 1000,
+                num_nulls: 80,
+              },
+            },
+          },
+        },
+      ],
+    } as TransientDataResult;
+
+    /*= await firstValueFrom(
+      this.httpService.post<TransientDataResult>(path, form),
+    );*/
+
+    return dataToTransient(result);
   }
 
   async getDomains(ids: string[]): Promise<Domain[]> {
@@ -55,10 +208,6 @@ export default class ExaremeService implements IEngineService {
         HttpStatus.NOT_FOUND,
       );
     }
-  }
-
-  demo(): string {
-    return 'exareme';
   }
 
   getActiveUser(): Observable<string> {

@@ -4,6 +4,12 @@ import { Variable } from 'src/engine/models/variable.model';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import { Entity } from './interfaces/entity.interface';
+import { TransientCreateInput } from 'src/engine/models/transient/transient-create.input';
+import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
+import { Transient } from 'src/engine/models/transient/transient.model';
+import { MetaData } from 'src/engine/models/result/common/metadata.model';
+import { TableResult } from 'src/engine/models/result/table-result.model';
+import { Dictionary } from 'src/common/interfaces/utilities.interface';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -31,5 +37,90 @@ export const dataToVariable = (data: VariableEntity): Variable => {
       ? data.enumerations.map(dataToCategory)
       : [],
     groups: [],
+  };
+};
+
+export const transientInputToData = (data: TransientCreateInput) => {
+  return {
+    algorithm: {
+      parameters: [
+        {
+          name: 'dataset',
+          value: data.datasets.join(','),
+        },
+        {
+          name: 'y',
+          value: data.variables.join(','),
+        },
+        {
+          name: 'filter',
+          value: data.filter,
+        },
+        {
+          name: 'pathology',
+          value: data.domain,
+        },
+      ],
+      type: 'string',
+      name: 'DESCRIPTIVE_STATS',
+    },
+    name: 'Descriptive statistics',
+  };
+};
+
+const dictToTable = (dict: Dictionary<string[]>, rows: number): string[][] => {
+  const keys = Object.keys(dict);
+
+  return keys.map((key) => {
+    const row = Array.from(Array(rows).keys())
+      .map((i) => dict[key][i])
+      .map((val) => val ?? '');
+    row.unshift(key);
+    return row;
+  });
+};
+
+export const dataToTransient = (data: TransientDataResult): Transient => {
+  const result = data.result[0];
+  const tables = Object.keys(result.data.single).map((varKey): TableResult => {
+    const variable = result.data.single[varKey];
+    const domains: MetaData[] = [];
+    const rows: Dictionary<string[]> = {};
+
+    let count = 0;
+
+    Object.keys(variable).map((domainKey) => {
+      domains.push({ name: domainKey, type: 'string' });
+      const data = variable[domainKey];
+
+      [
+        [varKey, 'num_total'],
+        ['datapoints', 'num_datapoints'],
+        ['nulls', 'num_nulls'],
+      ].forEach((keys) => {
+        if (!rows[keys[0]]) rows[keys[0]] = [];
+        rows[keys[0]][count] = data[keys[1]];
+      });
+
+      const properties = variable[domainKey].data;
+
+      Object.keys(properties).forEach((propKey) => {
+        if (!rows[propKey]) rows[propKey] = [];
+        rows[propKey][count] = properties[propKey].toString();
+      });
+
+      count++;
+    });
+
+    return {
+      data: dictToTable(rows, count),
+      metadatas: domains,
+      name: varKey,
+    };
+  });
+
+  return {
+    title: data.name,
+    result: tables,
   };
 };

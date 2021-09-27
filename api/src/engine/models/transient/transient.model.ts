@@ -1,5 +1,11 @@
-import { ObjectType } from '@nestjs/graphql';
-import { Entity } from '../entity.model';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { TableResult } from '../result/table-result.model';
 
 @ObjectType()
-export class Transient extends Entity {}
+export class Transient {
+  @Field()
+  title: string;
+
+  @Field(() => [TableResult])
+  result: TableResult[];
+}
