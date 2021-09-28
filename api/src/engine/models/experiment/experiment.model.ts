@@ -1,5 +1,26 @@
-import { Field, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
-import { Result } from '../result/result.model';
+import {
+  createUnionType,
+  Field,
+  GraphQLISODateTime,
+  ObjectType,
+} from '@nestjs/graphql';
+import { DummyResult } from '../result/dummy-result.model';
+import { TableResult } from '../result/table-result.model';
+
+export const ResultUnion = createUnionType({
+  name: 'ResultUnion',
+  types: () => [TableResult, DummyResult],
+  resolveType(value) {
+    if (value.metadatas) {
+      return TableResult;
+    }
+    if (value.listMax) {
+      return DummyResult;
+    }
+
+    return null;
+  },
+});
 
 @ObjectType()
 export class Experiment {
@@ -18,6 +39,6 @@ export class Experiment {
   @Field(() => GraphQLISODateTime, { nullable: true })
   finished_at?: Date;
 
-  @Field(() => [Result])
-  result: Result[];
+  @Field(() => [ResultUnion])
+  results: Array<typeof ResultUnion>;
 }

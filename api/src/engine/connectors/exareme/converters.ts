@@ -122,6 +122,6 @@ export const dataToTransient = (data: TransientDataResult): Experiment => {
 
   return {
     title: data.name,
-    result: tables,
+    results: tables,
   };
 };
