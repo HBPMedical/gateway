@@ -5,15 +5,15 @@ import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Group } from 'src/engine/models/group.model';
-import { TransientCreateInput } from 'src/engine/models/transient/transient-create.input';
-import { Transient } from 'src/engine/models/transient/transient.model';
+import { ExperimentCreateInput } from 'src/engine/models/experiment/experiment-create.input';
+import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { Variable } from 'src/engine/models/variable.model';
 import {
   dataToCategory,
   dataToGroup,
   dataToTransient,
   dataToVariable,
-  transientInputToData,
+  experimentInputToData,
 } from './converters';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
@@ -25,8 +25,8 @@ export default class ExaremeService implements IEngineService {
     private readonly httpService: HttpService,
   ) {}
 
-  async createTransient(data: TransientCreateInput): Promise<Transient> {
-    const form = transientInputToData(data);
+  async createTransient(data: ExperimentCreateInput): Promise<Experiment> {
+    const form = experimentInputToData(data);
 
     const path = this.options.baseurl + 'experiments/transient';
 
@@ -40,7 +40,6 @@ export default class ExaremeService implements IEngineService {
                 ppmi: {
                   data: {
                     std: 1.2048783713787277,
-                    max: 15.0815,
                     min: 7.6335,
                     mean: 11.38076218487395,
                   },

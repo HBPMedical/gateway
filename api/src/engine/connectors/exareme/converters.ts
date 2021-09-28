@@ -4,9 +4,9 @@ import { Variable } from 'src/engine/models/variable.model';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import { Entity } from './interfaces/entity.interface';
-import { TransientCreateInput } from 'src/engine/models/transient/transient-create.input';
+import { ExperimentCreateInput } from 'src/engine/models/experiment/experiment-create.input';
 import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
-import { Transient } from 'src/engine/models/transient/transient.model';
+import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { MetaData } from 'src/engine/models/result/common/metadata.model';
 import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Dictionary } from 'src/common/interfaces/utilities.interface';
@@ -40,7 +40,7 @@ export const dataToVariable = (data: VariableEntity): Variable => {
   };
 };
 
-export const transientInputToData = (data: TransientCreateInput) => {
+export const experimentInputToData = (data: ExperimentCreateInput) => {
   return {
     algorithm: {
       parameters: [
@@ -62,9 +62,9 @@ export const transientInputToData = (data: TransientCreateInput) => {
         },
       ],
       type: 'string',
-      name: 'DESCRIPTIVE_STATS',
+      name: data.algorithm,
     },
-    name: 'Descriptive statistics',
+    name: data.name,
   };
 };
 
@@ -80,7 +80,7 @@ const dictToTable = (dict: Dictionary<string[]>, rows: number): string[][] => {
   });
 };
 
-export const dataToTransient = (data: TransientDataResult): Transient => {
+export const dataToTransient = (data: TransientDataResult): Experiment => {
   const result = data.result[0];
   const tables = Object.keys(result.data.single).map((varKey): TableResult => {
     const variable = result.data.single[varKey];
@@ -116,6 +116,7 @@ export const dataToTransient = (data: TransientDataResult): Transient => {
       data: dictToTable(rows, count),
       metadatas: domains,
       name: varKey,
+      groupBy: 'single',
     };
   });
 

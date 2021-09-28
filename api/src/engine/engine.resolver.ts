@@ -3,8 +3,8 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
 import { Domain } from './models/domain.model';
-import { TransientCreateInput } from './models/transient/transient-create.input';
-import { Transient } from './models/transient/transient.model';
+import { ExperimentCreateInput } from './models/experiment/experiment-create.input';
+import { Experiment } from './models/experiment/experiment.model';
 
 @Resolver()
 export class EngineResolver {
@@ -20,10 +20,10 @@ export class EngineResolver {
     return this.engineService.getDomains(ids);
   }
 
-  @Mutation(() => Transient)
+  @Mutation(() => Experiment)
   async createTransient(
-    @Args('data') transientCreateInput: TransientCreateInput,
+    @Args('data') experimentCreateInput: ExperimentCreateInput,
   ) {
-    return this.engineService.createTransient(transientCreateInput);
+    return this.engineService.createTransient(experimentCreateInput);
   }
 }

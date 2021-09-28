@@ -34,20 +34,27 @@ type Domain {
   rootGroup: Group!
 }
 
+type Result {
+  groupBy: String
+}
+
+type Experiment {
+  title: String!
+  uuid: String
+  created_at: DateTime
+  update_at: DateTime
+  finished_at: DateTime
+  result: [Result!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type MetaData {
   name: String!
   type: String!
-}
-
-type TableResult {
-  name: String!
-  data: [[String!]!]!
-  metadatas: [MetaData!]!
-}
-
-type Transient {
-  title: String!
-  result: [TableResult!]!
 }
 
 type Query {
@@ -55,13 +62,14 @@ type Query {
 }
 
 type Mutation {
-  createTransient(data: TransientCreateInput!): Transient!
+  createTransient(data: ExperimentCreateInput!): Experiment!
 }
 
-input TransientCreateInput {
-  extradata: String
+input ExperimentCreateInput {
   datasets: [String!]!
   variables: [String!]!
   filter: String
   domain: String!
+  algorithm: String!
+  name: String!
 }

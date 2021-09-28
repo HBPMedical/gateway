@@ -1,8 +1,8 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { Domain } from './models/domain.model';
-import { TransientCreateInput } from './models/transient/transient-create.input';
-import { Transient } from './models/transient/transient.model';
+import { ExperimentCreateInput } from './models/experiment/experiment-create.input';
+import { Experiment } from './models/experiment/experiment.model';
 
 export interface IEngineOptions {
   type: string;
@@ -24,7 +24,9 @@ export interface IEngineService {
 
   startExperimentTransient(request: Request): Observable<string>;
 
-  createTransient(data: TransientCreateInput): Promise<Transient> | Transient;
+  createTransient(
+    data: ExperimentCreateInput,
+  ): Promise<Experiment> | Experiment;
 
   startExperiment(request: Request): Observable<string>;
 

@@ -1,8 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Extrafield } from '../utility/extrafield.input';
 
 @InputType()
-export class TransientCreateInput extends Extrafield {
+export class ExperimentCreateInput {
   @Field(() => [String])
   datasets: string[];
 
@@ -14,4 +13,10 @@ export class TransientCreateInput extends Extrafield {
 
   @Field()
   domain: string;
+
+  @Field()
+  algorithm: string;
+
+  @Field()
+  name: string;
 }
