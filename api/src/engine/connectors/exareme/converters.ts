@@ -10,6 +10,7 @@ import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { MetaData } from 'src/engine/models/result/common/metadata.model';
 import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Dictionary } from 'src/common/interfaces/utilities.interface';
+import { table } from 'console';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -120,8 +121,14 @@ export const dataToTransient = (data: TransientDataResult): Experiment => {
     };
   });
 
+  const result2 = tables.map((table) => {
+    const nTable = Object.assign({}, table);
+    nTable.groupBy = 'Model';
+    return nTable;
+  });
+
   return {
     title: data.name,
-    results: tables,
+    results: tables.concat(result2),
   };
 };
