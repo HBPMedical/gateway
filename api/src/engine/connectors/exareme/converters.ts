@@ -1,16 +1,14 @@
 import { Category } from 'src/engine/models/category.model';
-import { Group } from 'src/engine/models/group.model';
-import { Variable } from 'src/engine/models/variable.model';
-import { Hierarchy } from './interfaces/hierarchy.interface';
-import { VariableEntity } from './interfaces/variable-entity.interface';
-import { Entity } from './interfaces/entity.interface';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/experiment-create.input';
-import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { MetaData } from 'src/engine/models/result/common/metadata.model';
+import { Group } from 'src/engine/models/group.model';
 import { TableResult } from 'src/engine/models/result/table-result.model';
-import { Dictionary } from 'src/common/interfaces/utilities.interface';
-import { table } from 'console';
+import { Variable } from 'src/engine/models/variable.model';
+import { Entity } from './interfaces/entity.interface';
+import { Hierarchy } from './interfaces/hierarchy.interface';
+import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
+import { VariableEntity } from './interfaces/variable-entity.interface';
+import { transientToTable } from './transformations';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -69,66 +67,11 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
   };
 };
 
-const dictToTable = (dict: Dictionary<string[]>, rows: number): string[][] => {
-  const keys = Object.keys(dict);
-
-  return keys.map((key) => {
-    const row = Array.from(Array(rows).keys())
-      .map((i) => dict[key][i])
-      .map((val) => val ?? '');
-    row.unshift(key);
-    return row;
-  });
-};
-
 export const dataToTransient = (data: TransientDataResult): Experiment => {
-  const result = data.result[0];
-  const tables = Object.keys(result.data.single).map((varKey): TableResult => {
-    const variable = result.data.single[varKey];
-    const domains: MetaData[] = [];
-    const rows: Dictionary<string[]> = {};
-
-    let count = 0;
-
-    Object.keys(variable).map((domainKey) => {
-      domains.push({ name: domainKey, type: 'string' });
-      const data = variable[domainKey];
-
-      [
-        [varKey, 'num_total'],
-        ['datapoints', 'num_datapoints'],
-        ['nulls', 'num_nulls'],
-      ].forEach((keys) => {
-        if (!rows[keys[0]]) rows[keys[0]] = [];
-        rows[keys[0]][count] = data[keys[1]];
-      });
-
-      const properties = variable[domainKey].data;
-
-      Object.keys(properties).forEach((propKey) => {
-        if (!rows[propKey]) rows[propKey] = [];
-        rows[propKey][count] = properties[propKey].toString();
-      });
-
-      count++;
-    });
-
-    return {
-      data: dictToTable(rows, count),
-      metadatas: domains,
-      name: varKey,
-      groupBy: 'single',
-    };
-  });
-
-  const result2 = tables.map((table) => {
-    const nTable = Object.assign({}, table);
-    nTable.groupBy = 'Model';
-    return nTable;
-  });
+  const tabs: TableResult[] = transientToTable.evaluate(data);
 
   return {
     title: data.name,
-    results: tables.concat(result2),
+    results: tabs,
   };
 };
