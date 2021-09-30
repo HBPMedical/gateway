@@ -5,9 +5,7 @@ import * as jsonata from 'jsonata'; // old import style needed because of 'expor
 
 export const transientToTable = jsonata(`
 ( 
-  $e := function($x) {(
-      ($x != null) ? $x : ''
-  )};
+  $e := function($x) {($x != null) ? $x : ''};
 
   $fn := function($o, $prefix) { 
       $each($o, function($v, $k) {(
@@ -32,9 +30,8 @@ export const transientToTable = jsonata(`
               ['Nulls', $p.*.($e(num_nulls))],
               $p.*.data.($fn($)) ~> $reduce(function($a, $b) {
                   $each($a, function($v, $k) {(
-                      $val := $lookup($b,$k);
                       {
-                          $k : [$v, ($val != null) ? $val : '']
+                          $k : [$v, $e($lookup($b,$k))]
                       }
                   )}) ~> $merge()
               }) ~> $each(function($v, $k) {$append($k,$v)}) 
