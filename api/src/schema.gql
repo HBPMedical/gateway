@@ -34,7 +34,7 @@ type Domain {
   rootGroup: Group!
 }
 
-type MetaData {
+type Metadata {
   name: String!
   type: String!
 }
@@ -59,7 +59,7 @@ type TableResult {
   groupBy: String
   name: String!
   data: [[String!]!]!
-  metadatas: [MetaData!]!
+  metadatas: [Metadata!]!
 }
 
 type DummyResult {
