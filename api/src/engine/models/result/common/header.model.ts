@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class Metadata {
+export class Header {
   @Field()
   name: string;
 

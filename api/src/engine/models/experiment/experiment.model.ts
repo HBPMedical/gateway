@@ -11,7 +11,7 @@ export const ResultUnion = createUnionType({
   name: 'ResultUnion',
   types: () => [TableResult, DummyResult],
   resolveType(value) {
-    if (value.metadatas) {
+    if (value.headers) {
       return TableResult;
     }
     if (value.listMax) {

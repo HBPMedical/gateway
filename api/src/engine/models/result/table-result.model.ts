@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Metadata } from './common/metadata.model';
+import { Header } from './common/header.model';
 import { Result } from './common/result.model';
 
 @ObjectType()
@@ -10,6 +10,6 @@ export class TableResult extends Result {
   @Field(() => [[String]])
   data: string[][];
 
-  @Field(() => [Metadata])
-  metadatas: Metadata[];
+  @Field(() => [Header])
+  headers: Header[];
 }
