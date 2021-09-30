@@ -21,9 +21,13 @@ export class EngineResolver {
   }
 
   @Mutation(() => Experiment)
-  async createTransient(
+  async createExperiment(
     @Args('data') experimentCreateInput: ExperimentCreateInput,
+    @Args('transient', { nullable: true, defaultValue: false })
+    isTransient: boolean,
   ) {
-    return this.engineService.createTransient(experimentCreateInput);
+    return isTransient
+      ? this.engineService.createTransient(experimentCreateInput)
+      : this.engineService.createExperiment(experimentCreateInput);
   }
 }

@@ -10,8 +10,18 @@ export interface IEngineOptions {
 }
 
 export interface IEngineService {
+  //GraphQL
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
+  createTransient(
+    data: ExperimentCreateInput,
+  ): Promise<Experiment> | Experiment;
+
+  createExperiment(
+    data: ExperimentCreateInput,
+  ): Promise<Experiment> | Experiment;
+
+  // Standard REST API call
   getAlgorithms(request: Request): Observable<string>;
 
   getExperiments(request: Request): Observable<string>;
@@ -23,10 +33,6 @@ export interface IEngineService {
   editExperiment(uuid: string, request: Request): Observable<string>;
 
   startExperimentTransient(request: Request): Observable<string>;
-
-  createTransient(
-    data: ExperimentCreateInput,
-  ): Promise<Experiment> | Experiment;
 
   startExperiment(request: Request): Observable<string>;
 

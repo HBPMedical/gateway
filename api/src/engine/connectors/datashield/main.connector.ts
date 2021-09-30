@@ -5,6 +5,11 @@ import { ExperimentCreateInput } from 'src/engine/models/experiment/experiment-c
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
 
 export default class DataShieldService implements IEngineService {
+  createExperiment(
+    data: ExperimentCreateInput,
+  ): Experiment | Promise<Experiment> {
+    throw new Error('Method not implemented.');
+  }
   createTransient(
     data: ExperimentCreateInput,
   ): Experiment | Promise<Experiment> {

@@ -24,6 +24,11 @@ export default class ExaremeService implements IEngineService {
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
+  createExperiment(
+    data: ExperimentCreateInput,
+  ): Experiment | Promise<Experiment> {
+    throw new Error('Method not implemented.');
+  }
 
   async createTransient(data: ExperimentCreateInput): Promise<Experiment> {
     const form = experimentInputToData(data);

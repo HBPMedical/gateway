@@ -74,7 +74,7 @@ type Query {
 }
 
 type Mutation {
-  createTransient(data: ExperimentCreateInput!): Experiment!
+  createExperiment(transient: Boolean = false, data: ExperimentCreateInput!): Experiment!
 }
 
 input ExperimentCreateInput {
