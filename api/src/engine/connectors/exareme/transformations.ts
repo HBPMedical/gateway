@@ -18,7 +18,9 @@ export const transientToTable = jsonata(`
     };
 
     result.data.[
-        $.single.*@$p#$i.{
+        $.single.*@$p#$i.(
+            $ks := $keys($p.*.data[$type($) = 'object']);
+            {
             'groupBy' : 'single',
             'name': $keys(%)[$i],
             'headers': $append("", $keys(*)).{
@@ -30,14 +32,14 @@ export const transientToTable = jsonata(`
                 ['Datapoints', $p.*.($e(num_datapoints))],
                 ['Nulls', $p.*.($e(num_nulls))],
                 $p.*.data.($fn($)) ~> $reduce(function($a, $b) {
-                    $each($a, function($v, $k) {(
+                    $map($ks, function($k) {(
                         {
-                            $k : [$v, $e($lookup($b,$k), "No data")]
+                            $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
                         }
                     )}) ~> $merge()
                 }) ~> $each(function($v, $k) {$append($k,$v)})
             ]
-        }
+        })
     ]
 )
 `);
