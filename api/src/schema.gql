@@ -79,9 +79,19 @@ type Mutation {
 
 input ExperimentCreateInput {
   datasets: [String!]!
-  variables: [String!]!
   filter: String
   domain: String!
-  algorithm: String!
+  algorithm: AlgorithmInput!
   name: String!
+}
+
+input AlgorithmInput {
+  name: String!
+  parameters: [AlgorithmParamInput!]!
+  type: String!
+}
+
+input AlgorithmParamInput {
+  name: String!
+  value: [String!]!
 }

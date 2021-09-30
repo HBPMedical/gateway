@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/experiment-create.input';
+import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
 
 export default class DataShieldService implements IEngineService {

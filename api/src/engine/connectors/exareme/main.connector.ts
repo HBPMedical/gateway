@@ -4,8 +4,8 @@ import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/experiment-create.input';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
+import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
 import {
@@ -24,10 +24,16 @@ export default class ExaremeService implements IEngineService {
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
-  createExperiment(
-    data: ExperimentCreateInput,
-  ): Experiment | Promise<Experiment> {
-    throw new Error('Method not implemented.');
+  async createExperiment(data: ExperimentCreateInput): Promise<Experiment> {
+    const form = experimentInputToData(data);
+
+    const path = this.options.baseurl + 'experiments';
+
+    const resultAPI = await firstValueFrom(
+      this.httpService.post<TransientDataResult>(path, form),
+    );
+
+    return dataToTransient(resultAPI.data);
   }
 
   async createTransient(data: ExperimentCreateInput): Promise<Experiment> {

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { Domain } from './models/domain.model';
-import { ExperimentCreateInput } from './models/experiment/experiment-create.input';
+import { ExperimentCreateInput } from './models/experiment/input/experiment-create.input';
 import { Experiment } from './models/experiment/experiment.model';
 
 export interface IEngineOptions {
