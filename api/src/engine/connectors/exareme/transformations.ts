@@ -21,7 +21,7 @@ export const transientToTable = jsonata(`
         $.single.*@$p#$i.{
             'groupBy' : 'single',
             'name': $keys(%)[$i],
-            'metadatas': $append("", $keys(*)).{
+            'headers': $append("", $keys(*)).{
                 'name': $,
                 'type': 'string'
             },
