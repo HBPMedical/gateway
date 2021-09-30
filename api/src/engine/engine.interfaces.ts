@@ -1,6 +1,8 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { Domain } from './models/domain.model';
+import { ExperimentCreateInput } from './models/experiment/experiment-create.input';
+import { Experiment } from './models/experiment/experiment.model';
 
 export interface IEngineOptions {
   type: string;
@@ -8,8 +10,6 @@ export interface IEngineOptions {
 }
 
 export interface IEngineService {
-  demo(): string;
-
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
   getAlgorithms(request: Request): Observable<string>;
@@ -23,6 +23,10 @@ export interface IEngineService {
   editExperiment(uuid: string, request: Request): Observable<string>;
 
   startExperimentTransient(request: Request): Observable<string>;
+
+  createTransient(
+    data: ExperimentCreateInput,
+  ): Promise<Experiment> | Experiment;
 
   startExperiment(request: Request): Observable<string>;
 

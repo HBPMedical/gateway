@@ -4,17 +4,38 @@ import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
+import { ExperimentCreateInput } from 'src/engine/models/experiment/experiment-create.input';
+import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
-import { dataToCategory, dataToGroup, dataToVariable } from './converters';
+import {
+  dataToCategory,
+  dataToGroup,
+  dataToTransient,
+  dataToVariable,
+  experimentInputToData,
+} from './converters';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
+import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
 
 export default class ExaremeService implements IEngineService {
   constructor(
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
+
+  async createTransient(data: ExperimentCreateInput): Promise<Experiment> {
+    const form = experimentInputToData(data);
+
+    const path = this.options.baseurl + 'experiments/transient';
+
+    const resultAPI = await firstValueFrom(
+      this.httpService.post<TransientDataResult>(path, form),
+    );
+
+    return dataToTransient(resultAPI.data);
+  }
 
   async getDomains(ids: string[]): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
@@ -46,10 +67,6 @@ export default class ExaremeService implements IEngineService {
         HttpStatus.NOT_FOUND,
       );
     }
-  }
-
-  demo(): string {
-    return 'exareme';
   }
 
   getActiveUser(): Observable<string> {

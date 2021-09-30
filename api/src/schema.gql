@@ -4,7 +4,7 @@
 
 type Category {
   id: String!
-  label: String!
+  label: String
 }
 
 type Variable {
@@ -18,7 +18,7 @@ type Variable {
 
 type Group {
   id: String!
-  label: String!
+  label: String
   description: String
   groups: [Group!]!
   variables: [Variable!]!
@@ -26,7 +26,7 @@ type Group {
 
 type Domain {
   id: String!
-  label: String!
+  label: String
   description: String
   groups: [Group!]!
   variables: [Variable!]!
@@ -34,6 +34,54 @@ type Domain {
   rootGroup: Group!
 }
 
+type Metadata {
+  name: String!
+  type: String!
+}
+
+type Experiment {
+  title: String!
+  uuid: String
+  created_at: DateTime
+  update_at: DateTime
+  finished_at: DateTime
+  results: [ResultUnion!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+union ResultUnion = TableResult | DummyResult
+
+type TableResult {
+  groupBy: String
+  name: String!
+  data: [[String!]!]!
+  metadatas: [Metadata!]!
+}
+
+type DummyResult {
+  groupBy: String
+  name: String!
+  data: [[String!]!]!
+  listMax: [String!]!
+}
+
 type Query {
   domains(ids: [String!] = []): [Domain!]!
+}
+
+type Mutation {
+  createTransient(data: ExperimentCreateInput!): Experiment!
+}
+
+input ExperimentCreateInput {
+  datasets: [String!]!
+  variables: [String!]!
+  filter: String
+  domain: String!
+  algorithm: String!
+  name: String!
 }

@@ -19,11 +19,6 @@ export class EngineController {
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
   ) {}
 
-  @Get('/test')
-  getTest(): string {
-    return this.engineService.demo();
-  }
-
   @Get('/algorithms')
   getAlgorithms(@Req() request: Request): Observable<string> {
     return this.engineService.getAlgorithms(request);
