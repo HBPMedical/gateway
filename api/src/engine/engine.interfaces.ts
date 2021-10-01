@@ -13,12 +13,9 @@ export interface IEngineService {
   //GraphQL
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
-  createTransient(
-    data: ExperimentCreateInput,
-  ): Promise<Experiment> | Experiment;
-
   createExperiment(
     data: ExperimentCreateInput,
+    isTransient: boolean,
   ): Promise<Experiment> | Experiment;
 
   // Standard REST API call

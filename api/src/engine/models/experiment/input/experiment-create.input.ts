@@ -12,6 +12,9 @@ export class ExperimentCreateInput {
   @Field()
   domain: string;
 
+  @Field(() => [String])
+  variables: string[];
+
   @Field()
   algorithm: AlgorithmInput;
 

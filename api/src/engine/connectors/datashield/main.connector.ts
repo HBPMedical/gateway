@@ -10,11 +10,7 @@ export default class DataShieldService implements IEngineService {
   ): Experiment | Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
-  createTransient(
-    data: ExperimentCreateInput,
-  ): Experiment | Promise<Experiment> {
-    throw new Error('Method not implemented.');
-  }
+
   getDomains(): Domain[] {
     throw new Error('Method not implemented.');
   }

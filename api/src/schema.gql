@@ -39,13 +39,32 @@ type Header {
   type: String!
 }
 
+type AlgorithmParameter {
+  name: String!
+  value: [String!]!
+}
+
+type Algorithm {
+  name: String!
+  parameters: [AlgorithmParameter!]
+  type: String!
+}
+
 type Experiment {
-  title: String!
   uuid: String
   created_at: DateTime
   update_at: DateTime
   finished_at: DateTime
+  viewed: Boolean!
+  status: String
+  shared: Boolean!
   results: [ResultUnion!]!
+  datasets: [String!]!
+  filter: String
+  domain: String!
+  variables: [String!]!
+  algorithm: Algorithm!
+  name: String!
 }
 
 """
@@ -81,13 +100,14 @@ input ExperimentCreateInput {
   datasets: [String!]!
   filter: String
   domain: String!
+  variables: [String!]!
   algorithm: AlgorithmInput!
   name: String!
 }
 
 input AlgorithmInput {
   name: String!
-  parameters: [AlgorithmParamInput!]!
+  parameters: [AlgorithmParamInput!] = []
   type: String!
 }
 

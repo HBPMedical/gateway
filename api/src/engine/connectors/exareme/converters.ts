@@ -1,6 +1,6 @@
 import { Category } from 'src/engine/models/category.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
+import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { TableResult } from 'src/engine/models/result/table-result.model';
@@ -40,7 +40,7 @@ export const dataToVariable = (data: VariableEntity): Variable => {
   };
 };
 
-const algoParamInputToData = (param: AlgorithmParamInput) => {
+const algoParamInputToData = (param: AlgorithmParameter) => {
   return {
     name: param.name,
     value: param.value.join(','),
@@ -63,6 +63,10 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
           name: 'pathology',
           value: data.domain,
         },
+        {
+          name: 'y',
+          value: data.variables.join(','),
+        },
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
       name: data.algorithm.name,
@@ -71,11 +75,14 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
   };
 };
 
-export const dataToTransient = (data: TransientDataResult): Experiment => {
+export const dataToTransient = (
+  input: ExperimentCreateInput,
+  data: TransientDataResult,
+): Experiment => {
   const tabs: TableResult[] = transientToTable.evaluate(data);
 
   return {
-    title: data.name,
+    ...input,
     results: tabs,
   };
 };

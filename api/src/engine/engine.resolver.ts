@@ -26,8 +26,9 @@ export class EngineResolver {
     @Args('transient', { nullable: true, defaultValue: false })
     isTransient: boolean,
   ) {
-    return isTransient
-      ? this.engineService.createTransient(experimentCreateInput)
-      : this.engineService.createExperiment(experimentCreateInput);
+    return this.engineService.createExperiment(
+      experimentCreateInput,
+      isTransient,
+    );
   }
 }

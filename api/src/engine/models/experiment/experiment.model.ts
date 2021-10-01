@@ -6,6 +6,7 @@ import {
 } from '@nestjs/graphql';
 import { DummyResult } from '../result/dummy-result.model';
 import { TableResult } from '../result/table-result.model';
+import { Algorithm } from './algorithm.model';
 
 export const ResultUnion = createUnionType({
   name: 'ResultUnion',
@@ -24,9 +25,6 @@ export const ResultUnion = createUnionType({
 
 @ObjectType()
 export class Experiment {
-  @Field()
-  title: string;
-
   @Field({ nullable: true })
   uuid?: string;
 
@@ -39,6 +37,33 @@ export class Experiment {
   @Field(() => GraphQLISODateTime, { nullable: true })
   finished_at?: Date;
 
+  @Field({ defaultValue: false })
+  viewed?: boolean;
+
+  @Field({ nullable: true })
+  status?: string;
+
+  @Field({ defaultValue: false })
+  shared?: boolean;
+
   @Field(() => [ResultUnion])
   results: Array<typeof ResultUnion>;
+
+  @Field(() => [String])
+  datasets: string[];
+
+  @Field(() => String, { nullable: true })
+  filter: string;
+
+  @Field()
+  domain: string;
+
+  @Field(() => [String])
+  variables: string[];
+
+  @Field()
+  algorithm: Algorithm;
+
+  @Field()
+  name: string;
 }

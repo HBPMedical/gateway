@@ -24,28 +24,20 @@ export default class ExaremeService implements IEngineService {
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
-  async createExperiment(data: ExperimentCreateInput): Promise<Experiment> {
+  async createExperiment(
+    data: ExperimentCreateInput,
+    isTransient = false,
+  ): Promise<Experiment> {
     const form = experimentInputToData(data);
 
-    const path = this.options.baseurl + 'experiments';
+    const path =
+      this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
 
     const resultAPI = await firstValueFrom(
       this.httpService.post<TransientDataResult>(path, form),
     );
 
-    return dataToTransient(resultAPI.data);
-  }
-
-  async createTransient(data: ExperimentCreateInput): Promise<Experiment> {
-    const form = experimentInputToData(data);
-
-    const path = this.options.baseurl + 'experiments/transient';
-
-    const resultAPI = await firstValueFrom(
-      this.httpService.post<TransientDataResult>(path, form),
-    );
-
-    return dataToTransient(resultAPI.data);
+    return dataToTransient(data, resultAPI.data);
   }
 
   async getDomains(ids: string[]): Promise<Domain[]> {
