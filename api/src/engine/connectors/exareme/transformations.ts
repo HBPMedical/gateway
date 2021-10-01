@@ -5,7 +5,9 @@ import * as jsonata from 'jsonata'; // old import style needed due to 'export = 
 
 export const transientToTable = jsonata(`
 ( 
-    $e := function($x, $r) {($x != null) ? $x : ($r ? $r : '')};
+    $trim := function($v) {$v.$string().$replace(/(\\d+\\.\\d{1,3})(\\d*)/, "$1")};
+
+    $e := function($x, $r) {($x != null) ? $trim($x) : ($r ? $r : '')};
 
     $fn := function($o, $prefix) {
         $type($o) = 'object' ? 
