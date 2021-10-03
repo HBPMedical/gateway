@@ -1,5 +1,8 @@
 import { Category } from 'src/engine/models/category.model';
-import { Experiment } from 'src/engine/models/experiment/experiment.model';
+import {
+  Experiment,
+  ResultUnion,
+} from 'src/engine/models/experiment/experiment.model';
 import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
@@ -7,9 +10,12 @@ import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { Entity } from './interfaces/entity.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
-import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import { transientToTable } from './transformations';
+import { ExperimentData } from './interfaces/Experiment/experiment.interface';
+import { ResultExperiment } from './interfaces/Experiment/result-experiment.interface';
+import { RawResult } from 'src/engine/models/result/raw-result.model';
+import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -85,4 +91,25 @@ export const dataToTransient = (
     ...input,
     results: tabs,
   };
+};
+
+export const dataToExperiment = (data: ExperimentData): Experiment => {
+  const exp: Experiment = dataToExperiment(data);
+
+  exp.results = data.result.map((result) => dataToResult(result));
+
+  return exp;
+};
+
+export const dataToRaw = (result: ResultExperiment): RawResult => {
+  return {
+    data: result.data,
+  };
+};
+
+export const dataToResult = (result: ResultExperiment): typeof ResultUnion => {
+  switch (result.type) {
+    default:
+      return dataToRaw(result);
+  }
 };

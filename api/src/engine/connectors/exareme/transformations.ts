@@ -3,6 +3,11 @@
 
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 
+export const dataToExperiment = jsonata(`(
+    $
+)
+`);
+
 export const transientToTable = jsonata(`
 ( 
     $e := function($x, $r) {($x != null) ? $x : ($r ? $r : '')};

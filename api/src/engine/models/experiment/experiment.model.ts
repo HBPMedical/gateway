@@ -4,19 +4,19 @@ import {
   GraphQLISODateTime,
   ObjectType,
 } from '@nestjs/graphql';
-import { DummyResult } from '../result/dummy-result.model';
+import { RawResult } from '../result/raw-result.model';
 import { TableResult } from '../result/table-result.model';
 import { Algorithm } from './algorithm.model';
 
 export const ResultUnion = createUnionType({
   name: 'ResultUnion',
-  types: () => [TableResult, DummyResult],
+  types: () => [TableResult, RawResult],
   resolveType(value) {
     if (value.headers) {
       return TableResult;
     }
     if (value.listMax) {
-      return DummyResult;
+      return RawResult;
     }
 
     return null;
