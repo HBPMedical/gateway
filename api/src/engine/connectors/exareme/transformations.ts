@@ -3,8 +3,34 @@
 
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 
-export const dataToExperiment = jsonata(`(
-    $
+export const transformToExperiment = jsonata(`
+( 
+    $params := ["y", "pathology", "dataset", "filter"];
+
+    {
+        "name": name,
+        "uuid": uuid,
+        "author": createdBy,
+        "viewed": viewed,
+        "status": status,
+        "createdAt": created,
+        "finishedAt": finished,
+        "shared": shared,
+        "updateAt": updated,
+        "domains": algorithm.parameters[name = "pathology"].value,
+        "variables": $split(algorithm.parameters[name = "y"].value, ','),
+        "filter": algorithm.parameters[name = "filter"].value,
+        "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
+        "algorithm": {
+            "name": algorithm.name,
+            "parameters" : 
+                algorithm.parameters[$not(name in $params)].({
+                    "name": name,
+                    "label": label,
+                    "value": value
+                })
+        }
+    }
 )
 `);
 
@@ -22,7 +48,7 @@ export const transientToTable = jsonata(`
         : {}
     };
 
-    result.data.[
+    data.[
         $.single.*@$p#$i.(
             $ks := $keys($p.*.data[$type($) = 'object']);
             {

@@ -1,21 +1,20 @@
 import { Category } from 'src/engine/models/category.model';
+import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
 import {
   Experiment,
   ResultUnion,
 } from 'src/engine/models/experiment/experiment.model';
-import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
+import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { Entity } from './interfaces/entity.interface';
-import { Hierarchy } from './interfaces/hierarchy.interface';
-import { VariableEntity } from './interfaces/variable-entity.interface';
-import { transientToTable } from './transformations';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
-import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
+import { Hierarchy } from './interfaces/hierarchy.interface';
+import { VariableEntity } from './interfaces/variable-entity.interface';
+import { transformToExperiment, transientToTable } from './transformations';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -81,35 +80,57 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
   };
 };
 
-export const dataToTransient = (
-  input: ExperimentCreateInput,
-  data: TransientDataResult,
-): Experiment => {
-  const tabs: TableResult[] = transientToTable.evaluate(data);
-
-  return {
-    ...input,
-    results: tabs,
-  };
+export const descriptiveDataToTableResult = (
+  data: ResultExperiment,
+): TableResult[] => {
+  return transientToTable.evaluate(data);
 };
 
 export const dataToExperiment = (data: ExperimentData): Experiment => {
-  const exp: Experiment = dataToExperiment(data);
+  const expTransform = transformToExperiment.evaluate(data);
 
-  exp.results = data.result.map((result) => dataToResult(result));
+  const exp: Experiment = {
+    ...expTransform,
+    results: [],
+  };
+
+  exp.results = data.result
+    ? data.result
+        .map((result) => dataToResult(result, exp.algorithm.name))
+        .flat()
+    : [];
 
   return exp;
 };
 
-export const dataToRaw = (result: ResultExperiment): RawResult => {
-  return {
-    data: result.data,
-  };
+export const dataToRaw = (result: ResultExperiment): RawResult[] => {
+  return [
+    {
+      data: result.data,
+    },
+  ];
 };
 
-export const dataToResult = (result: ResultExperiment): typeof ResultUnion => {
-  switch (result.type) {
+export const dataToResult = (
+  result: ResultExperiment,
+  algo: string,
+): Array<typeof ResultUnion> => {
+  switch (result.type.toLowerCase()) {
+    case 'application/json':
+      return dataJSONtoResult(result, algo);
     default:
       return dataToRaw(result);
+  }
+};
+
+export const dataJSONtoResult = (
+  result: ResultExperiment,
+  algo: string,
+): Array<typeof ResultUnion> => {
+  switch (algo.toLowerCase()) {
+    case 'descriptive_stats':
+      return descriptiveDataToTableResult(result);
+    default:
+      return [];
   }
 };

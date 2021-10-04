@@ -1,8 +1,8 @@
 import {
   createUnionType,
   Field,
-  GraphQLISODateTime,
   ObjectType,
+  PartialType,
 } from '@nestjs/graphql';
 import { RawResult } from '../result/raw-result.model';
 import { TableResult } from '../result/table-result.model';
@@ -28,16 +28,19 @@ export class Experiment {
   @Field({ nullable: true })
   uuid?: string;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  created_at?: Date;
+  @Field({ nullable: true, defaultValue: '' })
+  author?: string;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  update_at?: Date;
+  @Field({ nullable: true })
+  createdAt?: number;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  finished_at?: Date;
+  @Field({ nullable: true })
+  updateAt?: number;
 
-  @Field({ defaultValue: false })
+  @Field({ nullable: true })
+  finishedAt?: number;
+
+  @Field({ nullable: true, defaultValue: false })
   viewed?: boolean;
 
   @Field({ nullable: true })
@@ -46,14 +49,14 @@ export class Experiment {
   @Field({ defaultValue: false })
   shared?: boolean;
 
-  @Field(() => [ResultUnion])
-  results: Array<typeof ResultUnion>;
+  @Field(() => [ResultUnion], { nullable: true, defaultValue: [] })
+  results?: Array<typeof ResultUnion>;
 
   @Field(() => [String])
   datasets: string[];
 
   @Field(() => String, { nullable: true })
-  filter: string;
+  filter?: string;
 
   @Field()
   domain: string;
@@ -67,3 +70,6 @@ export class Experiment {
   @Field()
   name: string;
 }
+
+@ObjectType()
+export class PartialExperiment extends PartialType(Experiment) {}
