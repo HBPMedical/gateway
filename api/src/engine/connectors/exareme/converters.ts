@@ -12,8 +12,8 @@ import { Entity } from './interfaces/entity.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import { transientToTable } from './transformations';
-import { ExperimentData } from './interfaces/Experiment/experiment.interface';
-import { ResultExperiment } from './interfaces/Experiment/result-experiment.interface';
+import { ExperimentData } from './interfaces/experiment/experiment.interface';
+import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { TransientDataResult } from './interfaces/transient/transient-data-result.interface';
 
