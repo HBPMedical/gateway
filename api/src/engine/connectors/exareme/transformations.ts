@@ -34,7 +34,50 @@ export const transformToExperiment = jsonata(`
 )
 `);
 
-export const transientToTable = jsonata(`
+export const descriptiveModelToTables = jsonata(`
+( 
+    $e := function($x, $r) {($x != null) ? $x : ($r ? $r : '')};
+
+    $fn := function($o, $prefix) {
+        $type($o) = 'object' ? 
+        $each($o, function($v, $k) {(
+            $type($v) = 'object' ? { $k: $v.count & ' (' & $v.percentage & '%)' } : {
+                $k: $v
+            }
+        )}) ~> $merge()
+        : {}
+    };
+
+    $vars := $count(data.single.*)-1;
+    $varName := $keys(data.single.*);
+    $model := data.model;
+
+    [[0..$vars].(
+        $i := $;
+        $ks := $keys($model.*.data.*[$i][$type($) = 'object']);
+        {
+            'name': $varName[$i],
+            'headers': $append("", $keys($$.data.model)).{
+                'name': $,
+                'type': 'string'
+            },
+            'data': [
+                [$varName[$i], $model.*.($e(num_total))],
+                ['Datapoints', $model.*.($e(num_datapoints))],
+                ['Nulls', $model.*.($e(num_nulls))],
+                 $model.*.data.($fn($.*[$i])) ~> $reduce(function($a, $b) {
+                    $map($ks, function($k) {(
+                        {
+                            $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
+                        }
+                    )}) ~> $merge()
+                }) ~> $each(function($v, $k) {$append($k,$v)})
+            ]
+        }
+    )]  
+)`);
+
+export const descriptiveSingleToTables = jsonata(`
 ( 
     $e := function($x, $r) {($x != null) ? $x : ($r ? $r : '')};
 
@@ -52,7 +95,6 @@ export const transientToTable = jsonata(`
         $.single.*@$p#$i.(
             $ks := $keys($p.*.data[$type($) = 'object']);
             {
-            'groupBy' : 'single',
             'name': $keys(%)[$i],
             'headers': $append("", $keys(*)).{
                 'name': $,

@@ -4,6 +4,10 @@ import { Result } from './common/result.model';
 
 @ObjectType()
 export class GroupResult {
+  public constructor(init?: Partial<GroupResult>) {
+    Object.assign(this, init);
+  }
+
   @Field()
   name: string;
 
