@@ -34,19 +34,24 @@ export const transformToExperiment = jsonata(`
 )
 `);
 
-export const descriptiveModelToTables = jsonata(`
-( 
-    $e := function($x, $r) {($x != null) ? $x : ($r ? $r : '')};
+const headerDescriptivie = `
+$e := function($x, $r) {($x != null) ? $fnum($x) : ($r ? $r : '')};
+    
+$fnum := function($x) { $type($x) = 'number' ? $round($number($x),3) : $x };
 
-    $fn := function($o, $prefix) {
-        $type($o) = 'object' ? 
-        $each($o, function($v, $k) {(
-            $type($v) = 'object' ? { $k: $v.count & ' (' & $v.percentage & '%)' } : {
-                $k: $v
-            }
-        )}) ~> $merge()
-        : {}
-    };
+$fn := function($o, $prefix) {
+    $type($o) = 'object' ? 
+    $each($o, function($v, $k) {(
+        $type($v) = 'object' ? { $k: $v.count & ' (' & $v.percentage & '%)' } : {
+            $k: $v
+        }
+    )}) ~> $merge()
+    : {}
+};`;
+
+export const descriptiveModelToTables = jsonata(`
+(   
+    ${headerDescriptivie}
 
     $vars := $count(data.single.*)-1;
     $varName := $keys(data.single);
@@ -79,17 +84,7 @@ export const descriptiveModelToTables = jsonata(`
 
 export const descriptiveSingleToTables = jsonata(`
 ( 
-    $e := function($x, $r) {($x != null) ? $x : ($r ? $r : '')};
-
-    $fn := function($o, $prefix) {
-        $type($o) = 'object' ? 
-        $each($o, function($v, $k) {(
-            $type($v) = 'object' ? { $k: $v.count & ' (' & $v.percentage & '%)' } : {
-                $k: $v
-            }
-        )}) ~> $merge()
-        : {}
-    };
+    ${headerDescriptivie}
 
     data.[
         $.single.*@$p#$i.(
