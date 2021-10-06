@@ -71,14 +71,12 @@ type Experiment {
 union ResultUnion = TableResult | RawResult
 
 type TableResult {
-  groupBy: String
   name: String!
   data: [[String!]!]!
   headers: [Header!]!
 }
 
 type RawResult {
-  groupBy: String
   data: JSONObject!
   listMax: [String!]!
 }

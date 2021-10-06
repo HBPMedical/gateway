@@ -1,11 +1,9 @@
 import { Category } from 'src/engine/models/category.model';
 import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
-import {
-  Experiment,
-  ResultUnion,
-} from 'src/engine/models/experiment/experiment.model';
+import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
+import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Variable } from 'src/engine/models/variable.model';
