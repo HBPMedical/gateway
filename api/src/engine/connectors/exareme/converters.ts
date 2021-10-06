@@ -1,20 +1,25 @@
 import { Category } from 'src/engine/models/category.model';
 import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
-import {
-  Experiment,
-  ResultUnion,
-} from 'src/engine/models/experiment/experiment.model';
+import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
+import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
+import {
+  GroupResult,
+  GroupsResult,
+} from 'src/engine/models/result/groups-result.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
-import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
-import { transformToExperiment, transientToTable } from './transformations';
+import {
+  descriptiveModelToTables,
+  descriptiveSingleToTables,
+  transformToExperiment,
+} from './transformations';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -82,8 +87,24 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
 
 export const descriptiveDataToTableResult = (
   data: ResultExperiment,
-): TableResult[] => {
-  return transientToTable.evaluate(data);
+): GroupsResult[] => {
+  const result = new GroupsResult();
+
+  result.groups = [
+    new GroupResult({
+      name: 'Single',
+      results: descriptiveSingleToTables.evaluate(data),
+    }),
+  ];
+
+  result.groups.push(
+    new GroupResult({
+      name: 'Model',
+      results: descriptiveModelToTables.evaluate(data),
+    }),
+  );
+
+  return [result];
 };
 
 export const dataToExperiment = (data: ExperimentData): Experiment => {
@@ -99,6 +120,8 @@ export const dataToExperiment = (data: ExperimentData): Experiment => {
         .map((result) => dataToResult(result, exp.algorithm.name))
         .flat()
     : [];
+
+  console.log(exp.results);
 
   return exp;
 };
