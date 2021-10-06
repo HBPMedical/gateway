@@ -1,6 +1,13 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { Domain } from './models/domain.model';
+import {
+  Experiment,
+  PartialExperiment,
+} from './models/experiment/experiment.model';
+import { ExperimentCreateInput } from './models/experiment/input/experiment-create.input';
+import { ExperimentEditInput } from './models/experiment/input/experiment-edit.input';
+import { ListExperiments } from './models/experiment/list-experiments.model';
 
 export interface IEngineOptions {
   type: string;
@@ -8,19 +15,40 @@ export interface IEngineOptions {
 }
 
 export interface IEngineService {
-  demo(): string;
-
+  //GraphQL
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
+  createExperiment(
+    data: ExperimentCreateInput,
+    isTransient: boolean,
+  ): Promise<Experiment> | Experiment;
+
+  listExperiments(
+    page: number,
+    name: string,
+  ): Promise<ListExperiments> | ListExperiments;
+
+  getExperiment(uuid: string): Promise<Experiment> | Experiment;
+
+  removeExperiment(
+    uuid: string,
+  ): Promise<PartialExperiment> | PartialExperiment;
+
+  editExperient(
+    uuid: string,
+    expriment: ExperimentEditInput,
+  ): Promise<Experiment> | Experiment;
+
+  // Standard REST API call
   getAlgorithms(request: Request): Observable<string>;
 
   getExperiments(request: Request): Observable<string>;
 
-  getExperiment(uuid: string): Observable<string>;
+  getExperimentAPI(uuid: string): Observable<string>;
 
   deleteExperiment(uuid: string, request: Request): Observable<string>;
 
-  editExperiment(uuid: string, request: Request): Observable<string>;
+  editExperimentAPI(uuid: string, request: Request): Observable<string>;
 
   startExperimentTransient(request: Request): Observable<string>;
 

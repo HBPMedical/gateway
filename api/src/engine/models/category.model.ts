@@ -1,10 +1,5 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
+import { Entity } from './entity.model';
 
 @ObjectType()
-export class Category {
-  @Field()
-  id: string;
-
-  @Field()
-  label: string;
-}
+export class Category extends Entity {}

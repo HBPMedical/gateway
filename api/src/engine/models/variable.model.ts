@@ -1,15 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Category } from './category.model';
+import { Entity } from './entity.model';
 import { Group } from './group.model';
 
 @ObjectType()
-export class Variable {
-  @Field()
-  id: string;
-
-  @Field({ nullable: true })
-  label?: string;
-
+export class Variable extends Entity {
   @Field()
   type: string;
 
