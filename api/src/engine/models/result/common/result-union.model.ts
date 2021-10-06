@@ -15,7 +15,7 @@ export const ResultUnion = createUnionType({
       return RawResult;
     }
 
-    if (value.group) {
+    if (value.groups) {
       return GroupsResult;
     }
 
