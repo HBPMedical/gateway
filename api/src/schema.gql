@@ -127,7 +127,7 @@ type Query {
 }
 
 type Mutation {
-  createExperiment(transient: Boolean = false, data: ExperimentCreateInput!): Experiment!
+  createExperiment(isTransient: Boolean = false, data: ExperimentCreateInput!): Experiment!
   editExperiment(data: ExperimentEditInput!, uuid: String!): Experiment!
   removeExperiment(uuid: String!): PartialExperiment!
 }

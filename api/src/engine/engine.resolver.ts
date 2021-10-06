@@ -41,7 +41,7 @@ export class EngineResolver {
   @Mutation(() => Experiment)
   async createExperiment(
     @Args('data') experimentCreateInput: ExperimentCreateInput,
-    @Args('transient', { nullable: true, defaultValue: false })
+    @Args('isTransient', { nullable: true, defaultValue: false })
     isTransient: boolean,
   ) {
     return this.engineService.createExperiment(
