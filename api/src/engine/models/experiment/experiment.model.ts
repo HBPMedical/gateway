@@ -1,27 +1,6 @@
-import {
-  createUnionType,
-  Field,
-  ObjectType,
-  PartialType,
-} from '@nestjs/graphql';
-import { RawResult } from '../result/raw-result.model';
-import { TableResult } from '../result/table-result.model';
+import { Field, ObjectType, PartialType } from '@nestjs/graphql';
+import { ResultUnion } from '../result/common/result-union.model';
 import { Algorithm } from './algorithm.model';
-
-export const ResultUnion = createUnionType({
-  name: 'ResultUnion',
-  types: () => [TableResult, RawResult],
-  resolveType(value) {
-    if (value.headers) {
-      return TableResult;
-    }
-    if (value.listMax) {
-      return RawResult;
-    }
-
-    return null;
-  },
-});
 
 @ObjectType()
 export class Experiment {
