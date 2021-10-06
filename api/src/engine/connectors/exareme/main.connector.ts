@@ -190,11 +190,11 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  getAlgorithms(): Observable<string> {
+  getAlgorithms(request: Request): Observable<string> {
     const path = this.options.baseurl + 'algorithms';
 
     return this.httpService
-      .get<string>(path)
+      .get<string>(path, { params: request.query })
       .pipe(map((response) => response.data));
   }
 
