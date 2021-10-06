@@ -121,8 +121,6 @@ export const dataToExperiment = (data: ExperimentData): Experiment => {
         .flat()
     : [];
 
-  console.log(exp.results);
-
   return exp;
 };
 

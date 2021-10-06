@@ -49,7 +49,7 @@ export const descriptiveModelToTables = jsonata(`
     };
 
     $vars := $count(data.single.*)-1;
-    $varName := $keys(data.single.*);
+    $varName := $keys(data.single);
     $model := data.model;
 
     [[0..$vars].(
