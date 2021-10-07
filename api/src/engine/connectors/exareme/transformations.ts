@@ -3,27 +3,93 @@
 
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 
-export const transientToTable = jsonata(`
+export const transformToExperiment = jsonata(`
 ( 
-    $trim := function($v) {$v.$string().$replace(/(\\d+\\.\\d{1,3})(\\d*)/, "$1")};
+    $params := ["y", "pathology", "dataset", "filter"];
 
-    $e := function($x, $r) {($x != null) ? $trim($x) : ($r ? $r : '')};
+    {
+        "name": name,
+        "uuid": uuid,
+        "author": createdBy,
+        "viewed": viewed,
+        "status": status,
+        "createdAt": created,
+        "finishedAt": finished,
+        "shared": shared,
+        "updateAt": updated,
+        "domains": algorithm.parameters[name = "pathology"].value,
+        "variables": $split(algorithm.parameters[name = "y"].value, ','),
+        "filter": algorithm.parameters[name = "filter"].value,
+        "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
+        "algorithm": {
+            "name": algorithm.name,
+            "parameters" : 
+                algorithm.parameters[$not(name in $params)].({
+                    "name": name,
+                    "label": label,
+                    "value": value
+                })
+        }
+    }
+)
+`);
 
-    $fn := function($o, $prefix) {
-        $type($o) = 'object' ? 
-        $each($o, function($v, $k) {(
-            $type($v) = 'object' ? { $k: $v.count & ' (' & $v.percentage & '%)' } : {
-                $k: $v
-            }
-        )}) ~> $merge()
-        : {}
-    };
+const headerDescriptivie = `
+$e := function($x, $r) {($x != null) ? $fnum($x) : ($r ? $r : '')};
+    
+$fnum := function($x) { $type($x) = 'number' ? $round($number($x),3) : $x };
 
-    result.data.[
+$fn := function($o, $prefix) {
+    $type($o) = 'object' ? 
+    $each($o, function($v, $k) {(
+        $type($v) = 'object' ? { $k: $v.count & ' (' & $v.percentage & '%)' } : {
+            $k: $v
+        }
+    )}) ~> $merge()
+    : {}
+};`;
+
+export const descriptiveModelToTables = jsonata(`
+(   
+    ${headerDescriptivie}
+
+    $vars := $count(data.single.*)-1;
+    $varName := $keys(data.single);
+    $model := data.model;
+
+    [[0..$vars].(
+        $i := $;
+        $ks := $keys($model.*.data.*[$i][$type($) = 'object']);
+        {
+            'name': $varName[$i],
+            'headers': $append("", $keys($$.data.model)).{
+                'name': $,
+                'type': 'string'
+            },
+            'data': [
+                [$varName[$i], $model.*.($e(num_total))],
+                ['Datapoints', $model.*.($e(num_datapoints))],
+                ['Nulls', $model.*.($e(num_nulls))],
+                 $model.*.data.($fn($.*[$i])) ~> $reduce(function($a, $b) {
+                    $map($ks, function($k) {(
+                        {
+                            $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
+                        }
+                    )}) ~> $merge()
+                }) ~> $each(function($v, $k) {$append($k,$v)})
+            ]
+        }
+    )]  
+)`);
+
+export const descriptiveSingleToTables = jsonata(`
+( 
+    ${headerDescriptivie}
+
+    data.[
         $.single.*@$p#$i.(
             $ks := $keys($p.*.data[$type($) = 'object']);
             {
-            'groupBy' : 'single',
             'name': $keys(%)[$i],
             'headers': $append("", $keys(*)).{
                 'name': $,

@@ -1,44 +1,54 @@
-import {
-  createUnionType,
-  Field,
-  GraphQLISODateTime,
-  ObjectType,
-} from '@nestjs/graphql';
-import { DummyResult } from '../result/dummy-result.model';
-import { TableResult } from '../result/table-result.model';
-
-export const ResultUnion = createUnionType({
-  name: 'ResultUnion',
-  types: () => [TableResult, DummyResult],
-  resolveType(value) {
-    if (value.headers) {
-      return TableResult;
-    }
-    if (value.listMax) {
-      return DummyResult;
-    }
-
-    return null;
-  },
-});
+import { Field, ObjectType, PartialType } from '@nestjs/graphql';
+import { ResultUnion } from '../result/common/result-union.model';
+import { Algorithm } from './algorithm.model';
 
 @ObjectType()
 export class Experiment {
-  @Field()
-  title: string;
-
   @Field({ nullable: true })
   uuid?: string;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  created_at?: Date;
+  @Field({ nullable: true, defaultValue: '' })
+  author?: string;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  update_at?: Date;
+  @Field({ nullable: true })
+  createdAt?: number;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  finished_at?: Date;
+  @Field({ nullable: true })
+  updateAt?: number;
 
-  @Field(() => [ResultUnion])
-  results: Array<typeof ResultUnion>;
+  @Field({ nullable: true })
+  finishedAt?: number;
+
+  @Field({ nullable: true, defaultValue: false })
+  viewed?: boolean;
+
+  @Field({ nullable: true })
+  status?: string;
+
+  @Field({ defaultValue: false })
+  shared?: boolean;
+
+  @Field(() => [ResultUnion], { nullable: true, defaultValue: [] })
+  results?: Array<typeof ResultUnion>;
+
+  @Field(() => [String])
+  datasets: string[];
+
+  @Field(() => String, { nullable: true })
+  filter?: string;
+
+  @Field()
+  domain: string;
+
+  @Field(() => [String])
+  variables: string[];
+
+  @Field()
+  algorithm: Algorithm;
+
+  @Field()
+  name: string;
 }
+
+@ObjectType()
+export class PartialExperiment extends PartialType(Experiment) {}

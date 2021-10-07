@@ -1,12 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { AlgorithmInput } from './algorithm.input';
 
 @InputType()
 export class ExperimentCreateInput {
   @Field(() => [String])
   datasets: string[];
-
-  @Field(() => [String])
-  variables: string[];
 
   @Field(() => String, { nullable: true })
   filter: string;
@@ -14,8 +12,11 @@ export class ExperimentCreateInput {
   @Field()
   domain: string;
 
+  @Field(() => [String])
+  variables: string[];
+
   @Field()
-  algorithm: string;
+  algorithm: AlgorithmInput;
 
   @Field()
   name: string;
