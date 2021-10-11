@@ -1,5 +1,6 @@
 import { Category } from 'src/engine/models/category.model';
 import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
+import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
@@ -18,6 +19,7 @@ import { VariableEntity } from './interfaces/variable-entity.interface';
 import {
   descriptiveModelToTables,
   descriptiveSingleToTables,
+  transformToAlgorithms,
   transformToExperiment,
 } from './transformations';
 
@@ -124,10 +126,14 @@ export const dataToExperiment = (data: ExperimentData): Experiment => {
   return exp;
 };
 
+export const dataToAlgorithms = (data: string): Algorithm[] => {
+  return transformToAlgorithms.evaluate(data);
+};
+
 export const dataToRaw = (result: ResultExperiment): RawResult[] => {
   return [
     {
-      data: result.data,
+      rawdata: result.data,
     },
   ];
 };

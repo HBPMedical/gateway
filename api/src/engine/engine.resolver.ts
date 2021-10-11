@@ -3,6 +3,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
 import { Domain } from './models/domain.model';
+import { Algorithm } from './models/experiment/algorithm.model';
 import {
   Experiment,
   PartialExperiment,
@@ -36,6 +37,11 @@ export class EngineResolver {
   @Query(() => Experiment)
   async expriment(@Args('uuid') uuid: string) {
     return this.engineService.getExperiment(uuid);
+  }
+
+  @Query(() => [Algorithm])
+  async algorithms() {
+    return this.engineService.getAlgorithms();
   }
 
   @Mutation(() => Experiment)

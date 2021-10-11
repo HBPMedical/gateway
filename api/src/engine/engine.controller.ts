@@ -21,7 +21,7 @@ export class EngineController {
 
   @Get('/algorithms')
   getAlgorithms(@Req() request: Request): Observable<string> {
-    return this.engineService.getAlgorithms(request);
+    return this.engineService.getAlgorithmsREST(request);
   }
 
   @Get('/experiments')
@@ -31,7 +31,7 @@ export class EngineController {
 
   @Get('/experiments/:uuid')
   getExperiment(@Param('uuid') uuid: string): Observable<string> {
-    return this.engineService.getExperimentAPI(uuid);
+    return this.engineService.getExperimentREST(uuid);
   }
 
   @Delete('/experiments/:uuid')
@@ -47,7 +47,7 @@ export class EngineController {
     @Param('uuid') uuid: string,
     @Req() request: Request,
   ): Observable<string> {
-    return this.engineService.editExperimentAPI(uuid, request);
+    return this.engineService.editExperimentREST(uuid, request);
   }
 
   @Post('experiments/transient')

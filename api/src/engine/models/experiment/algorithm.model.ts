@@ -7,8 +7,11 @@ export class Algorithm {
   name: string;
 
   @Field(() => [AlgorithmParameter], { nullable: true, defaultValue: [] })
-  parameters: AlgorithmParameter[];
+  parameters?: AlgorithmParameter[];
 
   @Field()
   type: string;
+
+  @Field({ nullable: true })
+  description: string;
 }

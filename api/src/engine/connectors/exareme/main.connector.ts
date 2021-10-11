@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
+import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
   Experiment,
   PartialExperiment,
@@ -14,6 +15,7 @@ import { ListExperiments } from 'src/engine/models/experiment/list-experiments.m
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
 import {
+  dataToAlgorithms,
   dataToCategory,
   dataToExperiment,
   dataToGroup,
@@ -58,6 +60,14 @@ export default class ExaremeService implements IEngineService {
       ...resultAPI.data,
       experiments: resultAPI.data.experiments.map(dataToExperiment),
     };
+  }
+
+  async getAlgorithms(): Promise<Algorithm[]> {
+    const path = this.options.baseurl + 'algorithms';
+
+    const resultAPI = await firstValueFrom(this.httpService.get<string>(path));
+
+    return dataToAlgorithms(resultAPI.data);
   }
 
   async getExperiment(uuid: string): Promise<Experiment> {
@@ -144,7 +154,7 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  getExperimentAPI(uuid: string): Observable<string> {
+  getExperimentREST(uuid: string): Observable<string> {
     const path = this.options.baseurl + `experiments/${uuid}`;
 
     return this.httpService
@@ -158,7 +168,7 @@ export default class ExaremeService implements IEngineService {
     return this.httpService.delete(path).pipe(map((response) => response.data));
   }
 
-  editExperimentAPI(uuid: string, request: Request): Observable<string> {
+  editExperimentREST(uuid: string, request: Request): Observable<string> {
     const path = this.options.baseurl + `experiments/${uuid}`;
 
     return this.httpService
@@ -190,7 +200,7 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  getAlgorithms(request: Request): Observable<string> {
+  getAlgorithmsREST(request: Request): Observable<string> {
     const path = this.options.baseurl + 'algorithms';
 
     return this.httpService

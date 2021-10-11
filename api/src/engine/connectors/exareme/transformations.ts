@@ -3,6 +3,31 @@
 
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 
+export const transformToAlgorithms = jsonata(`
+(
+    $params := ["y", "pathology", "dataset", "filter"];
+
+    $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
+
+    *.{
+    'name': name,
+    'label': label,
+    'description': desc,
+    'parameters': $toArray(parameters[$not(name in $params)].{
+        'name': name,
+        'description': desc,
+        'label': label,
+        'type': valueType,
+        'defaultValue': defaultValue,
+        'isMultiple': valueMultiple,
+        'isRequired': valueNotBlank,
+        'min': valueMin,
+        'max': valueMax
+    })
+}
+)
+`);
+
 export const transformToExperiment = jsonata(`
 ( 
     $params := ["y", "pathology", "dataset", "filter"];

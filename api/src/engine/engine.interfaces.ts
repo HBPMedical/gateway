@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { Domain } from './models/domain.model';
+import { Algorithm } from './models/experiment/algorithm.model';
 import {
   Experiment,
   PartialExperiment,
@@ -39,16 +40,18 @@ export interface IEngineService {
     expriment: ExperimentEditInput,
   ): Promise<Experiment> | Experiment;
 
+  getAlgorithms(): Promise<Algorithm[]> | Algorithm[];
+
   // Standard REST API call
-  getAlgorithms(request: Request): Observable<string>;
+  getAlgorithmsREST(request: Request): Observable<string>;
 
   getExperiments(request: Request): Observable<string>;
 
-  getExperimentAPI(uuid: string): Observable<string>;
+  getExperimentREST(uuid: string): Observable<string>;
 
   deleteExperiment(uuid: string, request: Request): Observable<string>;
 
-  editExperimentAPI(uuid: string, request: Request): Observable<string>;
+  editExperimentREST(uuid: string, request: Request): Observable<string>;
 
   startExperimentTransient(request: Request): Observable<string>;
 
