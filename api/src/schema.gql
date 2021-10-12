@@ -36,7 +36,8 @@ type Domain {
 
 type AlgorithmParameter {
   name: String!
-  value: [String!]!
+  value: [String!]
+  label: String
   description: String
   defaultValue: String
   isMultiple: Boolean
@@ -49,7 +50,8 @@ type AlgorithmParameter {
 type Algorithm {
   name: String!
   parameters: [AlgorithmParameter!]
-  type: String!
+  label: String
+  type: String
   description: String
 }
 

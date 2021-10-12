@@ -9,9 +9,12 @@ export class Algorithm {
   @Field(() => [AlgorithmParameter], { nullable: true, defaultValue: [] })
   parameters?: AlgorithmParameter[];
 
-  @Field()
-  type: string;
+  @Field({ nullable: true })
+  label?: string;
 
   @Field({ nullable: true })
-  description: string;
+  type?: string;
+
+  @Field({ nullable: true })
+  description?: string;
 }

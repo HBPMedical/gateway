@@ -19,8 +19,8 @@ export const transformToAlgorithms = jsonata(`
         'label': label,
         'type': valueType,
         'defaultValue': defaultValue,
-        'isMultiple': valueMultiple,
-        'isRequired': valueNotBlank,
+        'isMultiple': $boolean(valueMultiple),
+        'isRequired': $boolean(valueNotBlank),
         'min': valueMin,
         'max': valueMax
     })

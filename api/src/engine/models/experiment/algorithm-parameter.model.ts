@@ -5,8 +5,11 @@ export class AlgorithmParameter {
   @Field()
   name: string;
 
-  @Field(() => [String])
-  value: string[];
+  @Field(() => [String], { nullable: true })
+  value?: string[];
+
+  @Field({ nullable: true })
+  label?: string;
 
   @Field({ nullable: true })
   description?: string;
