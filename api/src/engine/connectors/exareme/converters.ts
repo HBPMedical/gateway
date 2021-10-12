@@ -94,7 +94,8 @@ export const descriptiveDataToTableResult = (
 
   result.groups = [
     new GroupResult({
-      name: 'Single',
+      name: 'Variables',
+      description: 'Descriptive statistics for the variables of interest.',
       results: descriptiveSingleToTables.evaluate(data),
     }),
   ];
@@ -102,6 +103,8 @@ export const descriptiveDataToTableResult = (
   result.groups.push(
     new GroupResult({
       name: 'Model',
+      description:
+        'Intersection table for the variables of interest as it appears in the experiment.',
       results: descriptiveModelToTables.evaluate(data),
     }),
   );

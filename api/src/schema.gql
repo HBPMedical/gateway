@@ -55,6 +55,7 @@ type Algorithm {
 
 type GroupResult {
   name: String!
+  description: String
   results: [ResultUnion!]!
 }
 
