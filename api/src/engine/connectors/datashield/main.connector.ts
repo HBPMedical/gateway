@@ -8,8 +8,12 @@ import {
 } from 'src/engine/models/experiment/experiment.model';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
+import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 
 export default class DataShieldService implements IEngineService {
+  getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
+    throw new Error('Method not implemented.');
+  }
   createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
@@ -48,7 +52,7 @@ export default class DataShieldService implements IEngineService {
     throw new Error('Method not implemented.');
   }
 
-  getExperimentAPI(): Observable<string> {
+  getExperimentREST(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 
@@ -56,7 +60,7 @@ export default class DataShieldService implements IEngineService {
     throw new Error('Method not implemented.');
   }
 
-  editExperimentAPI(): Observable<string> {
+  editExperimentREST(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 
@@ -72,7 +76,7 @@ export default class DataShieldService implements IEngineService {
     throw new Error('Method not implemented.');
   }
 
-  getAlgorithms(): Observable<string> {
+  getAlgorithmsREST(): Observable<string> {
     throw new Error('Method not implemented.');
   }
 }

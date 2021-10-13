@@ -11,6 +11,9 @@ export class GroupResult {
   @Field()
   name: string;
 
+  @Field({ nullable: true })
+  description?: string;
+
   @Field(() => [ResultUnion])
   results: Array<typeof ResultUnion>;
 }
