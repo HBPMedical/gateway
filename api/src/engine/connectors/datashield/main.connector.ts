@@ -14,38 +14,66 @@ export default class DataShieldService implements IEngineService {
   getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }
+
   createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
   ): Experiment | Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
+
   listExperiments(
     page: number,
     name: string,
   ): ListExperiments | Promise<ListExperiments> {
     throw new Error('Method not implemented.');
   }
+
   getExperiment(uuid: string): Experiment | Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
+
   removeExperiment(
     uuid: string,
   ): PartialExperiment | Promise<PartialExperiment> {
     throw new Error('Method not implemented.');
   }
+
   editExperient(
     uuid: string,
     expriment: ExperimentEditInput,
   ): Experiment | Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
+
   getDomains(): Domain[] {
-    throw new Error('Method not implemented.');
+    return [
+      {
+        id: 'Dummy',
+        label: 'Dummy',
+        datasets: [{ id: 'DummyDataSet' }],
+        groups: [
+          {
+            id: 'DummyGroup',
+            variables: ['DummyVar'],
+            groups: [],
+          },
+        ],
+        rootGroup: { id: 'DummyGroup', variables: [], groups: [] },
+        variables: [{ id: 'DummyVar', type: 'string' }],
+      },
+    ];
   }
 
-  getActiveUser(): Observable<string> {
-    throw new Error('Method not implemented.');
+  getActiveUser(): string {
+    const dummyUser = {
+      username: 'anonymous',
+      subjectId: 'anonymousId',
+      fullname: 'anonymous',
+      email: 'anonymous@anonymous.com',
+      agreeNDA: true,
+    };
+    return JSON.stringify(dummyUser);
   }
 
   editActiveUser(): Observable<string> {
@@ -72,11 +100,11 @@ export default class DataShieldService implements IEngineService {
     throw new Error('Method not implemented.');
   }
 
-  getExperiments(): Observable<string> {
-    throw new Error('Method not implemented.');
+  getExperiments(): string {
+    return '[]';
   }
 
-  getAlgorithmsREST(): Observable<string> {
-    throw new Error('Method not implemented.');
+  getAlgorithmsREST(): string {
+    return '[]';
   }
 }

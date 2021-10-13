@@ -11,9 +11,9 @@ export class Variable extends Entity {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => [Category])
-  enumerations: Category[];
+  @Field(() => [Category], { nullable: true, defaultValue: [] })
+  enumerations?: Category[];
 
-  @Field(() => [Group])
-  groups: Group[];
+  @Field(() => [Group], { nullable: true, defaultValue: [] })
+  groups?: Group[];
 }
