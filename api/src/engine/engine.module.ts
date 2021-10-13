@@ -1,5 +1,5 @@
 import { HttpModule, HttpService } from '@nestjs/axios';
-import { DynamicModule, Global, Module } from '@nestjs/common';
+import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
@@ -10,6 +10,8 @@ import { EngineResolver } from './engine.resolver';
 @Global()
 @Module({})
 export class EngineModule {
+  private static readonly logger = new Logger(EngineModule.name);
+
   static async forRootAsync(options: IEngineOptions): Promise<DynamicModule> {
     const optionsProvider = {
       provide: ENGINE_MODULE_OPTIONS,
@@ -42,8 +44,20 @@ export class EngineModule {
     options: IEngineOptions,
     httpService: HttpService,
   ): Promise<IEngineService> {
-    const service = await import(`./connectors/${options.type}/main.connector`);
+    try {
+      const service = await import(
+        `./connectors/${options.type}/main.connector`
+      );
+      const engine = new service.default(options, httpService);
 
-    return new service.default(options, httpService);
+      this.logger.log(`The connector '${options.type}' has been loaded`);
+
+      return engine;
+    } catch {
+      this.logger.error(
+        `There is a problem with the connector '${options.type}'`,
+      );
+      process.exit(); // We can't continue without an engine, shutdown the process...
+    }
   }
 }
