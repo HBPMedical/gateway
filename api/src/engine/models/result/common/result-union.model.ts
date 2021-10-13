@@ -11,7 +11,7 @@ export const ResultUnion = createUnionType({
       return TableResult;
     }
 
-    if (value.listMax) {
+    if (value.rawdata) {
       return RawResult;
     }
 
