@@ -11,10 +11,10 @@ type Group {
   id: String!
   label: String
   description: String
-  groups: [Group!]!
+  groups: [Group!]
 
   """List of variable's ids"""
-  variables: [String!]!
+  variables: [String!]
 }
 
 type Variable {

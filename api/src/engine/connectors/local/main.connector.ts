@@ -10,7 +10,7 @@ import { ListExperiments } from 'src/engine/models/experiment/list-experiments.m
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 
-export default class DataShieldService implements IEngineService {
+export default class LocalService implements IEngineService {
   getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }
@@ -47,11 +47,33 @@ export default class DataShieldService implements IEngineService {
   }
 
   getDomains(): Domain[] {
-    throw new Error('Method not implemented.');
+    return [
+      {
+        id: 'Dummy',
+        label: 'Dummy',
+        datasets: [{ id: 'DummyDataset', label: 'DummyDataset' }],
+        groups: [
+          {
+            id: 'DummyGroup',
+            variables: ['DummyVar'],
+            groups: [],
+          },
+        ],
+        rootGroup: { id: 'DummyGroup' },
+        variables: [{ id: 'DummyVar', type: 'string' }],
+      },
+    ];
   }
 
   getActiveUser(): string {
-    throw new Error('Method not implemented.');
+    const dummyUser = {
+      username: 'anonymous',
+      subjectId: 'anonymousId',
+      fullname: 'anonymous',
+      email: 'anonymous@anonymous.com',
+      agreeNDA: true,
+    };
+    return JSON.stringify(dummyUser);
   }
 
   editActiveUser(): Observable<string> {
@@ -79,10 +101,10 @@ export default class DataShieldService implements IEngineService {
   }
 
   getExperiments(): string {
-    throw new Error('Method not implemented.');
+    return '[]';
   }
 
   getAlgorithmsREST(): string {
-    throw new Error('Method not implemented.');
+    return '[]';
   }
 }
