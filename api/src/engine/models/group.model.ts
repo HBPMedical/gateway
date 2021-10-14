@@ -1,15 +1,18 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity } from './entity.model';
-import { Variable } from './variable.model';
 
 @ObjectType()
 export class Group extends Entity {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => [Group])
-  groups: Group[];
+  @Field(() => [Group], { defaultValue: [], nullable: true })
+  groups?: Group[];
 
-  @Field(() => [Variable])
-  variables: Variable[];
+  @Field(() => [String], {
+    description: "List of variable's ids",
+    defaultValue: [],
+    nullable: true,
+  })
+  variables?: string[];
 }

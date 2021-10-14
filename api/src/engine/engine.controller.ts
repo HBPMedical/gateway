@@ -20,17 +20,17 @@ export class EngineController {
   ) {}
 
   @Get('/algorithms')
-  getAlgorithms(@Req() request: Request): Observable<string> {
+  getAlgorithms(@Req() request: Request): Observable<string> | string {
     return this.engineService.getAlgorithmsREST(request);
   }
 
   @Get('/experiments')
-  getExperiments(@Req() request: Request): Observable<string> {
+  getExperiments(@Req() request: Request): Observable<string> | string {
     return this.engineService.getExperiments(request);
   }
 
   @Get('/experiments/:uuid')
-  getExperiment(@Param('uuid') uuid: string): Observable<string> {
+  getExperiment(@Param('uuid') uuid: string): Observable<string> | string {
     return this.engineService.getExperimentREST(uuid);
   }
 
@@ -38,7 +38,7 @@ export class EngineController {
   deleteExperiment(
     @Param('uuid') uuid: string,
     @Req() request: Request,
-  ): Observable<string> {
+  ): Observable<string> | string {
     return this.engineService.deleteExperiment(uuid, request);
   }
 
@@ -46,27 +46,29 @@ export class EngineController {
   editExperiment(
     @Param('uuid') uuid: string,
     @Req() request: Request,
-  ): Observable<string> {
+  ): Observable<string> | string {
     return this.engineService.editExperimentREST(uuid, request);
   }
 
   @Post('experiments/transient')
-  startExperimentTransient(@Req() request: Request): Observable<string> {
+  startExperimentTransient(
+    @Req() request: Request,
+  ): Observable<string> | string {
     return this.engineService.startExperimentTransient(request);
   }
 
   @Post('experiments')
-  startExperiment(@Req() request: Request): Observable<string> {
+  startExperiment(@Req() request: Request): Observable<string> | string {
     return this.engineService.startExperiment(request);
   }
 
   @Get('activeUser')
-  getActiveUser(@Req() request: Request): Observable<string> {
+  getActiveUser(@Req() request: Request): Observable<string> | string {
     return this.engineService.getActiveUser(request);
   }
 
   @Post('activeUser/agreeNDA')
-  agreeNDA(@Req() request: Request): Observable<string> {
+  agreeNDA(@Req() request: Request): Observable<string> | string {
     return this.engineService.editActiveUser(request);
   }
 }

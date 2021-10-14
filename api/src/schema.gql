@@ -7,21 +7,23 @@ type Category {
   label: String
 }
 
+type Group {
+  id: String!
+  label: String
+  description: String
+  groups: [Group!]
+
+  """List of variable's ids"""
+  variables: [String!]
+}
+
 type Variable {
   id: String!
   label: String
   type: String!
   description: String
-  enumerations: [Category!]!
-  groups: [Group!]!
-}
-
-type Group {
-  id: String!
-  label: String
-  description: String
-  groups: [Group!]!
-  variables: [Variable!]!
+  enumerations: [Category!]
+  groups: [Group!]
 }
 
 type Domain {

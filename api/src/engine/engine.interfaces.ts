@@ -43,21 +43,24 @@ export interface IEngineService {
   getAlgorithms(): Promise<Algorithm[]> | Algorithm[];
 
   // Standard REST API call
-  getAlgorithmsREST(request: Request): Observable<string>;
+  getAlgorithmsREST(request: Request): Observable<string> | string;
 
-  getExperiments(request: Request): Observable<string>;
+  getExperiments(request: Request): Observable<string> | string;
 
-  getExperimentREST(uuid: string): Observable<string>;
+  getExperimentREST(uuid: string): Observable<string> | string;
 
-  deleteExperiment(uuid: string, request: Request): Observable<string>;
+  deleteExperiment(uuid: string, request: Request): Observable<string> | string;
 
-  editExperimentREST(uuid: string, request: Request): Observable<string>;
+  editExperimentREST(
+    uuid: string,
+    request: Request,
+  ): Observable<string> | string;
 
-  startExperimentTransient(request: Request): Observable<string>;
+  startExperimentTransient(request: Request): Observable<string> | string;
 
-  startExperiment(request: Request): Observable<string>;
+  startExperiment(request: Request): Observable<string> | string;
 
-  getActiveUser(request: Request): Observable<string>;
+  getActiveUser(request: Request): Observable<string> | string;
 
-  editActiveUser(request: Request): Observable<string>;
+  editActiveUser(request: Request): Observable<string> | string;
 }
