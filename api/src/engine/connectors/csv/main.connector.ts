@@ -10,6 +10,8 @@ import { ListExperiments } from 'src/engine/models/experiment/list-experiments.m
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { HttpService } from '@nestjs/axios';
+import { Group } from 'src/engine/models/group.model';
+import { Dictionary } from 'src/common/interfaces/utilities.interface';
 
 export default class CSVService implements IEngineService {
   constructor(
@@ -54,26 +56,76 @@ export default class CSVService implements IEngineService {
 
   async getDomains(): Promise<Domain[]> {
     const path =
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vSuqAuC9YZkWbY-eU_zh9-lEh7tBUwSj2TGA_flvGkQ3KdA82RZchHICl6zbffl8yZ39IwPtNgk15Wd/pub?gid=0&single=true&output=tsv';
+      'https://docs.google.com/spreadsheets/d/1yjslZQCOMCxkjr4xQ-NmTMNEjhpdmZgijbn83za80Ak/export?format=tsv';
 
     const { data } = await firstValueFrom(this.httpService.get<string>(path));
 
-    console.log(data.split('\n').map((row) => row.split('\t')));
+    const rows = data
+      .split('\r\n')
+      .map((row) => row.split('\t').filter((i) => i))
+      .filter((row) => row.length >= 2);
+
+    rows.shift(); // headers
+
+    const vars = [];
+    const groups: Dictionary<Group> = {};
+    const rootGroup: Group = {
+      id: 'root',
+      groups: [],
+    };
+
+    rows.forEach((row) => {
+      const variable = {
+        id: row[0].toLowerCase(),
+        label: row[0],
+      };
+
+      row.shift();
+
+      vars.push(variable);
+
+      row
+        .filter((group) => !groups[group.toLowerCase()])
+        .forEach((group, i) => {
+          const groupId = group.toLowerCase();
+          if (i === 0) rootGroup.groups.push(groupId);
+          groups[groupId] = {
+            id: groupId,
+            label: group,
+            variables: [],
+            groups: [],
+          };
+        });
+
+      const groupId = row[row.length - 1].toLowerCase();
+
+      groups[groupId].variables = [...groups[groupId].variables, variable.id];
+
+      row
+        .reverse()
+        .map((group) => group.toLowerCase())
+        .forEach((group, i) => {
+          const groupId = group.toLowerCase();
+
+          if (i !== row.length - 1) {
+            const parentId = row[i + 1].toLowerCase();
+            groups[parentId].groups = groups[parentId].groups
+              ? [...new Set([...groups[parentId].groups, groupId])]
+              : [groupId];
+          }
+        });
+    });
+
+    rootGroup.groups = [...new Set(rootGroup.groups)];
 
     return [
       {
         id: 'Dummy',
         label: 'Dummy',
         datasets: [{ id: 'DummyDataset', label: 'DummyDataset' }],
-        groups: [
-          {
-            id: 'DummyGroup',
-            variables: ['DummyVar'],
-            groups: [],
-          },
-        ],
-        rootGroup: { id: 'DummyGroup' },
-        variables: [{ id: 'DummyVar', type: 'string' }],
+        groups: Object.values(groups),
+        rootGroup: rootGroup,
+        variables: vars,
       },
     ];
   }

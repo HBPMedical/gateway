@@ -5,8 +5,8 @@ import { Group } from './group.model';
 
 @ObjectType()
 export class Variable extends Entity {
-  @Field()
-  type: string;
+  @Field({ nullable: true })
+  type?: string;
 
   @Field({ nullable: true })
   description?: string;
