@@ -55,8 +55,7 @@ export default class CSVService implements IEngineService {
   }
 
   async getDomains(): Promise<Domain[]> {
-    const path =
-      'https://docs.google.com/spreadsheets/d/1yjslZQCOMCxkjr4xQ-NmTMNEjhpdmZgijbn83za80Ak/export?format=tsv';
+    const path = this.options.baseurl;
 
     const { data } = await firstValueFrom(this.httpService.get<string>(path));
 
@@ -65,12 +64,12 @@ export default class CSVService implements IEngineService {
       .map((row) => row.split('\t').filter((i) => i))
       .filter((row) => row.length >= 2);
 
-    rows.shift(); // headers
+    rows.shift(); // remove headers
 
     const vars = [];
     const groups: Dictionary<Group> = {};
     const rootGroup: Group = {
-      id: 'root',
+      id: 'Global group',
       groups: [],
     };
 
@@ -80,7 +79,7 @@ export default class CSVService implements IEngineService {
         label: row[0],
       };
 
-      row.shift();
+      row.shift(); // get ride of the variable name, keep only groups
 
       vars.push(variable);
 
@@ -97,9 +96,9 @@ export default class CSVService implements IEngineService {
           };
         });
 
-      const groupId = row[row.length - 1].toLowerCase();
+      const groupId = row[row.length - 1].toLowerCase(); // group's variable container
 
-      groups[groupId].variables = [...groups[groupId].variables, variable.id];
+      groups[groupId].variables.push(variable.id); // add variable
 
       row
         .reverse()
@@ -109,20 +108,19 @@ export default class CSVService implements IEngineService {
 
           if (i !== row.length - 1) {
             const parentId = row[i + 1].toLowerCase();
-            groups[parentId].groups = groups[parentId].groups
-              ? [...new Set([...groups[parentId].groups, groupId])]
-              : [groupId];
+            if (groups[parentId].groups.indexOf(groupId) === -1)
+              groups[parentId].groups.push(groupId);
           }
         });
     });
 
-    rootGroup.groups = [...new Set(rootGroup.groups)];
+    rootGroup.groups = [...new Set(rootGroup.groups)]; // get distinct values
 
     return [
       {
         id: 'Dummy',
         label: 'Dummy',
-        datasets: [{ id: 'DummyDataset', label: 'DummyDataset' }],
+        datasets: [{ id: 'DummyDataset', label: 'Dummy Dataset' }],
         groups: Object.values(groups),
         rootGroup: rootGroup,
         variables: vars,
