@@ -11,7 +11,7 @@ type Group {
   id: String!
   label: String
   description: String
-  groups: [Group!]
+  groups: [String!]
 
   """List of variable's ids"""
   variables: [String!]
@@ -20,7 +20,7 @@ type Group {
 type Variable {
   id: String!
   label: String
-  type: String!
+  type: String
   description: String
   enumerations: [Category!]
   groups: [Group!]

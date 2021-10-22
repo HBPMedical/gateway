@@ -27,7 +27,9 @@ export const dataToGroup = (data: Hierarchy): Group => {
   return {
     id: data.code,
     label: data.label,
-    groups: data.groups ? data.groups.map(dataToGroup) : [],
+    groups: data.groups
+      ? data.groups.map(dataToGroup).map((group) => group.id)
+      : [],
     variables: data.variables
       ? data.variables.map((data: VariableEntity) => data.code)
       : [],

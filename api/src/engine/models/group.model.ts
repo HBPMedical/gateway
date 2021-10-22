@@ -6,8 +6,8 @@ export class Group extends Entity {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => [Group], { defaultValue: [], nullable: true })
-  groups?: Group[];
+  @Field(() => [String], { defaultValue: [], nullable: true })
+  groups?: string[];
 
   @Field(() => [String], {
     description: "List of variable's ids",
