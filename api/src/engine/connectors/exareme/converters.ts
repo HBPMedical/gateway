@@ -89,16 +89,18 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
           value: data.variables.join(','),
         },
         {
-          name: 'formula',
-          value: {
-            single: data.transformations.map((t) => ({
-              var_name: t.name,
-              unary_operation: t.operation,
-            })),
-            interactions: data.interactions.map((v) =>
-              v.reduce((a, v, i) => ({ ...a, [`var${i + 1}`]: v }), {}),
-            ),
-          },
+          ...(data.transformations?.length > 0 && {
+            name: 'formula',
+            value: JSON.stringify({
+              single: data.transformations?.map((t) => ({
+                var_name: t.name,
+                unary_operation: t.operation,
+              })),
+              interactions: data.interactions?.map((v) =>
+                v.reduce((a, v, i) => ({ ...a, [`var${i + 1}`]: v }), {}),
+              ),
+            }),
+          })
         },
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
@@ -145,8 +147,8 @@ export const dataToExperiment = (data: ExperimentData): Experiment => {
 
   exp.results = data.result
     ? data.result
-        .map((result) => dataToResult(result, exp.algorithm.name))
-        .flat()
+      .map((result) => dataToResult(result, exp.algorithm.name))
+      .flat()
     : [];
 
   return exp;
