@@ -83,6 +83,18 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
           name: 'y',
           value: data.variables.join(','),
         },
+        {
+          name: 'formula',
+          value: {
+            single: data.transformations.map((t) => ({
+              var_name: t.name,
+              unary_operation: t.operation,
+            })),
+            interactions: data.interactions.map((v) =>
+              v.reduce((a, v, i) => ({ ...a, [`var${i + 1}`]: v }), {}),
+            ),
+          },
+        },
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
       name: data.algorithm.name,
