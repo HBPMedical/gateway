@@ -2,6 +2,15 @@ import { Field, InputType } from '@nestjs/graphql';
 import { AlgorithmInput } from './algorithm.input';
 
 @InputType()
+export class FormulaTransformation {
+  @Field()
+  name: string;
+
+  @Field()
+  operation: string;
+}
+
+@InputType()
 export class ExperimentCreateInput {
   @Field(() => [String])
   datasets: string[];
@@ -20,4 +29,10 @@ export class ExperimentCreateInput {
 
   @Field()
   name: string;
+
+  @Field(() => [FormulaTransformation], { nullable: true })
+  transformations: FormulaTransformation[];
+
+  @Field(() => [[String]], { nullable: true })
+  interactions: string[][];
 }

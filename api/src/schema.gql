@@ -189,6 +189,8 @@ input ExperimentCreateInput {
   variables: [String!]!
   algorithm: AlgorithmInput!
   name: String!
+  transformations: [FormulaTransformation!]
+  interactions: [[String!]!]
 }
 
 input AlgorithmInput {
@@ -200,6 +202,11 @@ input AlgorithmInput {
 input AlgorithmParamInput {
   name: String!
   value: [String!]!
+}
+
+input FormulaTransformation {
+  name: String!
+  operation: String!
 }
 
 input ExperimentEditInput {
