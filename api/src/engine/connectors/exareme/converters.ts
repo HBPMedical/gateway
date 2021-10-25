@@ -64,6 +64,18 @@ const algoParamInputToData = (param: AlgorithmParameter) => {
 };
 
 export const experimentInputToData = (data: ExperimentCreateInput) => {
+  const formula =
+    ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
+      single: data.transformations?.map((t) => ({
+        var_name: t.name,
+        unary_operation: t.operation,
+      })),
+      interactions: data.interactions?.map((v) =>
+        v.reduce((a, e, i) => ({ ...a, [`var${i + 1}`]: e }), {}),
+      ),
+    }) ||
+    null;
+
   return {
     algorithm: {
       parameters: [
@@ -83,20 +95,14 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
           name: 'y',
           value: data.variables.join(','),
         },
-        {
-          ...(data.transformations?.length > 0 && {
-            name: 'formula',
-            value: JSON.stringify({
-              single: data.transformations?.map((t) => ({
-                var_name: t.name,
-                unary_operation: t.operation,
-              })),
-              interactions: data.interactions?.map((v) =>
-                v.reduce((a, v, i) => ({ ...a, [`var${i + 1}`]: v }), {}),
-              ),
-            }),
-          })
-        },
+        ...(formula
+          ? [
+              {
+                name: 'formula',
+                value: JSON.stringify(formula),
+              },
+            ]
+          : []),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
       name: data.algorithm.name,
