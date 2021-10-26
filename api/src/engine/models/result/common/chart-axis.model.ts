@@ -6,5 +6,5 @@ export class ChartAxis {
   label?: string;
 
   @Field(() => [String], { nullable: true, defaultValue: [] })
-  categories: string[];
+  categories?: string[];
 }

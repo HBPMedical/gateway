@@ -10,9 +10,9 @@ export class HeatMapResult extends Result {
   @Field(() => [[Number]])
   matrix: number[][];
 
-  @Field(() => [ChartAxis])
+  @Field(() => ChartAxis)
   xAxis: ChartAxis;
 
-  @Field(() => [ChartAxis])
+  @Field(() => ChartAxis)
   yAxis: ChartAxis;
 }
