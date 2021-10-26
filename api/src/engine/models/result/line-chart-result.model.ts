@@ -43,10 +43,10 @@ export class LineChartResult extends Result {
   @Field()
   name: string;
 
-  @Field(() => ChartAxis)
+  @Field(() => ChartAxis, { nullable: true })
   xAxis?: ChartAxis;
 
-  @Field(() => ChartAxis)
+  @Field(() => ChartAxis, { nullable: true })
   yAxis?: ChartAxis;
 
   @Field(() => [LineResult])
