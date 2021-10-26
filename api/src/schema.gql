@@ -63,7 +63,7 @@ type GroupResult {
   results: [ResultUnion!]!
 }
 
-union ResultUnion = TableResult | RawResult | GroupsResult
+union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult
 
 type TableResult {
   name: String!
@@ -82,6 +82,43 @@ scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/fi
 
 type GroupsResult {
   groups: [GroupResult!]!
+}
+
+type HeatMapResult {
+  name: String!
+  matrix: [[Float!]!]!
+  xAxis: ChartAxis!
+  yAxis: ChartAxis!
+}
+
+type LineChartResult {
+  name: String!
+  xAxis: ChartAxis!
+  yAxis: ChartAxis!
+  lines: [LineResult!]!
+}
+
+type ChartAxis {
+  label: String
+  categories: [String!]
+}
+
+type ExtraLineInfo {
+  label: String!
+  values: [String!]!
+}
+
+type LineResult {
+  label: String!
+  x: Float!
+  y: [Float!]!
+  extraLineInfos: [ExtraLineInfo!]
+  type: LineType
+}
+
+enum LineType {
+  NORMAL
+  DASHED
 }
 
 type Header {
