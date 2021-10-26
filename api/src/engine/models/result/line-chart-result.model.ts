@@ -25,7 +25,7 @@ export class LineResult {
   @Field()
   label: string;
 
-  @Field(() => Number)
+  @Field(() => [Number])
   x: number[];
 
   @Field(() => [Number])
