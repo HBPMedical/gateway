@@ -93,8 +93,8 @@ type HeatMapResult {
 
 type LineChartResult {
   name: String!
-  xAxis: ChartAxis!
-  yAxis: ChartAxis!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
   lines: [LineResult!]!
 }
 
@@ -110,7 +110,7 @@ type ExtraLineInfo {
 
 type LineResult {
   label: String!
-  x: Float!
+  x: [Float!]!
   y: [Float!]!
   extraLineInfos: [ExtraLineInfo!]
   type: LineType
