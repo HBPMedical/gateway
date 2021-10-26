@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { ChartAxis } from './common/chart-axis.model';
 import { Result } from './common/result.model';
 
 @ObjectType()
@@ -9,9 +10,9 @@ export class HeatMapResult extends Result {
   @Field(() => [[Number]])
   matrix: number[][];
 
-  @Field(() => [String])
-  xLabels: string[];
+  @Field(() => [ChartAxis])
+  xAxis: ChartAxis;
 
-  @Field(() => [String])
-  yLabels: string[];
+  @Field(() => [ChartAxis])
+  yAxis: ChartAxis;
 }
