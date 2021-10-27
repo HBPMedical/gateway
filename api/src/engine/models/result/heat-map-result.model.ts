@@ -7,12 +7,12 @@ export class HeatMapResult extends Result {
   @Field()
   name: string;
 
+  @Field(() => ChartAxis, { nullable: true })
+  xAxis?: ChartAxis;
+
+  @Field(() => ChartAxis, { nullable: true })
+  yAxis?: ChartAxis;
+
   @Field(() => [[Number]])
   matrix: number[][];
-
-  @Field(() => ChartAxis)
-  xAxis: ChartAxis;
-
-  @Field(() => ChartAxis)
-  yAxis: ChartAxis;
 }
