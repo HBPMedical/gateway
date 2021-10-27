@@ -52,7 +52,7 @@ export const transformToExperiment = jsonata(`
                 algorithm.parameters[$not(name in $params)].({
                     "name": name,
                     "label": label,
-                    "value": value
+                    "value": $split(value, ',')
                 })
         }
     }

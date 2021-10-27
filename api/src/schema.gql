@@ -86,9 +86,9 @@ type GroupsResult {
 
 type HeatMapResult {
   name: String!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
   matrix: [[Float!]!]!
-  xAxis: ChartAxis!
-  yAxis: ChartAxis!
 }
 
 type LineChartResult {
