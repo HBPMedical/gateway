@@ -7,12 +7,15 @@ import {
   Patch,
   Post,
   Req,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
+import { HeadersInterceptor } from './interceptors/headers.interceptor';
 
+@UseInterceptors(HeadersInterceptor)
 @Controller()
 export class EngineController {
   constructor(

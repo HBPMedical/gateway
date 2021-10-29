@@ -109,6 +109,11 @@ export default class ExaremeService implements IEngineService {
   async getDomains(ids: string[]): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
 
+    console.log(
+      'connectors headers',
+      this.httpService.axiosRef.defaults.headers,
+    );
+
     try {
       const data = await firstValueFrom(
         this.httpService.get<Pathology[]>(path),
