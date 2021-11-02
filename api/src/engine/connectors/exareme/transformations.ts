@@ -77,25 +77,26 @@ $fn := function($o, $prefix) {
 export const descriptiveModelToTables = jsonata(`
 (   
     ${headerDescriptivie}
-
-    $vars := $count(data.single.*)-1;
-    $varName := $keys(data.single);
+    
+    $vars := $count($keys(data.model.*.data))-1;
+    $varNames := $keys(data.model.*.data);
     $model := data.model;
 
     [[0..$vars].(
         $i := $;
+        $varName := $varNames[$i];
         $ks := $keys($model.*.data.*[$i][$type($) = 'object']);
         {
-            'name': $varName[$i],
+            'name': $varName,
             'headers': $append("", $keys($$.data.model)).{
                 'name': $,
                 'type': 'string'
             },
             'data': [
-                [$varName[$i], $model.*.($e(num_total))],
+                [$varName, $model.*.($e(num_total))],
                 ['Datapoints', $model.*.($e(num_datapoints))],
                 ['Nulls', $model.*.($e(num_nulls))],
-                 $model.*.data.($fn($.*[$i])) ~> $reduce(function($a, $b) {
+                 $lookup($model.*.data, $varName).($fn($)) ~> $reduce(function($a, $b) {
                     $map($ks, function($k) {(
                         {
                             $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
