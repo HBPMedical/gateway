@@ -74,4 +74,9 @@ export class EngineController {
   agreeNDA(@Req() request: Request): Observable<string> | string {
     return this.engineService.editActiveUser(request);
   }
+
+  @Get('logout')
+  logout(): void {
+    this.engineService.logout();
+  }
 }

@@ -1,6 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
-import { Request } from 'express';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Res,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
@@ -32,6 +37,14 @@ export default class ExaremeService implements IEngineService {
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
+
+  async logout(@Res() response: Response = undefined) {
+    const path = `${this.options.baseurl}logout`;
+
+    await firstValueFrom(this.httpService.get(path));
+
+    response?.clearCookie('OAuth_Token_Request_State');
+  }
 
   async createExperiment(
     data: ExperimentCreateInput,
@@ -108,11 +121,6 @@ export default class ExaremeService implements IEngineService {
 
   async getDomains(ids: string[]): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
-
-    console.log(
-      'connectors headers',
-      this.httpService.axiosRef.defaults.headers,
-    );
 
     try {
       const data = await firstValueFrom(

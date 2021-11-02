@@ -63,4 +63,6 @@ export interface IEngineService {
   getActiveUser(request: Request): Observable<string> | string;
 
   editActiveUser(request: Request): Observable<string> | string;
+
+  logout(): void;
 }
