@@ -1,5 +1,6 @@
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
@@ -20,10 +21,10 @@ export class EngineModule {
 
     const engineProvider = {
       provide: ENGINE_SERVICE,
-      useFactory: async (httpService: HttpService) => {
-        return await this.createEngineConnection(options, httpService);
+      useFactory: async (httpService: HttpService, req: Request) => {
+        return await this.createEngineConnection(options, httpService, req);
       },
-      inject: [HttpService],
+      inject: [HttpService, REQUEST],
     };
 
     return {
@@ -43,14 +44,13 @@ export class EngineModule {
   private static async createEngineConnection(
     options: IEngineOptions,
     httpService: HttpService,
+    req: Request,
   ): Promise<IEngineService> {
     try {
       const service = await import(
         `./connectors/${options.type}/main.connector`
       );
-      const engine = new service.default(options, httpService);
-
-      this.logger.log(`The connector '${options.type}' has been loaded`);
+      const engine = new service.default(options, httpService, req);
 
       return engine;
     } catch {

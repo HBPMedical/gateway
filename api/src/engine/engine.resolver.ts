@@ -1,7 +1,8 @@
-import { Inject } from '@nestjs/common';
+import { Inject, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
+import { HeadersInterceptor } from './interceptors/headers.interceptor';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 import {
@@ -12,6 +13,7 @@ import { ExperimentCreateInput } from './models/experiment/input/experiment-crea
 import { ExperimentEditInput } from './models/experiment/input/experiment-edit.input';
 import { ListExperiments } from './models/experiment/list-experiments.model';
 
+@UseInterceptors(HeadersInterceptor)
 @Resolver()
 export class EngineResolver {
   constructor(

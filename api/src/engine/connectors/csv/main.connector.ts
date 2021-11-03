@@ -19,6 +19,10 @@ export default class CSVService implements IEngineService {
     private readonly httpService: HttpService,
   ) {}
 
+  logout() {
+    throw new Error('Method not implemented.');
+  }
+
   getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }

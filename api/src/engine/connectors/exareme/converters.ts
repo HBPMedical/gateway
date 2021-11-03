@@ -59,28 +59,33 @@ export const dataToVariable = (data: VariableEntity): Variable => {
 const algoParamInputToData = (param: AlgorithmParameter) => {
   return {
     name: param.name,
+    label: param.name,
     value: param.value.join(','),
   };
 };
 
 export const experimentInputToData = (data: ExperimentCreateInput) => {
-  return {
+  const params = {
     algorithm: {
       parameters: [
         {
           name: 'dataset',
+          label: 'dataset',
           value: data.datasets.join(','),
         },
         {
           name: 'filter',
+          label: 'filter',
           value: data.filter,
         },
         {
           name: 'pathology',
+          label: 'pathology',
           value: data.domain,
         },
         {
           name: 'y',
+          label: 'y',
           value: data.variables.join(','),
         },
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
@@ -89,6 +94,8 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     },
     name: data.name,
   };
+
+  return params;
 };
 
 export const descriptiveDataToTableResult = (

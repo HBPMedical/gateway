@@ -11,6 +11,10 @@ import { ExperimentEditInput } from 'src/engine/models/experiment/input/experime
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 
 export default class DataShieldService implements IEngineService {
+  logout(): void {
+    throw new Error('Method not implemented.');
+  }
+
   getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }
