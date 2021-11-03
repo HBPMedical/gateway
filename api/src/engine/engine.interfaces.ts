@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
@@ -43,26 +42,23 @@ export interface IEngineService {
   getAlgorithms(): Promise<Algorithm[]> | Algorithm[];
 
   // Standard REST API call
-  getAlgorithmsREST(request: Request): Observable<string> | string;
+  getAlgorithmsREST(): Observable<string> | string;
 
-  getExperiments(request: Request): Observable<string> | string;
+  getExperiments(): Observable<string> | string;
 
   getExperimentREST(uuid: string): Observable<string> | string;
 
-  deleteExperiment(uuid: string, request: Request): Observable<string> | string;
+  deleteExperiment(uuid: string): Observable<string> | string;
 
-  editExperimentREST(
-    uuid: string,
-    request: Request,
-  ): Observable<string> | string;
+  editExperimentREST(uuid: string): Observable<string> | string;
 
-  startExperimentTransient(request: Request): Observable<string> | string;
+  startExperimentTransient(): Observable<string> | string;
 
-  startExperiment(request: Request): Observable<string> | string;
+  startExperiment(): Observable<string> | string;
 
-  getActiveUser(request: Request): Observable<string> | string;
+  getActiveUser(): Observable<string> | string;
 
-  editActiveUser(request: Request): Observable<string> | string;
+  editActiveUser(): Observable<string> | string;
 
   logout(): void;
 }

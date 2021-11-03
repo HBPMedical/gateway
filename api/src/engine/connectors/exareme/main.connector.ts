@@ -3,10 +3,13 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
 } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
+import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
@@ -35,8 +38,9 @@ import { Pathology } from './interfaces/pathology.interface';
 @Injectable()
 export default class ExaremeService implements IEngineService {
   constructor(
-    private readonly options: IEngineOptions,
+    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
+    @Inject(REQUEST) private readonly req: Request,
   ) {}
 
   async logout() {
@@ -158,11 +162,11 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  editActiveUser(request: Request): Observable<string> {
+  editActiveUser(): Observable<string> {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
 
     return this.httpService
-      .post<string>(path, request.body)
+      .post<string>(path, this.req.body)
       .pipe(map((response) => response.data));
   }
 
@@ -180,43 +184,43 @@ export default class ExaremeService implements IEngineService {
     return this.httpService.delete(path).pipe(map((response) => response.data));
   }
 
-  editExperimentREST(uuid: string, request: Request): Observable<string> {
+  editExperimentREST(uuid: string): Observable<string> {
     const path = this.options.baseurl + `experiments/${uuid}`;
 
     return this.httpService
-      .patch(path, request.body)
+      .patch(path, this.req.body)
       .pipe(map((response) => response.data));
   }
 
-  startExperimentTransient(request: Request): Observable<string> {
+  startExperimentTransient(): Observable<string> {
     const path = this.options.baseurl + 'experiments/transient';
 
     return this.httpService
-      .post(path, request.body)
+      .post(path, this.req.body)
       .pipe(map((response) => response.data));
   }
 
-  startExperiment(request: Request): Observable<string> {
+  startExperiment(): Observable<string> {
     const path = this.options.baseurl + 'experiments';
 
     return this.httpService
-      .post(path, request.body)
+      .post(path, this.req.body)
       .pipe(map((response) => response.data));
   }
 
-  getExperiments(request: Request): Observable<string> {
+  getExperiments(): Observable<string> {
     const path = this.options.baseurl + 'experiments';
 
     return this.httpService
-      .get<string>(path, { params: request.query })
+      .get<string>(path, { params: this.req.query })
       .pipe(map((response) => response.data));
   }
 
-  getAlgorithmsREST(request: Request): Observable<string> {
+  getAlgorithmsREST(): Observable<string> {
     const path = this.options.baseurl + 'algorithms';
 
     return this.httpService
-      .get<string>(path, { params: request.query })
+      .get<string>(path, { params: this.req.query })
       .pipe(map((response) => response.data));
   }
 

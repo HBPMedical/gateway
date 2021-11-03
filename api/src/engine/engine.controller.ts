@@ -6,10 +6,8 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UseInterceptors,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
@@ -23,13 +21,13 @@ export class EngineController {
   ) {}
 
   @Get('/algorithms')
-  getAlgorithms(@Req() request: Request): Observable<string> | string {
-    return this.engineService.getAlgorithmsREST(request);
+  getAlgorithms(): Observable<string> | string {
+    return this.engineService.getAlgorithmsREST();
   }
 
   @Get('/experiments')
-  getExperiments(@Req() request: Request): Observable<string> | string {
-    return this.engineService.getExperiments(request);
+  getExperiments(): Observable<string> | string {
+    return this.engineService.getExperiments();
   }
 
   @Get('/experiments/:uuid')
@@ -38,41 +36,33 @@ export class EngineController {
   }
 
   @Delete('/experiments/:uuid')
-  deleteExperiment(
-    @Param('uuid') uuid: string,
-    @Req() request: Request,
-  ): Observable<string> | string {
-    return this.engineService.deleteExperiment(uuid, request);
+  deleteExperiment(@Param('uuid') uuid: string): Observable<string> | string {
+    return this.engineService.deleteExperiment(uuid);
   }
 
   @Patch('/experiments/:uuid')
-  editExperiment(
-    @Param('uuid') uuid: string,
-    @Req() request: Request,
-  ): Observable<string> | string {
-    return this.engineService.editExperimentREST(uuid, request);
+  editExperiment(@Param('uuid') uuid: string): Observable<string> | string {
+    return this.engineService.editExperimentREST(uuid);
   }
 
   @Post('experiments/transient')
-  startExperimentTransient(
-    @Req() request: Request,
-  ): Observable<string> | string {
-    return this.engineService.startExperimentTransient(request);
+  startExperimentTransient(): Observable<string> | string {
+    return this.engineService.startExperimentTransient();
   }
 
   @Post('experiments')
-  startExperiment(@Req() request: Request): Observable<string> | string {
-    return this.engineService.startExperiment(request);
+  startExperiment(): Observable<string> | string {
+    return this.engineService.startExperiment();
   }
 
   @Get('activeUser')
-  getActiveUser(@Req() request: Request): Observable<string> | string {
-    return this.engineService.getActiveUser(request);
+  getActiveUser(): Observable<string> | string {
+    return this.engineService.getActiveUser();
   }
 
   @Post('activeUser/agreeNDA')
-  agreeNDA(@Req() request: Request): Observable<string> | string {
-    return this.engineService.editActiveUser(request);
+  agreeNDA(): Observable<string> | string {
+    return this.engineService.editActiveUser();
   }
 
   @Get('logout')
