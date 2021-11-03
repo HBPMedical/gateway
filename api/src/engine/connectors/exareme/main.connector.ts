@@ -3,9 +3,9 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Res,
+  Injectable,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
@@ -32,18 +32,17 @@ import { ExperimentsData } from './interfaces/experiment/experiments.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
 
+@Injectable()
 export default class ExaremeService implements IEngineService {
   constructor(
     private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
 
-  async logout(@Res() response: Response = undefined) {
+  async logout() {
     const path = `${this.options.baseurl}logout`;
 
     await firstValueFrom(this.httpService.get(path));
-
-    response?.clearCookie('OAuth_Token_Request_State');
   }
 
   async createExperiment(
