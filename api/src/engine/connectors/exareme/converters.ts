@@ -115,8 +115,6 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     },
     name: data.name,
   };
-
-  return params;
 };
 
 export const descriptiveDataToTableResult = (
