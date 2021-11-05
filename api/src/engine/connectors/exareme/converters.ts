@@ -70,9 +70,10 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
         var_name: t.name,
         unary_operation: t.operation,
       })),
-      interactions: data.interactions?.map((v) =>
-        v.reduce((a, e, i) => ({ ...a, [`var${i + 1}`]: e }), {}),
-      ),
+      interactions:
+        data.interactions?.map((v) =>
+          v.reduce((a, e, i) => ({ ...a, [`var${i + 1}`]: e }), {}),
+        ) || [],
     }) ||
     null;
 
@@ -146,8 +147,8 @@ export const dataToExperiment = (data: ExperimentData): Experiment => {
 
   exp.results = data.result
     ? data.result
-      .map((result) => dataToResult(result, exp.algorithm.name))
-      .flat()
+        .map((result) => dataToResult(result, exp.algorithm.name))
+        .flat()
     : [];
 
   return exp;
