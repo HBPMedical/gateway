@@ -167,7 +167,7 @@ export const dataToAlgorithms = (data: string): Algorithm[] => {
 export const dataToRaw = (result: ResultExperiment): RawResult[] => {
   return [
     {
-      rawdata: result.data,
+      rawdata: result,
     },
   ];
 };
