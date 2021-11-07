@@ -6,5 +6,8 @@ export class ExperimentEditInput {
   name?: string;
 
   @Field({ nullable: true })
+  shared?: boolean;
+
+  @Field({ nullable: true })
   viewed?: boolean;
 }
