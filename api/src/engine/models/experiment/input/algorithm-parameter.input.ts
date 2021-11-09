@@ -3,7 +3,7 @@ import { Field, InputType } from '@nestjs/graphql';
 @InputType()
 export class AlgorithmParamInput {
   @Field()
-  name: string;
+  id: string;
 
   @Field(() => [String])
   value: string[];

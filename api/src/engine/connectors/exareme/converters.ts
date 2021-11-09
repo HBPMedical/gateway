@@ -1,7 +1,7 @@
 import { Category } from 'src/engine/models/category.model';
-import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
+import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
@@ -56,10 +56,10 @@ export const dataToVariable = (data: VariableEntity): Variable => {
   };
 };
 
-const algoParamInputToData = (param: AlgorithmParameter) => {
+const algoParamInputToData = (param: AlgorithmParamInput) => {
   return {
-    name: param.name,
-    label: param.name,
+    name: param.id,
+    label: param.id,
     value: param.value.join(','),
   };
 };
@@ -90,7 +90,7 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
         },
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
-      name: data.algorithm.name,
+      name: data.algorithm.id,
     },
     name: data.name,
   };
@@ -132,9 +132,7 @@ export const dataToExperiment = (data: ExperimentData): Experiment => {
   };
 
   exp.results = data.result
-    ? data.result
-        .map((result) => dataToResult(result, exp.algorithm.name))
-        .flat()
+    ? data.result.map((result) => dataToResult(result, exp.algorithm.id)).flat()
     : [];
 
   return exp;

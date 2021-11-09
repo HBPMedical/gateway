@@ -4,7 +4,7 @@ import { AlgorithmParamInput } from './algorithm-parameter.input';
 @InputType()
 export class AlgorithmInput {
   @Field()
-  name: string;
+  id: string;
 
   @Field(() => [AlgorithmParamInput], { nullable: true, defaultValue: [] })
   parameters: AlgorithmParamInput[];

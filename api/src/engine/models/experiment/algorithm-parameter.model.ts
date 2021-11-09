@@ -3,7 +3,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 export class AlgorithmParameter {
   @Field()
-  name: string;
+  id: string;
 
   @Field(() => [String], { nullable: true })
   value?: string[];
