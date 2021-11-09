@@ -37,7 +37,7 @@ export class EngineResolver {
   }
 
   @Query(() => Experiment)
-  async expriment(@Args('uuid') uuid: string) {
+  async experiment(@Args('uuid') uuid: string) {
     return this.engineService.getExperiment(uuid);
   }
 
