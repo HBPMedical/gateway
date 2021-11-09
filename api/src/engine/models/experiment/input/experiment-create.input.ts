@@ -15,6 +15,9 @@ export class ExperimentCreateInput {
   @Field(() => [String])
   variables: string[];
 
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  coVariables?: string[];
+
   @Field()
   algorithm: AlgorithmInput;
 

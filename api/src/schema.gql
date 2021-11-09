@@ -37,7 +37,7 @@ type Domain {
 }
 
 type AlgorithmParameter {
-  name: String!
+  id: String!
   value: [String!]
   label: String
   description: String
@@ -50,7 +50,7 @@ type AlgorithmParameter {
 }
 
 type Algorithm {
-  name: String!
+  id: String!
   parameters: [AlgorithmParameter!]
   label: String
   type: String
@@ -140,6 +140,7 @@ type Experiment {
   filter: String
   domain: String!
   variables: [String!]!
+  coVariables: [String!]
   algorithm: Algorithm!
   name: String!
 }
@@ -158,6 +159,7 @@ type PartialExperiment {
   filter: String
   domain: String
   variables: [String!]
+  coVariables: [String!]
   algorithm: Algorithm
   name: String
 }
@@ -187,22 +189,24 @@ input ExperimentCreateInput {
   filter: String
   domain: String!
   variables: [String!]!
+  coVariables: [String!] = []
   algorithm: AlgorithmInput!
   name: String!
 }
 
 input AlgorithmInput {
-  name: String!
+  id: String!
   parameters: [AlgorithmParamInput!] = []
   type: String!
 }
 
 input AlgorithmParamInput {
-  name: String!
+  id: String!
   value: [String!]!
 }
 
 input ExperimentEditInput {
   name: String
+  shared: Boolean
   viewed: Boolean
 }

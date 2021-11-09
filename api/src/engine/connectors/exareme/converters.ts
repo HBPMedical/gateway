@@ -95,6 +95,14 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     name: data.name,
   };
 
+  if (data.coVariables && data.coVariables.length) {
+    params.algorithm.parameters.push({
+      name: 'x',
+      label: 'x',
+      value: data.coVariables.join(','),
+    });
+  }
+
   return params;
 };
 
