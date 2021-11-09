@@ -174,7 +174,7 @@ type ListExperiments {
 type Query {
   domains(ids: [String!] = []): [Domain!]!
   experiments(name: String = "", page: Float = 0): ListExperiments!
-  expriment(uuid: String!): Experiment!
+  experiment(uuid: String!): Experiment!
   algorithms: [Algorithm!]!
 }
 
