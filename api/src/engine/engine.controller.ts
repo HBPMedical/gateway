@@ -30,19 +30,19 @@ export class EngineController {
     return this.engineService.getExperiments();
   }
 
-  @Get('/experiments/:uuid')
-  getExperiment(@Param('uuid') uuid: string): Observable<string> | string {
-    return this.engineService.getExperimentREST(uuid);
+  @Get('/experiments/:id')
+  getExperiment(@Param('id') id: string): Observable<string> | string {
+    return this.engineService.getExperimentREST(id);
   }
 
-  @Delete('/experiments/:uuid')
-  deleteExperiment(@Param('uuid') uuid: string): Observable<string> | string {
-    return this.engineService.deleteExperiment(uuid);
+  @Delete('/experiments/:id')
+  deleteExperiment(@Param('id') id: string): Observable<string> | string {
+    return this.engineService.deleteExperiment(id);
   }
 
-  @Patch('/experiments/:uuid')
-  editExperiment(@Param('uuid') uuid: string): Observable<string> | string {
-    return this.engineService.editExperimentREST(uuid);
+  @Patch('/experiments/:id')
+  editExperiment(@Param('id') id: string): Observable<string> | string {
+    return this.engineService.editExperimentREST(id);
   }
 
   @Post('experiments/transient')

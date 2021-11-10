@@ -28,14 +28,12 @@ export interface IEngineService {
     name: string,
   ): Promise<ListExperiments> | ListExperiments;
 
-  getExperiment(uuid: string): Promise<Experiment> | Experiment;
+  getExperiment(id: string): Promise<Experiment> | Experiment;
 
-  removeExperiment(
-    uuid: string,
-  ): Promise<PartialExperiment> | PartialExperiment;
+  removeExperiment(id: string): Promise<PartialExperiment> | PartialExperiment;
 
   editExperient(
-    uuid: string,
+    id: string,
     expriment: ExperimentEditInput,
   ): Promise<Experiment> | Experiment;
 
@@ -46,11 +44,11 @@ export interface IEngineService {
 
   getExperiments(): Observable<string> | string;
 
-  getExperimentREST(uuid: string): Observable<string> | string;
+  getExperimentREST(id: string): Observable<string> | string;
 
-  deleteExperiment(uuid: string): Observable<string> | string;
+  deleteExperiment(id: string): Observable<string> | string;
 
-  editExperimentREST(uuid: string): Observable<string> | string;
+  editExperimentREST(id: string): Observable<string> | string;
 
   startExperimentTransient(): Observable<string> | string;
 

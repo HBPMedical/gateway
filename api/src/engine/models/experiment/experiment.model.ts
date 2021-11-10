@@ -5,7 +5,7 @@ import { Algorithm } from './algorithm.model';
 @ObjectType()
 export class Experiment {
   @Field({ nullable: true })
-  uuid?: string;
+  id?: string;
 
   @Field({ nullable: true, defaultValue: '' })
   author?: string;
