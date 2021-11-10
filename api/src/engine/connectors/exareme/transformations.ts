@@ -36,7 +36,7 @@ export const transformToExperiment = jsonata(`
 
     {
         "name": name,
-        "uuid": uuid,
+        "id": uuid,
         "author": createdBy,
         "viewed": viewed,
         "status": status,

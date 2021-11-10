@@ -127,7 +127,7 @@ type Header {
 }
 
 type Experiment {
-  uuid: String
+  id: String
   author: String
   createdAt: Float
   updateAt: Float
@@ -146,7 +146,7 @@ type Experiment {
 }
 
 type PartialExperiment {
-  uuid: String
+  id: String
   author: String
   createdAt: Float
   updateAt: Float
@@ -174,14 +174,14 @@ type ListExperiments {
 type Query {
   domains(ids: [String!] = []): [Domain!]!
   experiments(name: String = "", page: Float = 0): ListExperiments!
-  experiment(uuid: String!): Experiment!
+  experiment(id: String!): Experiment!
   algorithms: [Algorithm!]!
 }
 
 type Mutation {
   createExperiment(isTransient: Boolean = false, data: ExperimentCreateInput!): Experiment!
-  editExperiment(data: ExperimentEditInput!, uuid: String!): Experiment!
-  removeExperiment(uuid: String!): PartialExperiment!
+  editExperiment(data: ExperimentEditInput!, id: String!): Experiment!
+  removeExperiment(id: String!): PartialExperiment!
 }
 
 input ExperimentCreateInput {
