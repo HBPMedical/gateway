@@ -9,14 +9,19 @@ import {
   GroupResult,
   GroupsResult,
 } from 'src/engine/models/result/groups-result.model';
+import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
+import { LineChartResult } from 'src/engine/models/result/line-chart-result.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
+import { ResultChartExperiment } from './interfaces/experiment/result-chart-experiment.interface';
 import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import {
+  dataROCToLineResult,
+  dataToHeatmap,
   descriptiveModelToTables,
   descriptiveSingleToTables,
   transformToAlgorithms,
@@ -187,6 +192,8 @@ export const dataToResult = (
   switch (result.type.toLowerCase()) {
     case 'application/json':
       return dataJSONtoResult(result, algo);
+    case 'application/vnd.highcharts+json':
+      return dataHighchartToResult(result as ResultChartExperiment, algo);
     default:
       return dataToRaw(result);
   }
@@ -201,5 +208,19 @@ export const dataJSONtoResult = (
       return descriptiveDataToTableResult(result);
     default:
       return [];
+  }
+};
+
+export const dataHighchartToResult = (
+  result: ResultChartExperiment,
+  algo: string,
+): Array<typeof ResultUnion> => {
+  switch (result.data.chart.type) {
+    case 'heatmap':
+      return [dataToHeatmap.evaluate(result) as HeatMapResult];
+    case 'area':
+      return [dataROCToLineResult.evaluate(result) as LineChartResult];
+    default:
+      return dataToRaw(result);
   }
 };
