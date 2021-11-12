@@ -126,9 +126,14 @@ type Header {
   type: String!
 }
 
+type Author {
+  username: String
+  fullname: String
+}
+
 type Experiment {
   id: String
-  author: String
+  author: Author
   createdAt: Float
   updateAt: Float
   finishedAt: Float
@@ -147,7 +152,7 @@ type Experiment {
 
 type PartialExperiment {
   id: String
-  author: String
+  author: Author
   createdAt: Float
   updateAt: Float
   finishedAt: Float

@@ -1,14 +1,15 @@
 import { Field, ObjectType, PartialType } from '@nestjs/graphql';
 import { ResultUnion } from '../result/common/result-union.model';
 import { Algorithm } from './algorithm.model';
+import { Author } from './author.model';
 
 @ObjectType()
 export class Experiment {
   @Field({ nullable: true })
   id?: string;
 
-  @Field({ nullable: true, defaultValue: '' })
-  author?: string;
+  @Field(() => Author, { nullable: true, defaultValue: '' })
+  author?: Author;
 
   @Field({ nullable: true })
   createdAt?: number;
