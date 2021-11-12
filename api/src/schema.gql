@@ -72,7 +72,7 @@ type TableResult {
 }
 
 type RawResult {
-  rawdata: JSON!
+  rawdata: JSON
 }
 
 """

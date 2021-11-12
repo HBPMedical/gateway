@@ -140,3 +140,57 @@ export const descriptiveSingleToTables = jsonata(`
     ]
 )
 `);
+
+export const dataROCToLineResult = jsonata(`
+({
+    "name": data.title.text,
+    "xAxis": {
+        "label": data.xAxis.title.text
+    },
+    "yAxis": {
+        "label": data.yAxis.title.text
+    },
+    "lines": [
+        {
+            "label": "ROC curve",
+            "x": data.series.data.$[0],
+            "y": data.series.data.$[1],
+            "type": 0
+        }
+    ]
+})
+`);
+
+export const dataToHeatmap = jsonata(`
+(
+    {
+        "name": data.title.text,
+        "xAxis": {
+            "categories": data.xAxis.categories,
+            "label": data.xAxis.label
+        },
+        "yAxis": {
+            "categories": data.yAxis.categories,
+            "label": data.yAxis.label
+        },
+        "matrix": $toMat(data.series.data)
+    }
+)
+`);
+
+dataToHeatmap.registerFunction(
+  'toMat',
+  (a) => {
+    const matrix = [];
+
+    a.forEach(
+      (elem: { y: number | number; x: number | number; value: number }) => {
+        matrix[elem.y] = matrix[elem.y] ?? [];
+        matrix[elem.y][elem.x] = elem.value;
+      },
+    );
+
+    return matrix;
+  },
+  '<a<o>:a<a<n>>',
+);
