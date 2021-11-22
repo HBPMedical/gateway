@@ -1,7 +1,10 @@
 import { Category } from 'src/engine/models/category.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
+import {
+  AlgorithmParamInput,
+  ParamType,
+} from 'src/engine/models/experiment/input/algorithm-parameter.input';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
@@ -65,7 +68,10 @@ const algoParamInputToData = (param: AlgorithmParamInput) => {
   return {
     name: param.id,
     label: param.id,
-    value: param.value.join(','),
+    value:
+      param.type === ParamType.NUMBER
+        ? Number(param.value)
+        : param.value.join(','),
   };
 };
 
@@ -84,7 +90,7 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     }) ||
     null;
 
-  return {
+  const params = {
     algorithm: {
       parameters: [
         {
@@ -207,7 +213,7 @@ export const dataJSONtoResult = (
     case 'descriptive_stats':
       return descriptiveDataToTableResult(result);
     default:
-      return [];
+      return dataToRaw(result);
   }
 };
 
