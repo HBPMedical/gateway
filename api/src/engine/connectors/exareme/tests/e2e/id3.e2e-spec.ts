@@ -1,7 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GroupsResult } from 'src/engine/models/result/groups-result.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
-import { TableResult } from 'src/engine/models/result/table-result.model';
 import { AppModule } from '../../../../../main/app.module';
 import { ENGINE_SERVICE } from '../../../../engine.constants';
 import { IEngineService } from '../../../../engine.interfaces';
