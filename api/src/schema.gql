@@ -207,7 +207,13 @@ input AlgorithmInput {
 
 input AlgorithmParamInput {
   id: String!
+  type: ParamType = STRING
   value: [String!]!
+}
+
+enum ParamType {
+  STRING
+  NUMBER
 }
 
 input ExperimentEditInput {

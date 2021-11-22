@@ -34,6 +34,7 @@ export const transformToExperiment = jsonata(`
 
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
 
+
     {
         "name": name,
         "id": uuid,
