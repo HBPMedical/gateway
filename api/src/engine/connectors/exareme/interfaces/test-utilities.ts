@@ -68,10 +68,14 @@ const uid = (): string =>
     return v.toString(16);
   });
 
+const generateNumber = (): string => {
+  return Math.round(Math.random() * 10000).toString();
+};
 export {
   createExperiment,
   uid,
   waitForResult,
+  generateNumber,
   TEST_PATHOLOGIES,
   TIMEOUT_DURATION_SECONDS,
 };

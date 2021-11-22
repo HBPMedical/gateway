@@ -1,14 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ParamType } from 'src/engine/models/experiment/input/algorithm-parameter.input';
+import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { AppModule } from '../../../../../main/app.module';
 import { ENGINE_SERVICE } from '../../../../engine.constants';
 import { IEngineService } from '../../../../engine.interfaces';
 import { ExperimentCreateInput } from '../../../../models/experiment/input/experiment-create.input';
 import {
   createExperiment,
+  generateNumber,
   TEST_PATHOLOGIES,
   TIMEOUT_DURATION_SECONDS,
   waitForResult,
-} from '../test-utilities';
+} from '../../interfaces/test-utilities';
 
 jest.setTimeout(1000 * TIMEOUT_DURATION_SECONDS);
 
@@ -22,41 +25,36 @@ describe('ExaremeService', () => {
 
     exaremeService = await moduleRef.resolve<IEngineService>(ENGINE_SERVICE);
   });
-
-  const modelSlug = `calibration-belt-${Math.round(Math.random() * 10000)}`;
-  const algorithmId = 'CALIBRATION_BELT';
+  const modelSlug = `kaplan-meier-${generateNumber()}`;
+  const algorithmId = 'KAPLAN_MEIER';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,
-    variables: ['mortality_gose'],
-    coVariables: ['mortality_core'],
-    datasets: TEST_PATHOLOGIES.tbi.datasets
+    variables: ['alzheimerbroadcategory'],
+    coVariables: ['apoe4'],
+    datasets: TEST_PATHOLOGIES.dementia.datasets
       .filter((d) => d.code !== 'fake_longitudinal')
       .map((d) => d.code),
-    domain: TEST_PATHOLOGIES.tbi.code,
+    domain: TEST_PATHOLOGIES.dementia.code,
     algorithm: {
       id: algorithmId,
       type: 'string',
       parameters: [
         {
-          id: 'devel',
-          value: ['external'],
+          id: 'outcome_pos',
+          value: ['AD'],
         },
         {
-          id: 'max_deg',
-          value: ['4'],
+          id: 'outcome_neg',
+          value: ['MCI'],
         },
         {
-          id: 'confLevels',
-          value: ['0.80,0.95'],
+          id: 'max_age',
+          value: ['100'],
         },
         {
-          id: 'thres',
-          value: ['0.95'],
-        },
-        {
-          id: 'num_points',
-          value: ['200'],
+          id: 'total_duration',
+          value: ['1100'],
         },
       ],
     },
@@ -77,10 +75,10 @@ describe('ExaremeService', () => {
         exaremeService,
       );
 
-      expect(experimentResult.status).toStrictEqual('success');
       expect(experimentResult).toBeTruthy();
+      expect(experimentResult.status).toStrictEqual('success');
 
-      expect(experimentResult.results).toHaveLength(1);
+      expect(experimentResult.results.length).toBeGreaterThanOrEqual(1);
     });
   });
 });
