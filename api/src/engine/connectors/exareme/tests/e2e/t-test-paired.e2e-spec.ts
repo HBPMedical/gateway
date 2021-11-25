@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { AppModule } from '../../../../../main/app.module';
 import { ENGINE_SERVICE } from '../../../../engine.constants';
 import { IEngineService } from '../../../../engine.interfaces';
 import { ExperimentCreateInput } from '../../../../models/experiment/input/experiment-create.input';
+import { RawResult } from '../../../../models/result/raw-result.model';
 import {
   createExperiment,
   generateNumber,
@@ -24,13 +24,12 @@ describe('ExaremeService', () => {
 
     exaremeService = await moduleRef.resolve<IEngineService>(ENGINE_SERVICE);
   });
-  const modelSlug = `kmeans-${generateNumber()}`;
-  const algorithmId = 'KMEANS';
+  const modelSlug = `ttest-paired-${generateNumber()}`;
+  const algorithmId = 'TTEST_PAIRED';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,
-    variables: ['leftacgganteriorcingulategyrus', 'rightcerebellumexterior'],
-    coVariables: ['alzheimerbroadcategory'],
+    variables: ['lefthippocampus', 'righthippocampus'],
     datasets: TEST_PATHOLOGIES.dementia.datasets
       .filter((d) => d.code !== 'fake_longitudinal')
       .map((d) => d.code),
@@ -40,16 +39,8 @@ describe('ExaremeService', () => {
       type: 'string',
       parameters: [
         {
-          id: 'k',
-          value: ['4'],
-        },
-        {
-          id: 'e',
-          value: ['1'],
-        },
-        {
-          id: 'iterations_max_number',
-          value: ['1000'],
+          id: 'hypothesis',
+          value: ['different'],
         },
       ],
     },
@@ -72,13 +63,12 @@ describe('ExaremeService', () => {
 
       expect(experimentResult).toBeTruthy();
       expect(experimentResult.status).toStrictEqual('success');
-
       expect(experimentResult.results.length).toBeGreaterThanOrEqual(1);
       const data = experimentResult.results[0] as RawResult;
 
-      expect(
-        data.rawdata['data'][0]['leftacgganteriorcingulategyrus'],
-      ).toBeCloseTo(4.197, 2);
+      console.log(data.rawdata['data']);
+
+      //expect(data.rawdata['data'][0]['t_value']).toBeCloseTo(-63.2, 3);
     });
   });
 });

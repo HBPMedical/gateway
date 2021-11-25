@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { AppModule } from '../../../../../main/app.module';
 import { ENGINE_SERVICE } from '../../../../engine.constants';
 import { IEngineService } from '../../../../engine.interfaces';
 import { ExperimentCreateInput } from '../../../../models/experiment/input/experiment-create.input';
+import { RawResult } from '../../../../models/result/raw-result.model';
 import {
   createExperiment,
   generateNumber,
@@ -24,13 +24,21 @@ describe('ExaremeService', () => {
 
     exaremeService = await moduleRef.resolve<IEngineService>(ENGINE_SERVICE);
   });
-  const modelSlug = `kmeans-${generateNumber()}`;
-  const algorithmId = 'KMEANS';
+  const modelSlug = `ttest-idp-${generateNumber()}`;
+  const algorithmId = 'TTEST_INDEPENDENT';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,
-    variables: ['leftacgganteriorcingulategyrus', 'rightcerebellumexterior'],
-    coVariables: ['alzheimerbroadcategory'],
+    variables: [
+      'rightpcggposteriorcingulategyrus',
+      'leftpcggposteriorcingulategyrus',
+      'rightacgganteriorcingulategyrus',
+      'leftacgganteriorcingulategyrus',
+      'rightmcggmiddlecingulategyrus',
+      'leftmcggmiddlecingulategyrus',
+      'rightphgparahippocampalgyrus',
+    ],
+    coVariables: ['gender'],
     datasets: TEST_PATHOLOGIES.dementia.datasets
       .filter((d) => d.code !== 'fake_longitudinal')
       .map((d) => d.code),
@@ -40,16 +48,28 @@ describe('ExaremeService', () => {
       type: 'string',
       parameters: [
         {
-          id: 'k',
-          value: ['4'],
+          id: 'xlevels',
+          value: ['M', 'F'],
         },
         {
-          id: 'e',
+          id: 'testvalue',
+          value: ['3.0'],
+        },
+        {
+          id: 'hypothesis',
+          value: ['greaterthan'],
+        },
+        {
+          id: 'effectsize',
           value: ['1'],
         },
         {
-          id: 'iterations_max_number',
-          value: ['1000'],
+          id: 'ci',
+          value: ['1'],
+        },
+        {
+          id: 'meandiff',
+          value: ['1'],
         },
       ],
     },
@@ -72,13 +92,10 @@ describe('ExaremeService', () => {
 
       expect(experimentResult).toBeTruthy();
       expect(experimentResult.status).toStrictEqual('success');
-
       expect(experimentResult.results.length).toBeGreaterThanOrEqual(1);
       const data = experimentResult.results[0] as RawResult;
 
-      expect(
-        data.rawdata['data'][0]['leftacgganteriorcingulategyrus'],
-      ).toBeCloseTo(4.197, 2);
+      expect(data.rawdata['data'][0]['t_value']).toBeCloseTo(18.477, 3);
     });
   });
 });
