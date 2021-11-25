@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { AppModule } from '../../../../../main/app.module';
 import { ENGINE_SERVICE } from '../../../../engine.constants';
 import { IEngineService } from '../../../../engine.interfaces';
 import { ExperimentCreateInput } from '../../../../models/experiment/input/experiment-create.input';
+import { RawResult } from '../../../../models/result/raw-result.model';
 import {
   createExperiment,
   generateNumber,

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { AppModule } from '../../../../../main/app.module';
 import { ENGINE_SERVICE } from '../../../../engine.constants';
 import { IEngineService } from '../../../../engine.interfaces';
 import { ExperimentCreateInput } from '../../../../models/experiment/input/experiment-create.input';
+import { RawResult } from '../../../../models/result/raw-result.model';
 import {
   createExperiment,
   generateNumber,
@@ -24,13 +24,13 @@ describe('ExaremeService', () => {
 
     exaremeService = await moduleRef.resolve<IEngineService>(ENGINE_SERVICE);
   });
-  const modelSlug = `kmeans-${generateNumber()}`;
-  const algorithmId = 'KMEANS';
+  const modelSlug = `pearson-${generateNumber()}`;
+  const algorithmId = 'PEARSON_CORRELATION';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,
-    variables: ['leftacgganteriorcingulategyrus', 'rightcerebellumexterior'],
-    coVariables: ['alzheimerbroadcategory'],
+    variables: ['righthippocampus'],
+    coVariables: ['lefthippocampus'],
     datasets: TEST_PATHOLOGIES.dementia.datasets
       .filter((d) => d.code !== 'fake_longitudinal')
       .map((d) => d.code),
@@ -39,18 +39,8 @@ describe('ExaremeService', () => {
       id: algorithmId,
       type: 'string',
       parameters: [
-        {
-          id: 'k',
-          value: ['4'],
-        },
-        {
-          id: 'e',
-          value: ['1'],
-        },
-        {
-          id: 'iterations_max_number',
-          value: ['1000'],
-        },
+        { id: 'standardize', value: ['false'] },
+        { id: 'coding', value: ['null'] },
       ],
     },
     filter: '',
@@ -72,13 +62,12 @@ describe('ExaremeService', () => {
 
       expect(experimentResult).toBeTruthy();
       expect(experimentResult.status).toStrictEqual('success');
-
-      expect(experimentResult.results.length).toBeGreaterThanOrEqual(1);
+      expect(experimentResult.results.length).toBeGreaterThanOrEqual(2);
       const data = experimentResult.results[0] as RawResult;
 
       expect(
-        data.rawdata['data'][0]['leftacgganteriorcingulategyrus'],
-      ).toBeCloseTo(4.197, 2);
+        data.rawdata['data']['Pearson correlation coefficient'][0][0],
+      ).toBeCloseTo(0.924, 3);
     });
   });
 });
