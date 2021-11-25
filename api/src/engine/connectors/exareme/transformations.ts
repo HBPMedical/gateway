@@ -60,9 +60,9 @@ export const transformToExperiment = jsonata(`
 `);
 
 const headerDescriptivie = `
-$e := function($x, $r) {($x != null) ? $fnum($x) : ($r ? $r : '')};
-    
 $fnum := function($x) { $type($x) = 'number' ? $round($number($x),3) : $x };
+
+$e := function($x, $r) {($x != null) ? $fnum($x) : ($r ? $r : '')};
 
 $fn := function($o, $prefix) {
     $type($o) = 'object' ? 
@@ -96,13 +96,13 @@ export const descriptiveModelToTables = jsonata(`
                 [$varName, $model.*.($e(num_total))],
                 ['Datapoints', $model.*.($e(num_datapoints))],
                 ['Nulls', $model.*.($e(num_nulls))],
-                 $lookup($model.*.data, $varName).($fn($)) ~> $reduce(function($a, $b) {
+                ($lookup($model.*.data, $varName).($fn($)) ~> $reduce(function($a, $b) {
                     $map($ks, function($k) {(
                         {
                             $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
                         }
                     )}) ~> $merge()
-                }) ~> $each(function($v, $k) {$append($k,$v)})
+                })).$each(function($v, $k) {$append($k,$v)})[]
             ]
         }
     )]  
@@ -125,13 +125,13 @@ export const descriptiveSingleToTables = jsonata(`
                 [$keys(%)[$i], $p.*.($e(num_total))],
                 ['Datapoints', $p.*.($e(num_datapoints))],
                 ['Nulls', $p.*.($e(num_nulls))],
-                $p.*.data.($fn($)) ~> $reduce(function($a, $b) {
+                ($p.*.data.($fn($)) ~> $reduce(function($a, $b) {
                     $map($ks, function($k) {(
                         {
                             $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
                         }
                     )}) ~> $merge()
-                }) ~> $each(function($v, $k) {$append($k,$v)})
+                })).$each(function($v, $k) {$append($k,$v)})[]
             ]
         })
     ]
