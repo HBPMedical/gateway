@@ -67,10 +67,11 @@ const algoParamInputToData = (param: AlgorithmParameter) => {
 export const experimentInputToData = (data: ExperimentCreateInput) => {
   const formula =
     ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
-      single: data.transformations?.map((t) => ({
-        var_name: t.name,
-        unary_operation: t.operation,
-      })),
+      single:
+        data.transformations?.map((t) => ({
+          var_name: t.name,
+          unary_operation: t.operation,
+        })) || [],
       interactions:
         data.interactions?.map((v) =>
           v.reduce((a, e, i) => ({ ...a, [`var${i + 1}`]: e }), {}),
