@@ -47,6 +47,9 @@ export class Experiment {
   @Field(() => [String], { nullable: true, defaultValue: [] })
   coVariables?: string[];
 
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  filterVariables?: string[];
+
   @Field()
   algorithm: Algorithm;
 

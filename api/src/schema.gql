@@ -146,6 +146,7 @@ type Experiment {
   domain: String!
   variables: [String!]!
   coVariables: [String!]
+  filterVariables: [String!]
   algorithm: Algorithm!
   name: String!
 }
@@ -165,6 +166,7 @@ type PartialExperiment {
   domain: String
   variables: [String!]
   coVariables: [String!]
+  filterVariables: [String!]
   algorithm: Algorithm
   name: String
 }
