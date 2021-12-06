@@ -29,7 +29,7 @@ export class EngineResolver {
   }
 
   @Query(() => ListExperiments)
-  async experiments(
+  async experimentList(
     @Args('page', { nullable: true, defaultValue: 0 }) page: number,
     @Args('name', { nullable: true, defaultValue: '' }) name: string,
   ) {

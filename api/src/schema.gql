@@ -132,7 +132,8 @@ type Author {
 }
 
 type Experiment {
-  id: String
+  id: String!
+  name: String!
   author: Author
   createdAt: Float
   updateAt: Float
@@ -148,11 +149,11 @@ type Experiment {
   coVariables: [String!]
   filterVariables: [String!]
   algorithm: Algorithm!
-  name: String!
 }
 
 type PartialExperiment {
   id: String
+  name: String
   author: Author
   createdAt: Float
   updateAt: Float
@@ -168,7 +169,6 @@ type PartialExperiment {
   coVariables: [String!]
   filterVariables: [String!]
   algorithm: Algorithm
-  name: String
 }
 
 type ListExperiments {
@@ -180,7 +180,7 @@ type ListExperiments {
 
 type Query {
   domains(ids: [String!] = []): [Domain!]!
-  experiments(name: String = "", page: Float = 0): ListExperiments!
+  experimentList(name: String = "", page: Float = 0): ListExperiments!
   experiment(id: String!): Experiment!
   algorithms: [Algorithm!]!
 }

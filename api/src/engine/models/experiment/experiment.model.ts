@@ -5,8 +5,11 @@ import { Author } from './author.model';
 
 @ObjectType()
 export class Experiment {
-  @Field({ nullable: true })
-  id?: string;
+  @Field()
+  id: string;
+
+  @Field()
+  name: string;
 
   @Field(() => Author, { nullable: true, defaultValue: '' })
   author?: Author;
@@ -52,9 +55,6 @@ export class Experiment {
 
   @Field()
   algorithm: Algorithm;
-
-  @Field()
-  name: string;
 }
 
 @ObjectType()
