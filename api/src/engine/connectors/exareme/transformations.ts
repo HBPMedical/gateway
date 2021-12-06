@@ -34,6 +34,7 @@ export const transformToExperiment = jsonata(`
 
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
 
+    $convDate := function($v) { $type($v) = 'string' ? $toMillis($v) : $v };
 
     {
         "name": name,
@@ -41,10 +42,10 @@ export const transformToExperiment = jsonata(`
         "author": createdBy,
         "viewed": viewed,
         "status": status,
-        "createdAt": created,
-        "finishedAt": finished,
+        "createdAt": $convDate(created),
+        "finishedAt": $convDate(finished),
         "shared": shared,
-        "updateAt": updated,
+        "updateAt": $convDate(updated),
         "domain": algorithm.parameters[name = "pathology"].value,
         "variables": $split(algorithm.parameters[name = "y"].value, ','),
         "coVariables": $toArray($split(algorithm.parameters[name = "x"].value, ',')),
