@@ -130,26 +130,28 @@ export default class ExaremeService implements IEngineService {
         this.httpService.get<Pathology[]>(path),
       );
 
-      return data.data
-        .filter((data) => !ids || ids.length == 0 || ids.includes(data.code))
-        .map((data): Domain => {
-          const groups = this.flattenGroups(data.metadataHierarchy);
+      return (
+        data?.data
+          .filter((data) => !ids || ids.length == 0 || ids.includes(data.code))
+          .map((data): Domain => {
+            const groups = this.flattenGroups(data.metadataHierarchy);
 
-          return {
-            id: data.code,
-            label: data.label,
-            groups: groups,
-            rootGroup: dataToGroup(data.metadataHierarchy),
-            datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
-            variables: data.metadataHierarchy
-              ? this.flattenVariables(data.metadataHierarchy, groups)
-              : [],
-          };
-        });
-    } catch {
+            return {
+              id: data.code,
+              label: data.label,
+              groups: groups,
+              rootGroup: dataToGroup(data.metadataHierarchy),
+              datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
+              variables: data.metadataHierarchy
+                ? this.flattenVariables(data.metadataHierarchy, groups)
+                : [],
+            };
+          }) ?? []
+      );
+    } catch (error) {
       throw new HttpException(
-        `Connection to the engine ${this.options.type} failed`,
-        HttpStatus.NOT_FOUND,
+        `Error in exareme engine : '${error.response.data['message']}'`,
+        error.response.data['statusCode'] ?? HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
