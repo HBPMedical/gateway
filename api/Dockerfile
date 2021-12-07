@@ -17,6 +17,9 @@ FROM node:12.13-alpine as production
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
+RUN apk update && apk add bash
+RUN apk add --no-cache bash
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
