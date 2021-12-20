@@ -1,14 +1,72 @@
-import { HttpService } from '@nestjs/axios';
-import { Controller, Get, Inject } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
-import { IEngineService } from './engine.interface';
+import { IEngineService } from './engine.interfaces';
+import { HeadersInterceptor } from './interceptors/headers.interceptor';
 
+@UseInterceptors(HeadersInterceptor)
 @Controller()
 export class EngineController {
-  constructor(@Inject(ENGINE_SERVICE) private readonly engineService: IEngineService, private readonly httpService: HttpService) { }
+  constructor(
+    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+  ) {}
 
-  @Get("/test")
-  getTest(): string {
-    return this.engineService.demo();
+  @Get('/algorithms')
+  getAlgorithms(): Observable<string> | string {
+    return this.engineService.getAlgorithmsREST();
+  }
+
+  @Get('/experiments')
+  getExperiments(): Observable<string> | string {
+    return this.engineService.getExperiments();
+  }
+
+  @Get('/experiments/:uuid')
+  getExperiment(@Param('uuid') uuid: string): Observable<string> | string {
+    return this.engineService.getExperimentREST(uuid);
+  }
+
+  @Delete('/experiments/:uuid')
+  deleteExperiment(@Param('uuid') uuid: string): Observable<string> | string {
+    return this.engineService.deleteExperiment(uuid);
+  }
+
+  @Patch('/experiments/:uuid')
+  editExperiment(@Param('uuid') uuid: string): Observable<string> | string {
+    return this.engineService.editExperimentREST(uuid);
+  }
+
+  @Post('experiments/transient')
+  startExperimentTransient(): Observable<string> | string {
+    return this.engineService.startExperimentTransient();
+  }
+
+  @Post('experiments')
+  startExperiment(): Observable<string> | string {
+    return this.engineService.startExperiment();
+  }
+
+  @Get('activeUser')
+  getActiveUser(): Observable<string> | string {
+    return this.engineService.getActiveUser();
+  }
+
+  @Post('activeUser/agreeNDA')
+  agreeNDA(): Observable<string> | string {
+    return this.engineService.editActiveUser();
+  }
+
+  @Get('logout')
+  logout(): void {
+    this.engineService.logout();
   }
 }
