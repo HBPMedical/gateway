@@ -98,14 +98,8 @@
             {
               "url": "registry.gitlab.com",
               "imageName": "registry.gitlab.com/sibmip/gateway-semantic-release",
-              "user": "CI_REGISTRY_USER",
-              "password": "CI_REGISTRY_PASSWORD"
-            },
-            {
-              "url": "docker.io",
-              "imageName": "docker.io/myuser/myapp",
-              "user": "DOCKER_REGISTRY_USER",
-              "password": "DOCKER_REGISTRY_PASSWORD"
+              "user": "GITLAB_USER",
+              "password": "GITLAB_TOKEN"
             }
           ],
           "additionalTags": [
