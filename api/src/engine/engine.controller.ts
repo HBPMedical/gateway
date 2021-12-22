@@ -69,4 +69,9 @@ export class EngineController {
   logout(): void {
     this.engineService.logout();
   }
+
+  @Get('galaxy')
+  galaxy(): Observable<string> | string {
+    return this.engineService.getPassthrough?.('galaxy');
+  }
 }
