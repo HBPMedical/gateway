@@ -61,4 +61,6 @@ export interface IEngineService {
   editActiveUser(): Observable<string> | string;
 
   logout(): void;
+
+  getPassthrough?(suffix: string): Observable<string> | string;
 }
