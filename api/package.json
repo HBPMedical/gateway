@@ -107,9 +107,9 @@
           "registries": [
             {
               "url": "docker.io",
-              "imageName": "docker.io/m4n0x/gateway",
-              "user": "DOCKER_REGISTRY_USER",
-              "password": "DOCKER_REGISTRY_PASSWORD",
+              "imageName": "docker.io/hbpmip/gateway",
+              "user": "DOCKERHUB_USERNAME",
+              "password": "DOCKERHUB_TOKEN",
               "skipTags": [
                 "latest"
               ]
