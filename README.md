@@ -7,7 +7,8 @@
 The MIP Gateway is a middleware layer between the [MIP Frontend](https://github.com/HBPMedical/portal-frontend) and a federate analytic engine (Exareme, Datashield, FATE, MedCo, etc...).
 
 ## Contact
-* [Steve Mendes Reis](https://github.com/M4n0x) <steve.mendes-reis@chuv.ch>
+* [Manuel Spuhler](https://github.com/nicedexter) (<manuel.spuhler@chuv.ch>)
+* [Steve Mendes Reis](https://github.com/M4n0x) (<steve.mendes-reis@chuv.ch>)
 
 ## License
 Licensed under the GNU Affero General Public License, Version 3.0 (the "License");
