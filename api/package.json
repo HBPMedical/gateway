@@ -39,9 +39,13 @@
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
+    "@eclass/semantic-release-docker": "^2.0.0",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/gitlab": "^7.0.4",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.0.0",
@@ -77,5 +81,54 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/gitlab",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "./dist",
+            "CHANGELOG.md",
+            "package.json",
+            "package-lock.json"
+          ]
+        }
+      ],
+      [
+        "@eclass/semantic-release-docker",
+        {
+          "baseImageName": "gateway",
+          "registries": [
+            {
+              "url": "docker.io",
+              "imageName": "docker.io/m4n0x/gateway",
+              "user": "DOCKER_REGISTRY_USER",
+              "password": "DOCKER_REGISTRY_PASSWORD",
+              "skipTags": [
+                "latest"
+              ]
+            }
+          ]
+        }
+      ]
+    ],
+    "branches": [
+      "main",
+      "+([0-9])?(.{+([0-9]),x}).x",
+      {
+        "name": "rc",
+        "prerelease": true
+      },
+      {
+        "name": "beta",
+        "prerelease": true
+      }
+    ]
   }
 }
