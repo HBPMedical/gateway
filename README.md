@@ -2,6 +2,8 @@
 
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
+[![pipeline status](https://gitlab.com/sibmip/gateway/badges/main/pipeline.svg)](https://gitlab.com/sibmip/gateway/-/commits/main)
+
 ## Introduction
 
 The MIP Gateway is a middleware layer between the [MIP Frontend](https://github.com/HBPMedical/portal-frontend) and a federate analytic engine (Exareme, Datashield, FATE, MedCo, etc...).
