@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
-import { IEngineService } from 'src/engine/engine.interfaces';
+import { firstValueFrom, Observable } from 'rxjs';
+import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import {
@@ -9,8 +9,20 @@ import {
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
+import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
+import { Inject } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+import { transformToDomains } from './transformations';
 
 export default class DataShieldService implements IEngineService {
+  constructor(
+    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
+    private readonly httpService: HttpService,
+    @Inject(REQUEST) private readonly req: Request,
+  ) {}
+
   logout(): void {
     throw new Error('Method not implemented.');
   }
@@ -50,12 +62,26 @@ export default class DataShieldService implements IEngineService {
     throw new Error('Method not implemented.');
   }
 
-  getDomains(): Domain[] {
-    throw new Error('Method not implemented.');
+  async getDomains(): Promise<Domain[]> {
+    const path = this.options.baseurl + 'start';
+
+    const data = await firstValueFrom(
+      this.httpService.get(path, {
+        auth: { username: 'guest', password: 'guest123' },
+      }),
+    );
+    return [transformToDomains.evaluate(data.data)];
   }
 
   getActiveUser(): string {
-    throw new Error('Method not implemented.');
+    const dummyUser = {
+      username: 'anonymous',
+      subjectId: 'anonymousId',
+      fullname: 'anonymous',
+      email: 'anonymous@anonymous.com',
+      agreeNDA: true,
+    };
+    return JSON.stringify(dummyUser);
   }
 
   editActiveUser(): Observable<string> {
@@ -83,10 +109,10 @@ export default class DataShieldService implements IEngineService {
   }
 
   getExperiments(): string {
-    throw new Error('Method not implemented.');
+    return '[]';
   }
 
   getAlgorithmsREST(): string {
-    throw new Error('Method not implemented.');
+    return '[]';
   }
 }
