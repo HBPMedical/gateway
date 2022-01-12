@@ -68,10 +68,7 @@ const algoParamInputToData = (param: AlgorithmParamInput) => {
   return {
     name: param.id,
     label: param.id,
-    value:
-      param.type === ParamType.NUMBER
-        ? Number(param.value)
-        : param.value.join(','),
+    value: param.value.join(','),
   };
 };
 
