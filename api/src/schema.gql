@@ -215,6 +215,11 @@ input AlgorithmParamInput {
   value: [String!]!
 }
 
+enum ParamType {
+  STRING
+  NUMBER
+}
+
 input FormulaTransformation {
   name: String!
   operation: String!
