@@ -2,9 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Category {
+type Dataset {
   id: String!
   label: String
+  isLongitudinal: Boolean
 }
 
 type Group {
@@ -15,6 +16,11 @@ type Group {
 
   """List of variable's ids"""
   variables: [String!]
+}
+
+type Category {
+  id: String!
+  label: String
 }
 
 type Variable {
@@ -32,7 +38,7 @@ type Domain {
   description: String
   groups: [Group!]!
   variables: [Variable!]!
-  datasets: [Category!]!
+  datasets: [Dataset!]!
   rootGroup: Group!
 }
 

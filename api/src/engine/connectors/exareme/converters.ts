@@ -1,10 +1,8 @@
 import { Category } from 'src/engine/models/category.model';
+import { Dataset } from 'src/engine/models/dataset.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import {
-  AlgorithmParamInput,
-  ParamType,
-} from 'src/engine/models/experiment/input/algorithm-parameter.input';
+import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
@@ -48,6 +46,14 @@ export const dataToCategory = (data: Entity): Category => {
   return {
     id: data.code,
     label: data.label,
+  };
+};
+
+export const dataToDataset = (data: Entity): Dataset => {
+  return {
+    id: data.code,
+    label: data.label,
+    isLongitudinal: !!data.code.toLowerCase().includes('longitudinal'),
   };
 };
 

@@ -24,7 +24,7 @@ import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
 import {
   dataToAlgorithms,
-  dataToCategory,
+  dataToDataset,
   dataToExperiment,
   dataToGroup,
   dataToVariable,
@@ -141,7 +141,7 @@ export default class ExaremeService implements IEngineService {
               label: data.label,
               groups: groups,
               rootGroup: dataToGroup(data.metadataHierarchy),
-              datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
+              datasets: data.datasets ? data.datasets.map(dataToDataset) : [],
               variables: data.metadataHierarchy
                 ? this.flattenVariables(data.metadataHierarchy, groups)
                 : [],
