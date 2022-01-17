@@ -4,6 +4,24 @@ import { Algorithm } from './algorithm.model';
 import { Author } from './author.model';
 
 @ObjectType()
+export class Transformation {
+  @Field({ description: "Variable's id on which to apply the transformation" })
+  id: string;
+
+  @Field({ description: 'Transformation to apply' })
+  operation: string;
+}
+
+@ObjectType()
+export class Formula {
+  @Field(() => [Transformation], { nullable: true, defaultValue: [] })
+  transformations: Transformation[];
+
+  @Field(() => [[String]], { nullable: true, defaultValue: [] })
+  interactions: string[][];
+}
+
+@ObjectType()
 export class Experiment {
   @Field()
   id: string;
@@ -52,6 +70,9 @@ export class Experiment {
 
   @Field(() => [String], { nullable: true, defaultValue: [] })
   filterVariables?: string[];
+
+  @Field(() => Formula, { nullable: true })
+  formula?: Formula;
 
   @Field()
   algorithm: Algorithm;

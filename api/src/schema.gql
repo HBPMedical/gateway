@@ -137,6 +137,19 @@ type Author {
   fullname: String
 }
 
+type Transformation {
+  """Variable's id on which to apply the transformation"""
+  id: String!
+
+  """Transformation to apply"""
+  operation: String!
+}
+
+type Formula {
+  transformations: [Transformation!]
+  interactions: [[String!]!]
+}
+
 type Experiment {
   id: String!
   name: String!
@@ -154,6 +167,7 @@ type Experiment {
   variables: [String!]!
   coVariables: [String!]
   filterVariables: [String!]
+  formula: Formula
   algorithm: Algorithm!
 }
 
@@ -174,6 +188,7 @@ type PartialExperiment {
   variables: [String!]
   coVariables: [String!]
   filterVariables: [String!]
+  formula: Formula
   algorithm: Algorithm
 }
 
@@ -227,7 +242,7 @@ enum ParamType {
 }
 
 input FormulaTransformation {
-  name: String!
+  id: String!
   operation: String!
 }
 
