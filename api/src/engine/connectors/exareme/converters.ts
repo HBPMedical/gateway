@@ -83,7 +83,7 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
       single:
         data.transformations?.map((t) => ({
-          var_name: t.name,
+          var_name: t.id,
           unary_operation: t.operation,
         })) || [],
       interactions:

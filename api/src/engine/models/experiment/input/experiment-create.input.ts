@@ -4,7 +4,7 @@ import { AlgorithmInput } from './algorithm.input';
 @InputType()
 export class FormulaTransformation {
   @Field()
-  name: string;
+  id: string;
 
   @Field()
   operation: string;
