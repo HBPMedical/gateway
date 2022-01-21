@@ -44,7 +44,7 @@ type Domain {
 
 type AlgorithmParameter {
   id: String!
-  value: [String!]
+  value: String
   label: String
   description: String
   defaultValue: String
@@ -233,7 +233,7 @@ input AlgorithmInput {
 input AlgorithmParamInput {
   id: String!
   type: ParamType = STRING
-  value: [String!]!
+  value: String!
 }
 
 enum ParamType {

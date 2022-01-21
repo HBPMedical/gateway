@@ -33,7 +33,7 @@ export const transformToExperiment = jsonata(`
     $params := ["y", "pathology", "dataset", "filter", "x"];
 
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
-
+    
     $convDate := function($v) { $type($v) = 'string' ? $toMillis($v) : $v };
 
     {
@@ -57,7 +57,7 @@ export const transformToExperiment = jsonata(`
                     algorithm.parameters[$not(name in $params)].({
                         "id": name,
                         "label": label,
-                        "value": $split(value, ',')
+                        "value": value
                     })
                 )
         }

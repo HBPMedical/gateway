@@ -74,7 +74,7 @@ const algoParamInputToData = (param: AlgorithmParamInput) => {
   return {
     name: param.id,
     label: param.id,
-    value: param.value.join(','),
+    value: param.value,
   };
 };
 

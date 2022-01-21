@@ -20,6 +20,6 @@ export class AlgorithmParamInput {
   })
   type?: ParamType;
 
-  @Field(() => [String])
-  value: string[];
+  @Field(() => String)
+  value: string;
 }
