@@ -34,8 +34,8 @@ export class ExperimentCreateInput {
   name: string;
 
   @Field(() => [FormulaTransformation], { nullable: true })
-  transformations: FormulaTransformation[];
+  transformations?: FormulaTransformation[];
 
   @Field(() => [[String]], { nullable: true })
-  interactions: string[][];
+  interactions?: string[][];
 }
