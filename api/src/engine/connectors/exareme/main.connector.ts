@@ -74,7 +74,9 @@ export default class ExaremeService implements IEngineService {
 
     return {
       ...resultAPI.data,
-      experiments: resultAPI.data.experiments?.map(dataToExperiment) ?? [],
+      experiments:
+        resultAPI.data.experiments?.map(dataToExperiment).filter((r) => r) ??
+        [],
     };
   }
 

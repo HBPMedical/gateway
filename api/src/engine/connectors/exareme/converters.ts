@@ -167,19 +167,28 @@ export const descriptiveDataToTableResult = (
   return [result];
 };
 
-export const dataToExperiment = (data: ExperimentData): Experiment => {
-  const expTransform = transformToExperiment.evaluate(data);
+export const dataToExperiment = (
+  data: ExperimentData,
+): Experiment | undefined => {
+  try {
+    const expTransform = transformToExperiment.evaluate(data);
 
-  const exp: Experiment = {
-    ...expTransform,
-    results: [],
-  };
+    const exp: Experiment = {
+      ...expTransform,
+      results: [],
+    };
 
-  exp.results = data.result
-    ? data.result.map((result) => dataToResult(result, exp.algorithm.id)).flat()
-    : [];
+    exp.results = data.result
+      ? data.result
+          .map((result) => dataToResult(result, exp.algorithm.id))
+          .flat()
+      : [];
 
-  return exp;
+    return exp;
+  } catch (e) {
+    //TODO : Add logger can't convert experiment
+    return undefined;
+  }
 };
 
 export const dataToAlgorithms = (data: string): Algorithm[] => {
