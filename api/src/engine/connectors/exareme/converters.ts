@@ -111,11 +111,6 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
           label: 'pathology',
           value: data.domain,
         },
-        {
-          name: 'y',
-          label: 'y',
-          value: data.variables.join(','),
-        },
         ...(formula
           ? [
               {
@@ -132,10 +127,49 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
   };
 
   if (data.coVariables && data.coVariables.length) {
+    let separator = ',';
+
+    const design = params.algorithm.parameters.find((p) => p.name === 'design');
+    const excludes = [
+      'Multiple Histograms',
+      'CART',
+      'ID3',
+      'Naive Bayes Training',
+    ];
+
+    if (design && !excludes.includes(data.algorithm.id)) {
+      separator = design.value === 'additive' ? '+' : '*';
+    }
+
     params.algorithm.parameters.push({
       name: 'x',
       label: 'x',
-      value: data.coVariables.join(','),
+      value: data.coVariables.join(separator),
+    });
+  }
+
+  if (data.variables) {
+    let variables = data.variables.join(',');
+
+    if (data.algorithm.id === 'TTEST_PAIRED') {
+      const varCount = data.variables.length;
+      variables = data.variables
+        ?.reduce(
+          (vectors: string, v, i) =>
+            (i + 1) % 2 === 0
+              ? `${vectors}${v},`
+              : varCount === i + 1
+              ? `${vectors}${v}-${data.variables[0]}`
+              : `${vectors}${v}-`,
+          '',
+        )
+        .replace(/,$/, '');
+    }
+
+    params.algorithm.parameters.push({
+      name: 'y',
+      label: 'y',
+      value: variables,
     });
   }
 
