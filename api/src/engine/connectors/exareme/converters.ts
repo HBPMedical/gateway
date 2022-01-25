@@ -220,8 +220,17 @@ export const dataToExperiment = (
 
     return exp;
   } catch (e) {
-    //TODO : Add logger can't convert experiment
-    return undefined;
+    return {
+      id: data.uuid,
+      name: data.name,
+      status: 'error',
+      variables: [],
+      domain: data['domain'] ?? '',
+      datasets: [],
+      algorithm: {
+        id: 'unknown',
+      },
+    };
   }
 };
 
@@ -229,10 +238,19 @@ export const dataToAlgorithms = (data: string): Algorithm[] => {
   return transformToAlgorithms.evaluate(data);
 };
 
-export const dataToRaw = (result: ResultExperiment): RawResult[] => {
+export const dataToRaw = (
+  algo: string,
+  result: ResultExperiment,
+): RawResult[] => {
+  let data = result;
+
+  if (algo === 'CART') {
+    data = { ...data, type: 'application/binary-tree+json' };
+  }
+
   return [
     {
-      rawdata: result,
+      rawdata: data,
     },
   ];
 };
@@ -247,7 +265,7 @@ export const dataToResult = (
     case 'application/vnd.highcharts+json':
       return dataHighchartToResult(result as ResultChartExperiment, algo);
     default:
-      return dataToRaw(result);
+      return dataToRaw(algo, result);
   }
 };
 
@@ -259,7 +277,7 @@ export const dataJSONtoResult = (
     case 'descriptive_stats':
       return descriptiveDataToTableResult(result);
     default:
-      return dataToRaw(result);
+      return dataToRaw(algo, result);
   }
 };
 
@@ -273,6 +291,6 @@ export const dataHighchartToResult = (
     case 'area':
       return [dataROCToLineResult.evaluate(result) as LineChartResult];
     default:
-      return dataToRaw(result);
+      return dataToRaw(algo, result);
   }
 };

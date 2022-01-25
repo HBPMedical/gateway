@@ -31,10 +31,9 @@ export const transformToAlgorithms = jsonata(`
 export const transformToExperiment = jsonata(`
 ( 
     $params := ["y", "pathology", "dataset", "filter", "x"];
-
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
-    
     $convDate := function($v) { $type($v) = 'string' ? $toMillis($v) : $v };
+    $rp := function($v) {$replace($v, /(\\+|\\*|-)/, ',')};
 
     {
         "name": name,
@@ -47,8 +46,8 @@ export const transformToExperiment = jsonata(`
         "shared": shared,
         "updateAt": $convDate(updated),
         "domain": algorithm.parameters[name = "pathology"].value,
-        "variables": $split(algorithm.parameters[name = "y"].value, ','),
-        "coVariables": $toArray($split(algorithm.parameters[name = "x"].value, ',')),
+        "variables": $split($rp(algorithm.parameters[name = "y"].value), ','),
+        "coVariables": $toArray($split($rp(algorithm.parameters[name = "x"].value), ',')),
         "filter": algorithm.parameters[name = "filter"].value,
         "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
         "algorithm": {
