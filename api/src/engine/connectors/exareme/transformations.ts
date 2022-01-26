@@ -48,6 +48,7 @@ export const transformToExperiment = jsonata(`
         "domain": algorithm.parameters[name = "pathology"].value,
         "variables": $split($rp(algorithm.parameters[name = "y"].value), ','),
         "coVariables": $toArray($split($rp(algorithm.parameters[name = "x"].value), ',')),
+        "filterVariables": $match(algorithm.parameters[name = "filter"].value, /\\"id\\":\\"(\\w*)\\"/).groups,
         "filter": algorithm.parameters[name = "filter"].value,
         "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
         "algorithm": {
