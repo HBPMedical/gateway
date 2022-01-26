@@ -30,11 +30,12 @@ export const transformToAlgorithms = jsonata(`
 
 export const transformToExperiment = jsonata(`
 ( 
-    $params := ["y", "pathology", "dataset", "filter", "x"];
+    $params := ["y", "pathology", "dataset", "filter", "x", "formula"];
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
     $convDate := function($v) { $type($v) = 'string' ? $toMillis($v) : $v };
     $rp := function($v) {$replace($v, /(\\+|\\*|-)/, ',')};
     $strSafe := function($v) { $type($v) = 'string' ? $v : "" };
+    $formula := $eval(algorithm.parameters[name = "formula"].value);
 
     {
         "name": name,
@@ -47,11 +48,18 @@ export const transformToExperiment = jsonata(`
         "shared": shared,
         "updateAt": $convDate(updated),
         "domain": algorithm.parameters[name = "pathology"].value,
+        "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
         "variables": $split($rp(algorithm.parameters[name = "y"].value), ','),
         "coVariables": $toArray($split($rp(algorithm.parameters[name = "x"].value), ',')),
         "filterVariables": (algorithm.parameters[name = "filter"].value ~> $strSafe() ~> $match(/\\"id\\":\\"(\w*)\\"/)).groups,
         "filter": algorithm.parameters[name = "filter"].value,
-        "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
+        "formula": {
+            "transformations": $formula.single.{
+                "id": var_name,
+                "operation": unary_operation
+            }[],
+            "interactions" : $formula.interactions.[var1, var2][]
+        },
         "algorithm": {
             "id": algorithm.name,
             "parameters" : $toArray(
