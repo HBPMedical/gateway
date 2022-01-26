@@ -1,3 +1,4 @@
+import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { Category } from 'src/engine/models/category.model';
 import { Dataset } from 'src/engine/models/dataset.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
@@ -245,7 +246,7 @@ export const dataToRaw = (
   let data = result;
 
   if (algo === 'CART') {
-    data = { ...data, type: 'application/binary-tree+json' };
+    data = { ...data, type: MIME_TYPES.JSONBTREE };
   }
 
   return [
