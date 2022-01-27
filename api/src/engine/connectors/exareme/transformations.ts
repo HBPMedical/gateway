@@ -37,7 +37,7 @@ export const transformToExperiment = jsonata(`
     $strSafe := function($v) { $type($v) = 'string' ? $v : "" };
     $formula := $eval(algorithm.parameters[name = "formula"].value);
 
-    {
+    ($ ~> | algorithm.parameters | {"name": name ? name : label } |){
         "name": name,
         "id": uuid,
         "author": createdBy,
