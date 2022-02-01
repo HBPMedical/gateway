@@ -53,10 +53,11 @@ export class EngineModule {
       const engine = new service.default(options, httpService, req);
 
       return engine;
-    } catch {
+    } catch (e) {
       this.logger.error(
         `There is a problem with the connector '${options.type}'`,
       );
+      this.logger.verbose(e);
       process.exit(); // We can't continue without an engine, shutdown the process...
     }
   }

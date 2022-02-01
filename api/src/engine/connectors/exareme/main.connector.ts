@@ -24,7 +24,7 @@ import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
 import {
   dataToAlgorithms,
-  dataToCategory,
+  dataToDataset,
   dataToExperiment,
   dataToGroup,
   dataToVariable,
@@ -74,7 +74,7 @@ export default class ExaremeService implements IEngineService {
 
     return {
       ...resultAPI.data,
-      experiments: resultAPI.data.experiments.map(dataToExperiment),
+      experiments: resultAPI.data.experiments?.map(dataToExperiment) ?? [],
     };
   }
 
@@ -86,8 +86,8 @@ export default class ExaremeService implements IEngineService {
     return dataToAlgorithms(resultAPI.data);
   }
 
-  async getExperiment(uuid: string): Promise<Experiment> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+  async getExperiment(id: string): Promise<Experiment> {
+    const path = this.options.baseurl + `experiments/${id}`;
 
     const resultAPI = await firstValueFrom(
       this.httpService.get<ExperimentData>(path),
@@ -97,10 +97,10 @@ export default class ExaremeService implements IEngineService {
   }
 
   async editExperient(
-    uuid: string,
+    id: string,
     expriment: ExperimentEditInput,
   ): Promise<Experiment> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+    const path = this.options.baseurl + `experiments/${id}`;
 
     const resultAPI = await firstValueFrom(
       this.httpService.patch<ExperimentData>(path, expriment),
@@ -109,16 +109,16 @@ export default class ExaremeService implements IEngineService {
     return dataToExperiment(resultAPI.data);
   }
 
-  async removeExperiment(uuid: string): Promise<PartialExperiment> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+  async removeExperiment(id: string): Promise<PartialExperiment> {
+    const path = this.options.baseurl + `experiments/${id}`;
 
     try {
       await firstValueFrom(this.httpService.delete(path));
       return {
-        uuid: uuid,
+        id: id,
       };
     } catch (error) {
-      throw new BadRequestException(`${uuid} does not exists`);
+      throw new BadRequestException(`${id} does not exists`);
     }
   }
 
@@ -141,7 +141,7 @@ export default class ExaremeService implements IEngineService {
               label: data.label,
               groups: groups,
               rootGroup: dataToGroup(data.metadataHierarchy),
-              datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
+              datasets: data.datasets ? data.datasets.map(dataToDataset) : [],
               variables: data.metadataHierarchy
                 ? this.flattenVariables(data.metadataHierarchy, groups)
                 : [],
@@ -172,22 +172,22 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  getExperimentREST(uuid: string): Observable<string> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+  getExperimentREST(id: string): Observable<string> {
+    const path = this.options.baseurl + `experiments/${id}`;
 
     return this.httpService
       .get<string>(path)
       .pipe(map((response) => response.data));
   }
 
-  deleteExperiment(uuid: string): Observable<string> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+  deleteExperiment(id: string): Observable<string> {
+    const path = this.options.baseurl + `experiments/${id}`;
 
     return this.httpService.delete(path).pipe(map((response) => response.data));
   }
 
-  editExperimentREST(uuid: string): Observable<string> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+  editExperimentREST(id: string): Observable<string> {
+    const path = this.options.baseurl + `experiments/${id}`;
 
     return this.httpService
       .patch(path, this.req.body)

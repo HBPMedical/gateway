@@ -33,18 +33,16 @@ export default class LocalService implements IEngineService {
     throw new Error('Method not implemented.');
   }
 
-  getExperiment(uuid: string): Experiment | Promise<Experiment> {
+  getExperiment(id: string): Experiment | Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
-  removeExperiment(
-    uuid: string,
-  ): PartialExperiment | Promise<PartialExperiment> {
+  removeExperiment(id: string): PartialExperiment | Promise<PartialExperiment> {
     throw new Error('Method not implemented.');
   }
 
   editExperient(
-    uuid: string,
+    id: string,
     expriment: ExperimentEditInput,
   ): Experiment | Promise<Experiment> {
     throw new Error('Method not implemented.');
