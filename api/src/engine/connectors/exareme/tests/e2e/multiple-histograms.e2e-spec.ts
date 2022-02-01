@@ -37,7 +37,7 @@ describe('ExaremeService', () => {
     algorithm: {
       id: algorithmId,
       type: 'string',
-      parameters: [{ id: 'bins', value: ['{ "lefthippocampus" : 35 }'] }],
+      parameters: [{ id: 'bins', value: '{ "lefthippocampus" : 35 }' }],
     },
     filter: '',
   };

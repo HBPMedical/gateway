@@ -39,8 +39,8 @@ describe('ExaremeService', () => {
       id: algorithmId,
       type: 'string',
       parameters: [
-        { id: 'positive_level', value: ['M'] },
-        { id: 'negative_level', value: ['F'] },
+        { id: 'positive_level', value: 'M' },
+        { id: 'negative_level', value: 'F' },
       ],
     },
     filter: '',

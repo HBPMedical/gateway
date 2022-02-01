@@ -41,23 +41,23 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'devel',
-          value: ['external'],
+          value: 'external',
         },
         {
           id: 'max_deg',
-          value: ['4'],
+          value: '4',
         },
         {
           id: 'confLevels',
-          value: ['0.80,0.95'],
+          value: '0.80,0.95',
         },
         {
           id: 'thres',
-          value: ['0.95'],
+          value: '0.95',
         },
         {
           id: 'num_points',
-          value: ['200'],
+          value: '200',
         },
       ],
     },

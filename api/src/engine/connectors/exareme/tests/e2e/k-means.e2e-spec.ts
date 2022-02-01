@@ -41,15 +41,15 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'k',
-          value: ['4'],
+          value: '4',
         },
         {
           id: 'e',
-          value: ['1'],
+          value: '1',
         },
         {
           id: 'iterations_max_number',
-          value: ['1000'],
+          value: '1000',
         },
       ],
     },
@@ -77,7 +77,7 @@ describe('ExaremeService', () => {
       const data = experimentResult.results[0] as RawResult;
 
       expect(
-        data.rawdata['data'][0]['leftacgganteriorcingulategyrus'],
+        data.rawdata['data'][2]['leftacgganteriorcingulategyrus'],
       ).toBeCloseTo(4.197, 2);
     });
   });

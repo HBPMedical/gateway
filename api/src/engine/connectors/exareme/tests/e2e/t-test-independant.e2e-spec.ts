@@ -49,27 +49,27 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'xlevels',
-          value: ['M', 'F'],
+          value: 'M,F',
         },
         {
           id: 'testvalue',
-          value: ['3.0'],
+          value: '3.0',
         },
         {
           id: 'hypothesis',
-          value: ['greaterthan'],
+          value: 'greaterthan',
         },
         {
           id: 'effectsize',
-          value: ['1'],
+          value: '1',
         },
         {
           id: 'ci',
-          value: ['1'],
+          value: '1',
         },
         {
           id: 'meandiff',
-          value: ['1'],
+          value: '1',
         },
       ],
     },

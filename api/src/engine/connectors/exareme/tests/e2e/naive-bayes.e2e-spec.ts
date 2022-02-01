@@ -41,11 +41,11 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'alpha',
-          value: ['0.1'],
+          value: '0.1',
         },
         {
           id: 'k',
-          value: ['10'],
+          value: '10',
         },
       ],
     },

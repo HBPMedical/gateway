@@ -40,19 +40,19 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'outcome_pos',
-          value: ['AD'],
+          value: 'AD',
         },
         {
           id: 'outcome_neg',
-          value: ['MCI'],
+          value: 'MCI',
         },
         {
           id: 'max_age',
-          value: ['100'],
+          value: '100',
         },
         {
           id: 'total_duration',
-          value: ['1100'],
+          value: '1100',
         },
       ],
     },

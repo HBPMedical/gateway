@@ -41,6 +41,12 @@ describe('ExaremeService', () => {
       parameters: [],
     },
     filter: '',
+    transformations: [
+      {
+        id: 'lefthippocampus',
+        operation: 'standardize',
+      },
+    ],
   };
 
   describe('Integration Test for experiment API', () => {

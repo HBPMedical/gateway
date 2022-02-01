@@ -40,7 +40,7 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'hypothesis',
-          value: ['different'],
+          value: 'different',
         },
       ],
     },
@@ -66,9 +66,7 @@ describe('ExaremeService', () => {
       expect(experimentResult.results.length).toBeGreaterThanOrEqual(1);
       const data = experimentResult.results[0] as RawResult;
 
-      console.log(data.rawdata['data']);
-
-      //expect(data.rawdata['data'][0]['t_value']).toBeCloseTo(-63.2, 3);
+      expect(data.rawdata['data'][0]['t_value']).toBeCloseTo(-63.2, 3);
     });
   });
 });

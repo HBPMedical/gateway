@@ -41,11 +41,16 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'referencevalues',
-          value: ['[{"name":"alzheimerbroadcategory","val":"Other"}]'],
+          value: '[{"name":"alzheimerbroadcategory","val":"Other"}]',
         },
         {
           id: 'encodingparameter',
-          value: ['dummycoding'],
+          value: 'dummycoding',
+        },
+        {
+          id: 'filter',
+          value:
+            '{"condition":"AND","rules":[{"id":"subjectageyears","field":"subjectageyears","type":"integer","input":"number","operator":"greater","value":"65"}],"valid":true}',
         },
       ],
     },
@@ -75,6 +80,10 @@ describe('ExaremeService', () => {
 
       expect(data.rawdata['data']['coefficients'][0]['estimate']).toBeCloseTo(
         0.986,
+        3,
+      );
+      expect(data.rawdata['data']['statistics'][0]['value']).toBeCloseTo(
+        -1.478,
         3,
       );
     });

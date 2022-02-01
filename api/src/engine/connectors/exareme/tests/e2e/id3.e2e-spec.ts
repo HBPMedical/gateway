@@ -38,7 +38,7 @@ describe('ExaremeService', () => {
     algorithm: {
       id: algorithmId,
       type: 'string',
-      parameters: [{ id: 'iterations_max_number', value: ['20'] }],
+      parameters: [{ id: 'iterations_max_number', value: '20' }],
     },
     filter: '',
   };

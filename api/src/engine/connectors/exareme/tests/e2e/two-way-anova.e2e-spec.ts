@@ -41,23 +41,23 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'bins',
-          value: ['40'],
+          value: '40',
         },
         {
           id: 'iterations_max_number',
-          value: ['20'],
+          value: '20',
         },
         {
           id: 'sstype',
-          value: ['2'],
+          value: '2',
         },
         {
           id: 'outputformat',
-          value: ['pfa'],
+          value: 'pfa',
         },
         {
           id: 'design',
-          value: ['additive'],
+          value: 'additive',
         },
       ],
     },

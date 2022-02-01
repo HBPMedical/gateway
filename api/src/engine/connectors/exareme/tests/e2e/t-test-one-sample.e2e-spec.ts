@@ -41,23 +41,23 @@ describe('ExaremeService', () => {
       parameters: [
         {
           id: 'testvalue',
-          value: ['3.0'],
+          value: '3.0',
         },
         {
           id: 'hypothesis',
-          value: ['different'],
+          value: 'different',
         },
         {
           id: 'effectsize',
-          value: ['1'],
+          value: '1',
         },
         {
           id: 'ci',
-          value: ['1'],
+          value: '1',
         },
         {
           id: 'meandiff',
-          value: ['1'],
+          value: '1',
         },
       ],
     },

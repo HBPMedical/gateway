@@ -39,8 +39,8 @@ describe('ExaremeService', () => {
       id: algorithmId,
       type: 'string',
       parameters: [
-        { id: 'standardize', value: ['false'] },
-        { id: 'coding', value: ['null'] },
+        { id: 'standardize', value: 'false' },
+        { id: 'coding', value: 'null' },
       ],
     },
     filter: '',

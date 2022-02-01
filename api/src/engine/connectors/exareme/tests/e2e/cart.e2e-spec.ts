@@ -39,8 +39,8 @@ describe('ExaremeService', () => {
       id: algorithmId,
       type: 'string',
       parameters: [
-        { id: 'max_depth', value: ['3'] },
-        { id: 'no_split_points', value: ['10'] },
+        { id: 'max_depth', value: '3' },
+        { id: 'no_split_points', value: '10' },
       ],
     },
     filter: '',
