@@ -29,7 +29,7 @@ export class EngineResolver {
   }
 
   @Query(() => ListExperiments)
-  async experiments(
+  async experimentList(
     @Args('page', { nullable: true, defaultValue: 0 }) page: number,
     @Args('name', { nullable: true, defaultValue: '' }) name: string,
   ) {
@@ -37,8 +37,8 @@ export class EngineResolver {
   }
 
   @Query(() => Experiment)
-  async expriment(@Args('uuid') uuid: string) {
-    return this.engineService.getExperiment(uuid);
+  async experiment(@Args('id') id: string) {
+    return this.engineService.getExperiment(id);
   }
 
   @Query(() => [Algorithm])
@@ -60,16 +60,14 @@ export class EngineResolver {
 
   @Mutation(() => Experiment)
   async editExperiment(
-    @Args('uuid') uuid: string,
+    @Args('id') id: string,
     @Args('data') experiment: ExperimentEditInput,
   ) {
-    return this.engineService.editExperient(uuid, experiment);
+    return this.engineService.editExperient(id, experiment);
   }
 
   @Mutation(() => PartialExperiment)
-  async removeExperiment(
-    @Args('uuid') uuid: string,
-  ): Promise<PartialExperiment> {
-    return this.engineService.removeExperiment(uuid);
+  async removeExperiment(@Args('id') id: string): Promise<PartialExperiment> {
+    return this.engineService.removeExperiment(id);
   }
 }

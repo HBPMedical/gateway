@@ -2,9 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Category {
+type Dataset {
   id: String!
   label: String
+  isLongitudinal: Boolean
 }
 
 type Group {
@@ -15,6 +16,11 @@ type Group {
 
   """List of variable's ids"""
   variables: [String!]
+}
+
+type Category {
+  id: String!
+  label: String
 }
 
 type Variable {
@@ -32,13 +38,13 @@ type Domain {
   description: String
   groups: [Group!]!
   variables: [Variable!]!
-  datasets: [Category!]!
+  datasets: [Dataset!]!
   rootGroup: Group!
 }
 
 type AlgorithmParameter {
-  name: String!
-  value: [String!]
+  id: String!
+  value: String
   label: String
   description: String
   defaultValue: String
@@ -50,7 +56,7 @@ type AlgorithmParameter {
 }
 
 type Algorithm {
-  name: String!
+  id: String!
   parameters: [AlgorithmParameter!]
   label: String
   type: String
@@ -72,7 +78,7 @@ type TableResult {
 }
 
 type RawResult {
-  rawdata: JSON!
+  rawdata: JSON
 }
 
 """
@@ -86,9 +92,9 @@ type GroupsResult {
 
 type HeatMapResult {
   name: String!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
   matrix: [[Float!]!]!
-  xAxis: ChartAxis!
-  yAxis: ChartAxis!
 }
 
 type LineChartResult {
@@ -126,9 +132,28 @@ type Header {
   type: String!
 }
 
+type Author {
+  username: String
+  fullname: String
+}
+
+type Transformation {
+  """Variable's id on which to apply the transformation"""
+  id: String!
+
+  """Transformation to apply"""
+  operation: String!
+}
+
+type Formula {
+  transformations: [Transformation!]
+  interactions: [[String!]!]
+}
+
 type Experiment {
-  uuid: String
-  author: String
+  id: String!
+  name: String!
+  author: Author
   createdAt: Float
   updateAt: Float
   finishedAt: Float
@@ -140,13 +165,16 @@ type Experiment {
   filter: String
   domain: String!
   variables: [String!]!
+  coVariables: [String!]
+  filterVariables: [String!]
+  formula: Formula
   algorithm: Algorithm!
-  name: String!
 }
 
 type PartialExperiment {
-  uuid: String
-  author: String
+  id: String
+  name: String
+  author: Author
   createdAt: Float
   updateAt: Float
   finishedAt: Float
@@ -158,8 +186,10 @@ type PartialExperiment {
   filter: String
   domain: String
   variables: [String!]
+  coVariables: [String!]
+  filterVariables: [String!]
+  formula: Formula
   algorithm: Algorithm
-  name: String
 }
 
 type ListExperiments {
@@ -171,15 +201,15 @@ type ListExperiments {
 
 type Query {
   domains(ids: [String!] = []): [Domain!]!
-  experiments(name: String = "", page: Float = 0): ListExperiments!
-  expriment(uuid: String!): Experiment!
+  experimentList(name: String = "", page: Float = 0): ListExperiments!
+  experiment(id: String!): Experiment!
   algorithms: [Algorithm!]!
 }
 
 type Mutation {
   createExperiment(isTransient: Boolean = false, data: ExperimentCreateInput!): Experiment!
-  editExperiment(data: ExperimentEditInput!, uuid: String!): Experiment!
-  removeExperiment(uuid: String!): PartialExperiment!
+  editExperiment(data: ExperimentEditInput!, id: String!): Experiment!
+  removeExperiment(id: String!): PartialExperiment!
 }
 
 input ExperimentCreateInput {
@@ -187,6 +217,7 @@ input ExperimentCreateInput {
   filter: String
   domain: String!
   variables: [String!]!
+  coVariables: [String!] = []
   algorithm: AlgorithmInput!
   name: String!
   transformations: [FormulaTransformation!]
@@ -194,22 +225,29 @@ input ExperimentCreateInput {
 }
 
 input AlgorithmInput {
-  name: String!
+  id: String!
   parameters: [AlgorithmParamInput!] = []
   type: String!
 }
 
 input AlgorithmParamInput {
-  name: String!
-  value: [String!]!
+  id: String!
+  type: ParamType = STRING
+  value: String!
+}
+
+enum ParamType {
+  STRING
+  NUMBER
 }
 
 input FormulaTransformation {
-  name: String!
+  id: String!
   operation: String!
 }
 
 input ExperimentEditInput {
   name: String
+  shared: Boolean
   viewed: Boolean
 }

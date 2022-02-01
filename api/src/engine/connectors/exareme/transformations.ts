@@ -5,16 +5,16 @@ import * as jsonata from 'jsonata'; // old import style needed due to 'export = 
 
 export const transformToAlgorithms = jsonata(`
 (
-    $params := ["y", "pathology", "dataset", "filter"];
+    $params := ["y", "pathology", "dataset", "filter", "x"];
 
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
 
     *.{
-    'name': name,
+    'id': name,
     'label': label,
     'description': desc,
     'parameters': $toArray(parameters[$not(name in $params)].{
-        'name': name,
+        'id': name,
         'description': desc,
         'label': label,
         'type': valueType,
@@ -30,30 +30,45 @@ export const transformToAlgorithms = jsonata(`
 
 export const transformToExperiment = jsonata(`
 ( 
-    $params := ["y", "pathology", "dataset", "filter"];
+    $params := ["y", "pathology", "dataset", "filter", "x", "formula"];
+    $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
+    $convDate := function($v) { $type($v) = 'string' ? $toMillis($v) : $v };
+    $rp := function($v) {$replace($v, /(\\+|\\*|-)/, ',')};
+    $strSafe := function($v) { $type($v) = 'string' ? $v : "" };
+    $formula := $eval(algorithm.parameters[name = "formula"].value);
 
-    {
+    ($ ~> | algorithm.parameters | {"name": name ? name : label } |){
         "name": name,
-        "uuid": uuid,
+        "id": uuid,
         "author": createdBy,
         "viewed": viewed,
         "status": status,
-        "createdAt": created,
-        "finishedAt": finished,
+        "createdAt": $convDate(created),
+        "finishedAt": $convDate(finished),
         "shared": shared,
-        "updateAt": updated,
-        "domains": algorithm.parameters[name = "pathology"].value,
-        "variables": $split(algorithm.parameters[name = "y"].value, ','),
-        "filter": algorithm.parameters[name = "filter"].value,
+        "updateAt": $convDate(updated),
+        "domain": algorithm.parameters[name = "pathology"].value,
         "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
+        "variables": $split($rp(algorithm.parameters[name = "y"].value), ','),
+        "coVariables": $toArray($split($rp(algorithm.parameters[name = "x"].value), ',')),
+        "filterVariables": (algorithm.parameters[name = "filter"].value ~> $strSafe() ~> $match(/\\"id\\":\\"(\w*)\\"/)).groups,
+        "filter": algorithm.parameters[name = "filter"].value,
+        "formula": {
+            "transformations": $formula.single.{
+                "id": var_name,
+                "operation": unary_operation
+            }[],
+            "interactions" : $formula.interactions.[var1, var2][]
+        },
         "algorithm": {
-            "name": algorithm.name,
-            "parameters" : 
-                algorithm.parameters[$not(name in $params)].({
-                    "name": name,
-                    "label": label,
-                    "value": value
-                })
+            "id": algorithm.name,
+            "parameters" : $toArray(
+                    algorithm.parameters[$not(name in $params)].({
+                        "id": name,
+                        "label": label,
+                        "value": value
+                    })
+                )
         }
     }
 )
@@ -137,3 +152,57 @@ export const descriptiveSingleToTables = jsonata(`
     ]
 )
 `);
+
+export const dataROCToLineResult = jsonata(`
+({
+    "name": data.title.text,
+    "xAxis": {
+        "label": data.xAxis.title.text
+    },
+    "yAxis": {
+        "label": data.yAxis.title.text
+    },
+    "lines": [
+        {
+            "label": "ROC curve",
+            "x": data.series.data.$[0],
+            "y": data.series.data.$[1],
+            "type": 0
+        }
+    ]
+})
+`);
+
+export const dataToHeatmap = jsonata(`
+(
+    {
+        "name": data.title.text,
+        "xAxis": {
+            "categories": data.xAxis.categories,
+            "label": data.xAxis.label
+        },
+        "yAxis": {
+            "categories": data.yAxis.categories,
+            "label": data.yAxis.label
+        },
+        "matrix": $toMat(data.series.data)
+    }
+)
+`);
+
+dataToHeatmap.registerFunction(
+  'toMat',
+  (a) => {
+    const matrix = [];
+
+    a.forEach(
+      (elem: { y: number | number; x: number | number; value: number }) => {
+        matrix[elem.y] = matrix[elem.y] ?? [];
+        matrix[elem.y][elem.x] = elem.value;
+      },
+    );
+
+    return matrix;
+  },
+  '<a<o>:a<a<n>>',
+);

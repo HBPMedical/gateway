@@ -19,10 +19,6 @@ export const ResultUnion = createUnionType({
       return TableResult;
     }
 
-    if (value.rawdata) {
-      return RawResult;
-    }
-
     if (value.groups) {
       return GroupsResult;
     }
@@ -31,10 +27,10 @@ export const ResultUnion = createUnionType({
       return HeatMapResult;
     }
 
-    if (value.x) {
+    if (value.lines) {
       return LineChartResult;
     }
 
-    return null;
+    return RawResult;
   },
 });
