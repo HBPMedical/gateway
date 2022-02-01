@@ -35,14 +35,28 @@ export default class DataShieldService implements IEngineService {
     data: ExperimentCreateInput,
     isTransient: boolean,
   ): Experiment | Promise<Experiment> {
-    throw new Error('Method not implemented.');
+    return {
+      name: 'placeholder',
+      algorithm: {
+        id: 'placeholder',
+      },
+      datasets: [],
+      variables: [],
+      domain: '',
+      id: 'placeholder',
+    };
   }
 
   listExperiments(
     page: number,
     name: string,
   ): ListExperiments | Promise<ListExperiments> {
-    throw new Error('Method not implemented.');
+    return {
+      totalExperiments: 0,
+      experiments: [],
+      totalPages: 0,
+      currentPage: 0,
+    };
   }
 
   getExperiment(id: string): Experiment | Promise<Experiment> {
