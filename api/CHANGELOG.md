@@ -1,3 +1,10 @@
+# [1.1.0-beta.3](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.2...1.1.0-beta.3) (2022-02-01)
+
+
+### Features
+
+* Add semantic backmerge for GitFlow compatibility ([6c9491d](https://gitlab.com/sibmip/gateway/commit/6c9491dab59cc707216f5f9eac839d1ad672a975))
+
 # [1.1.0-beta.2](https://gitlab.com/sibmip/gateway/compare/v1.1.0-beta.1...1.1.0-beta.2) (2022-02-01)
 
 
