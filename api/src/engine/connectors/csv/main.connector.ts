@@ -31,14 +31,29 @@ export default class CSVService implements IEngineService {
     data: ExperimentCreateInput,
     isTransient: boolean,
   ): Experiment | Promise<Experiment> {
-    throw new Error('Method not implemented.');
+    return {
+      id: '',
+      domain: '',
+      datasets: [],
+      algorithm: {
+        id: '',
+        description: '',
+      },
+      name: 'test',
+      variables: [],
+    };
   }
 
   listExperiments(
     page: number,
     name: string,
   ): ListExperiments | Promise<ListExperiments> {
-    throw new Error('Method not implemented.');
+    return {
+      experiments: [],
+      currentPage: 0,
+      totalExperiments: 0,
+      totalPages: 0,
+    };
   }
 
   getExperiment(id: string): Experiment | Promise<Experiment> {
@@ -83,35 +98,40 @@ export default class CSVService implements IEngineService {
 
       row.shift(); // get ride of the variable name, keep only groups
 
-      vars.push(variable);
+      if (!vars.find((v) => v.id === variable.id)) vars.push(variable); // avoid duplicate
 
-      row
-        .filter((group) => !groups[group.toLowerCase()])
-        .forEach((group, i) => {
-          const groupId = group.toLowerCase();
-          if (i === 0) rootGroup.groups.push(groupId);
-          groups[groupId] = {
-            id: groupId,
-            label: group,
-            variables: [],
-            groups: [],
-          };
-        });
+      let pathId = '';
 
-      const groupId = row[row.length - 1].toLowerCase(); // group's variable container
+      row.forEach((group, i) => {
+        const groupId = `${pathId}/${group.toLowerCase()}`;
+        pathId = groupId;
+        if (groups[groupId]) return;
+        if (i === 0) {
+          rootGroup.groups.push(groupId);
+        }
+        groups[groupId] = {
+          id: groupId,
+          label: group,
+          variables: [],
+          groups: [],
+        };
+      });
+
+      const groupId = pathId; // group's variable container
 
       groups[groupId].variables.push(variable.id); // add variable
 
-      row
+      row // fill groups with childrens
         .reverse()
         .map((group) => group.toLowerCase())
         .forEach((group, i) => {
-          const groupId = group.toLowerCase();
+          const id = pathId;
+          pathId = pathId.replace(`/${group}`, '');
 
           if (i !== row.length - 1) {
-            const parentId = row[i + 1].toLowerCase();
-            if (groups[parentId].groups.indexOf(groupId) === -1)
-              groups[parentId].groups.push(groupId);
+            const parentId = pathId;
+            if (groups[parentId].groups.indexOf(id) === -1)
+              groups[parentId].groups.push(id);
           }
         });
     });
