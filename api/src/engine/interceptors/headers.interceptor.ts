@@ -56,7 +56,7 @@ export class HeadersInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       catchError((e) => {
-        if (!e.response.data || !e.response.status) return e;
+        if (!e.response || !e.response.data || !e.response.status) throw e;
 
         this.logger.log(e.message);
         this.logger.verbose(
