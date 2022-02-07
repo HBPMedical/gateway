@@ -1,3 +1,11 @@
+# [1.1.0-beta.4](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.3...1.1.0-beta.4) (2022-02-07)
+
+
+### Bug Fixes
+
+* Group id fix for csv connector ([01ccfbc](https://gitlab.com/sibmip/gateway/commit/01ccfbcc56f5e402d938bcb19f4db6c5c6e89e8b))
+* Issue throwing connector's errors ([ebb7cf6](https://gitlab.com/sibmip/gateway/commit/ebb7cf6732882598e2cfa56b73bc2e358b662d7a))
+
 # [1.1.0-beta.3](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.2...1.1.0-beta.3) (2022-02-01)
 
 
