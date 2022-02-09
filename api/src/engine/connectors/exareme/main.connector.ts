@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { IncomingMessage } from 'http';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
@@ -37,16 +38,23 @@ import { Pathology } from './interfaces/pathology.interface';
 
 @Injectable()
 export default class ExaremeService implements IEngineService {
+  headers = {};
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
-    @Inject(REQUEST) private readonly req: Request,
-  ) {}
+    @Inject(REQUEST) private readonly req: Request, //TODO: remove inject, set request from manually take care of graphql request
+  ) {
+    const gqlRequest = req['req']; // graphql headers exception
+    this.headers =
+      gqlRequest && gqlRequest instanceof IncomingMessage
+        ? gqlRequest.headers
+        : req.headers;
+  }
 
   async logout() {
     const path = `${this.options.baseurl}logout`;
 
-    await firstValueFrom(this.httpService.get(path));
+    await firstValueFrom(this.httpService.get(path, { headers: this.headers }));
   }
 
   async createExperiment(
@@ -60,7 +68,7 @@ export default class ExaremeService implements IEngineService {
 
     const resultAPI = await firstValueFrom(
       this.httpService.post<ExperimentData>(path, form, {
-        headers: this.req.headers,
+        headers: this.headers,
       }),
     );
 
@@ -73,7 +81,7 @@ export default class ExaremeService implements IEngineService {
     const resultAPI = await firstValueFrom(
       this.httpService.get<ExperimentsData>(path, {
         params: { page, name },
-        headers: this.req.headers,
+        headers: this.headers,
       }),
     );
 
@@ -88,7 +96,7 @@ export default class ExaremeService implements IEngineService {
 
     const resultAPI = await firstValueFrom(
       this.httpService.get<string>(path, {
-        headers: this.req.headers,
+        headers: this.headers,
       }),
     );
 
@@ -100,7 +108,7 @@ export default class ExaremeService implements IEngineService {
 
     const resultAPI = await firstValueFrom(
       this.httpService.get<ExperimentData>(path, {
-        headers: this.req.headers,
+        headers: this.headers,
       }),
     );
 
@@ -115,7 +123,7 @@ export default class ExaremeService implements IEngineService {
 
     const resultAPI = await firstValueFrom(
       this.httpService.patch<ExperimentData>(path, expriment, {
-        headers: this.req.headers,
+        headers: this.headers,
       }),
     );
 
@@ -128,7 +136,7 @@ export default class ExaremeService implements IEngineService {
     try {
       await firstValueFrom(
         this.httpService.delete(path, {
-          headers: this.req.headers,
+          headers: this.headers,
         }),
       );
       return {
@@ -145,7 +153,7 @@ export default class ExaremeService implements IEngineService {
     try {
       const data = await firstValueFrom(
         this.httpService.get<Pathology[]>(path, {
-          headers: this.req.headers,
+          headers: this.headers,
         }),
       );
 
@@ -249,7 +257,7 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'experiments';
 
     return this.httpService
-      .get<string>(path, { params: this.req.query })
+      .get<string>(path, { params: this.req.query, headers: this.headers })
       .pipe(map((response) => response.data));
   }
 
@@ -257,7 +265,7 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'algorithms';
 
     return this.httpService
-      .get<string>(path, { params: this.req.query })
+      .get<string>(path, { params: this.req.query, headers: this.headers })
       .pipe(map((response) => response.data));
   }
 
@@ -265,7 +273,7 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + suffix;
 
     return this.httpService
-      .get<string>(path, { params: this.req.query })
+      .get<string>(path, { params: this.req.query, headers: this.headers })
       .pipe(map((response) => response.data));
   }
 
