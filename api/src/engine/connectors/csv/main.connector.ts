@@ -79,7 +79,7 @@ export default class CSVService implements IEngineService {
     const rows = data
       .split('\r\n')
       .map((row) => row.split('\t').filter((i) => i))
-      .filter((row) => row.length >= 2);
+      .filter((row) => row.length >= 1);
 
     rows.shift(); // remove headers
 
@@ -88,6 +88,7 @@ export default class CSVService implements IEngineService {
     const rootGroup: Group = {
       id: 'Global group',
       groups: [],
+      variables: [],
     };
 
     rows.forEach((row) => {
@@ -99,6 +100,11 @@ export default class CSVService implements IEngineService {
       row.shift(); // get ride of the variable name, keep only groups
 
       if (!vars.find((v) => v.id === variable.id)) vars.push(variable); // avoid duplicate
+
+      if (row.length < 1) {
+        rootGroup.variables.push(variable.id);
+        return;
+      }
 
       let pathId = '';
 
