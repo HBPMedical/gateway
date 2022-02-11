@@ -1,3 +1,11 @@
+# [1.1.0-beta.5](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.4...1.1.0-beta.5) (2022-02-11)
+
+
+### Bug Fixes
+
+* **csv:** Root variables not added ([7f8f76d](https://gitlab.com/sibmip/gateway/commit/7f8f76d284123e8e347cdf8f195d473f40a04f8d))
+* Testing configuration (jest) wrong place ([1a51e02](https://gitlab.com/sibmip/gateway/commit/1a51e02f666ef8cceb8f723df1165531b0b1ae34))
+
 # [1.1.0-beta.4](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.3...1.1.0-beta.4) (2022-02-07)
 
 
