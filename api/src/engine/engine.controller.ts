@@ -6,11 +6,13 @@ import {
   Param,
   Patch,
   Post,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
-
+import { ErrorsInterceptor } from './interceptors/errors.interceptor';
+@UseInterceptors(ErrorsInterceptor)
 @Controller()
 export class EngineController {
   constructor(
