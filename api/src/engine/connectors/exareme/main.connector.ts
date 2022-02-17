@@ -277,14 +277,6 @@ export default class ExaremeService implements IEngineService {
       .pipe(map((response) => response.data));
   }
 
-  getPassthrough(suffix: string): string | Observable<string> {
-    const path = this.options.baseurl + suffix;
-
-    return this.httpService
-      .get<string>(path, { params: this.req.query })
-      .pipe(map((response) => response.data));
-  }
-
   // UTILITIES
   private flattenGroups = (data: Hierarchy): Group[] => {
     let groups: Group[] = [dataToGroup(data)];
