@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { IncomingMessage } from 'http';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
@@ -37,16 +38,23 @@ import { Pathology } from './interfaces/pathology.interface';
 
 @Injectable()
 export default class ExaremeService implements IEngineService {
+  headers = {};
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
-    @Inject(REQUEST) private readonly req: Request,
-  ) {}
+    @Inject(REQUEST) private readonly req: Request, //TODO: remove inject, set request from manually take care of graphql request
+  ) {
+    const gqlRequest = req['req']; // graphql headers exception
+    this.headers =
+      gqlRequest && gqlRequest instanceof IncomingMessage
+        ? gqlRequest.headers
+        : req.headers;
+  }
 
   async logout() {
     const path = `${this.options.baseurl}logout`;
 
-    await firstValueFrom(this.httpService.get(path));
+    await firstValueFrom(this.httpService.get(path, { headers: this.headers }));
   }
 
   async createExperiment(
@@ -59,7 +67,9 @@ export default class ExaremeService implements IEngineService {
       this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
 
     const resultAPI = await firstValueFrom(
-      this.httpService.post<ExperimentData>(path, form),
+      this.httpService.post<ExperimentData>(path, form, {
+        headers: this.headers,
+      }),
     );
 
     return dataToExperiment(resultAPI.data);
@@ -69,7 +79,10 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'experiments';
 
     const resultAPI = await firstValueFrom(
-      this.httpService.get<ExperimentsData>(path, { params: { page, name } }),
+      this.httpService.get<ExperimentsData>(path, {
+        params: { page, name },
+        headers: this.headers,
+      }),
     );
 
     return {
@@ -81,7 +94,11 @@ export default class ExaremeService implements IEngineService {
   async getAlgorithms(): Promise<Algorithm[]> {
     const path = this.options.baseurl + 'algorithms';
 
-    const resultAPI = await firstValueFrom(this.httpService.get<string>(path));
+    const resultAPI = await firstValueFrom(
+      this.httpService.get<string>(path, {
+        headers: this.headers,
+      }),
+    );
 
     return dataToAlgorithms(resultAPI.data);
   }
@@ -90,7 +107,9 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + `experiments/${id}`;
 
     const resultAPI = await firstValueFrom(
-      this.httpService.get<ExperimentData>(path),
+      this.httpService.get<ExperimentData>(path, {
+        headers: this.headers,
+      }),
     );
 
     return dataToExperiment(resultAPI.data);
@@ -103,7 +122,9 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + `experiments/${id}`;
 
     const resultAPI = await firstValueFrom(
-      this.httpService.patch<ExperimentData>(path, expriment),
+      this.httpService.patch<ExperimentData>(path, expriment, {
+        headers: this.headers,
+      }),
     );
 
     return dataToExperiment(resultAPI.data);
@@ -113,7 +134,11 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + `experiments/${id}`;
 
     try {
-      await firstValueFrom(this.httpService.delete(path));
+      await firstValueFrom(
+        this.httpService.delete(path, {
+          headers: this.headers,
+        }),
+      );
       return {
         id: id,
       };
@@ -127,7 +152,9 @@ export default class ExaremeService implements IEngineService {
 
     try {
       const data = await firstValueFrom(
-        this.httpService.get<Pathology[]>(path),
+        this.httpService.get<Pathology[]>(path, {
+          headers: this.headers,
+        }),
       );
 
       return (
@@ -160,7 +187,9 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'activeUser';
 
     return this.httpService
-      .get<string>(path)
+      .get<string>(path, {
+        headers: this.req.headers,
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -168,7 +197,9 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
 
     return this.httpService
-      .post<string>(path, this.req.body)
+      .post<string>(path, this.req.body, {
+        headers: this.req.headers,
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -176,21 +207,29 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + `experiments/${id}`;
 
     return this.httpService
-      .get<string>(path)
+      .get<string>(path, {
+        headers: this.req.headers,
+      })
       .pipe(map((response) => response.data));
   }
 
   deleteExperiment(id: string): Observable<string> {
     const path = this.options.baseurl + `experiments/${id}`;
 
-    return this.httpService.delete(path).pipe(map((response) => response.data));
+    return this.httpService
+      .delete(path, {
+        headers: this.req.headers,
+      })
+      .pipe(map((response) => response.data));
   }
 
   editExperimentREST(id: string): Observable<string> {
     const path = this.options.baseurl + `experiments/${id}`;
 
     return this.httpService
-      .patch(path, this.req.body)
+      .patch(path, this.req.body, {
+        headers: this.req.headers,
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -198,7 +237,9 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'experiments/transient';
 
     return this.httpService
-      .post(path, this.req.body)
+      .post(path, this.req.body, {
+        headers: this.req.headers,
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -206,7 +247,9 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'experiments';
 
     return this.httpService
-      .post(path, this.req.body)
+      .post(path, this.req.body, {
+        headers: this.req.headers,
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -214,7 +257,7 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'experiments';
 
     return this.httpService
-      .get<string>(path, { params: this.req.query })
+      .get<string>(path, { params: this.req.query, headers: this.headers })
       .pipe(map((response) => response.data));
   }
 
@@ -222,7 +265,15 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'algorithms';
 
     return this.httpService
-      .get<string>(path, { params: this.req.query })
+      .get<string>(path, { params: this.req.query, headers: this.headers })
+      .pipe(map((response) => response.data));
+  }
+
+  getPassthrough(suffix: string): string | Observable<string> {
+    const path = this.options.baseurl + suffix;
+
+    return this.httpService
+      .get<string>(path, { params: this.req.query, headers: this.headers })
       .pipe(map((response) => response.data));
   }
 
