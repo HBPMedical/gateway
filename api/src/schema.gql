@@ -133,7 +133,10 @@ type LineChartResult {
 }
 
 type ChartAxis {
+  """label of the Axis"""
   label: String
+
+  """label of each element on this Axis"""
   categories: [String!]
 }
 
