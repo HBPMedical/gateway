@@ -22,7 +22,7 @@ export const transformToDomains = jsonata(`
     },
     "variables": $distinct(groups.variables).{
         "id": $,
-        "label": $
+        "label": $trim($replace($ & '', '.', ' '))
     }
 }
 `);

@@ -2,6 +2,7 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
+import { Request } from 'express';
 import { join } from 'path';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
@@ -33,6 +34,14 @@ export class EngineModule {
         HttpModule,
         GraphQLModule.forRoot({
           autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+          context: ({ req, res }) => ({ req, res }),
+          cors: {
+            credentials: true,
+            origin: [
+              /http:\/\/localhost($|:\d*)/,
+              /http:\/\/127.0.0.1($|:\d*)/,
+            ],
+          },
         }),
       ],
       providers: [optionsProvider, engineProvider, EngineResolver],
