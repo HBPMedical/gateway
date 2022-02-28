@@ -44,8 +44,6 @@ export default class DataShieldService implements IEngineService {
     const path =
       this.options.baseurl + `histogram?var=${variable}&type=combine`;
 
-    console.log(path);
-
     const response = await firstValueFrom(
       this.httpService.get(path, {
         headers: {
@@ -56,6 +54,7 @@ export default class DataShieldService implements IEngineService {
 
     if (response.data['breaks'] === undefined) {
       DataShieldService.logger.warn('Inconsistency on histogram result');
+      DataShieldService.logger.verbose(path);
       return {
         rawdata: {
           data: response.data[0],
@@ -104,7 +103,7 @@ export default class DataShieldService implements IEngineService {
 
     switch (data.algorithm.id) {
       case 'MULTIPLE_HISTOGRAMS': {
-        expResult.results = await Promise.all<Promise<RawResult>>(
+        expResult.results = await Promise.all<RawResult>(
           data.variables.map(
             async (variable) => await this.getHistogram(variable),
           ),
@@ -112,7 +111,7 @@ export default class DataShieldService implements IEngineService {
         break;
       }
       case 'DESCRIPTIVE_STATS': {
-        expResult.results = await Promise.all<Promise<TableResult>>(
+        expResult.results = await Promise.all<TableResult>(
           [...data.variables, ...data.coVariables].map(
             async (variable) => await this.getDescriptiveStats(variable),
           ),
@@ -164,7 +163,6 @@ export default class DataShieldService implements IEngineService {
       const cookies = response.headers['set-cookie'] as string[];
       cookies.forEach((cookie) => {
         const [key, value] = cookie.split(/={1}/);
-        console.log('setting cookie: ', `key=${key}`, `value=${value}`);
         this.req.res.cookie(key, value, {
           httpOnly: true,
           sameSite: 'none',
