@@ -63,7 +63,9 @@ export default class DataShieldService implements IEngineService {
       };
     }
 
-    const chart = transformToHisto.evaluate(response.data);
+    const title = variable.replace(/\./g, ' ').trim();
+    const data = { ...response.data, title };
+    const chart = transformToHisto.evaluate(data);
 
     return {
       rawdata: {
@@ -83,7 +85,10 @@ export default class DataShieldService implements IEngineService {
         },
       }),
     );
-    return transformToTable.evaluate(response.data);
+
+    const title = variable.replace(/\./g, ' ').trim();
+    const data = { ...response.data, title };
+    return transformToTable.evaluate(data);
   }
 
   async createExperiment(
