@@ -165,8 +165,7 @@ export default class DataShieldService implements IEngineService {
         const [key, value] = cookie.split(/={1}/);
         this.req.res.cookie(key, value, {
           httpOnly: true,
-          sameSite: 'none',
-          secure: true,
+          //sameSite: 'none',
         });
       });
     }
