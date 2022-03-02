@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Theme {
+  logo: String
+  favicon: String
+  cssFile: String
+}
+
+type Configuration {
+  connectorId: String!
+  theme: Theme
+}
+
 type Dataset {
   id: String!
   label: String
@@ -200,6 +211,7 @@ type ListExperiments {
 }
 
 type Query {
+  configuration: Configuration!
   domains(ids: [String!] = []): [Domain!]!
   experimentList(name: String = "", page: Float = 0): ListExperiments!
   experiment(id: String!): Experiment!

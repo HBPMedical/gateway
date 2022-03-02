@@ -1,8 +1,9 @@
 import { Inject, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { ENGINE_SERVICE } from './engine.constants';
-import { IEngineService } from './engine.interfaces';
+import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
+import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
+import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 import {
@@ -18,7 +19,19 @@ import { ListExperiments } from './models/experiment/list-experiments.model';
 export class EngineResolver {
   constructor(
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_MODULE_OPTIONS)
+    private readonly engineOptions: IEngineOptions,
   ) {}
+
+  @Query(() => Configuration)
+  configuration(): Configuration {
+    const data = this.engineService.getConfiguration?.();
+
+    return {
+      ...(data ?? {}),
+      connectorId: this.engineOptions.type,
+    };
+  }
 
   @Query(() => [Domain])
   async domains(

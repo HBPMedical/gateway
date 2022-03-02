@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 import {
@@ -16,6 +17,8 @@ export interface IEngineOptions {
 
 export interface IEngineService {
   //GraphQL
+  getConfiguration?(): Partial<Configuration>;
+
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
   createExperiment(
