@@ -5,26 +5,27 @@ import * as jsonata from 'jsonata';
 
 export const transformToDomains = jsonata(`
 {
-    "id": "sophia",
-    "datasets": datasets.{
-        "id": $.id[0],
-        "label": $.label[0]
-    },
-    "rootGroup": {
-        "id": "rootGroup",
-        "label": "Root group",
-        "groups": groups.id
-    },
-    "groups": groups.{
-        "id": $.id[0],
-        "label": $.label[0],
-        "variables": $.variables
-    },
-    "variables": $distinct(groups.variables).{
-        "id": $,
-        "label": $trim($replace($ & '', '.', ' ')),
-        "type": "Number"
-    }
+  "id": "sophia",
+  "datasets": datasets.{
+      "id": $.id[0],
+      "label": $.label[0]
+  },
+  "rootGroup": {
+      "id": rootGroup.id[0],
+      "label": rootGroup.label[0],
+      "groups": rootGroup.groups
+  },
+  "groups": groups.{
+      "id": $.id[0],
+      "label": $.label[0],
+      "variables": $.variables,
+      "groups": $.groups
+  },
+  "variables": $distinct(groups.variables).{
+      "id": $,
+      "label": $trim($replace($ & '', '.', ' ')),
+      "type": "Number"
+  }
 }
 `);
 
