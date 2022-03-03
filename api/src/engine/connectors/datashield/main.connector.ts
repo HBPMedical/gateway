@@ -34,11 +34,7 @@ export default class DataShieldService implements IEngineService {
   ) {}
 
   getConfiguration(): Partial<Configuration> {
-    return {
-      theme: {
-        logo: 'logo_small.png',
-      },
-    };
+    return {};
   }
 
   logout(): void {

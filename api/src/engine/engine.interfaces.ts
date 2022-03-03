@@ -17,6 +17,12 @@ export interface IEngineOptions {
 
 export interface IEngineService {
   //GraphQL
+
+  /**
+   * Allow specific configuration for the engine
+   *
+   * `connectorId` is always overwrite by the engine module
+   */
   getConfiguration?(): Partial<Configuration>;
 
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;

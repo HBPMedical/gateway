@@ -1,5 +1,6 @@
 import { Inject, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { join } from 'path/posix';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
@@ -25,10 +26,10 @@ export class EngineResolver {
 
   @Query(() => Configuration)
   configuration(): Configuration {
-    const data = this.engineService.getConfiguration?.();
+    const config = this.engineService.getConfiguration?.();
 
     return {
-      ...(data ?? {}),
+      ...(config ?? {}),
       connectorId: this.engineOptions.type,
     };
   }

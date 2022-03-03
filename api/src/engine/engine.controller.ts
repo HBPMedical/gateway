@@ -1,57 +1,55 @@
 import {
   Controller,
-  Delete,
   Get,
   Inject,
+  NotFoundException,
   Param,
-  Patch,
   Post,
+  Res,
   UseInterceptors,
 } from '@nestjs/common';
+import { Response } from 'express';
+import * as fs from 'fs';
+import { join } from 'path/posix';
 import { Observable } from 'rxjs';
-import { ENGINE_SERVICE } from './engine.constants';
-import { IEngineService } from './engine.interfaces';
+import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
+import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 @UseInterceptors(ErrorsInterceptor)
 @Controller()
 export class EngineController {
   constructor(
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_MODULE_OPTIONS)
+    private readonly engineOptions: IEngineOptions,
   ) {}
+
+  @Get('assets/:name')
+  getFile(@Res() response: Response, @Param('name') name: string) {
+    // Construct file path based on the connector id
+    let filePath = join(
+      process.cwd(),
+      'assets/engines',
+      this.engineOptions.type,
+      name,
+    );
+
+    // if file doesn't exist for the current connector fallback to default
+    if (!fs.existsSync(filePath)) {
+      filePath = join(process.cwd(), 'assets/engines/default', name);
+    }
+
+    // Test if the file exist, if not send 404
+    if (fs.existsSync(filePath)) {
+      return response.sendFile(filePath);
+    } else {
+      throw new NotFoundException();
+    }
+  }
 
   @Get('/algorithms')
   getAlgorithms(): Observable<string> | string {
     return this.engineService.getAlgorithmsREST();
-  }
-
-  @Get('/experiments')
-  getExperiments(): Observable<string> | string {
-    return this.engineService.getExperiments();
-  }
-
-  @Get('/experiments/:id')
-  getExperiment(@Param('id') id: string): Observable<string> | string {
-    return this.engineService.getExperimentREST(id);
-  }
-
-  @Delete('/experiments/:id')
-  deleteExperiment(@Param('id') id: string): Observable<string> | string {
-    return this.engineService.deleteExperiment(id);
-  }
-
-  @Patch('/experiments/:id')
-  editExperiment(@Param('id') id: string): Observable<string> | string {
-    return this.engineService.editExperimentREST(id);
-  }
-
-  @Post('experiments/transient')
-  startExperimentTransient(): Observable<string> | string {
-    return this.engineService.startExperimentTransient();
-  }
-
-  @Post('experiments')
-  startExperiment(): Observable<string> | string {
-    return this.engineService.startExperiment();
   }
 
   @Get('activeUser')

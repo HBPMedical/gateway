@@ -17,10 +17,6 @@ async function bootstrap() {
     },
   });
 
-  app.useStaticAssets(join(__dirname, '..', 'assets'), {
-    prefix: '/assets/',
-  });
-
   await app.listen(process.env.GATEWAY_PORT);
 }
 bootstrap();
