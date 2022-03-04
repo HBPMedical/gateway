@@ -1,6 +1,5 @@
 import { Inject, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { join } from 'path/posix';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
@@ -14,6 +13,7 @@ import {
 import { ExperimentCreateInput } from './models/experiment/input/experiment-create.input';
 import { ExperimentEditInput } from './models/experiment/input/experiment-edit.input';
 import { ListExperiments } from './models/experiment/list-experiments.model';
+import { Md5 } from 'ts-md5';
 
 @UseInterceptors(ErrorsInterceptor)
 @Resolver()
@@ -28,9 +28,16 @@ export class EngineResolver {
   configuration(): Configuration {
     const config = this.engineService.getConfiguration?.();
 
-    return {
+    const data = {
       ...(config ?? {}),
       connectorId: this.engineOptions.type,
+    };
+
+    const version = Md5.hashStr(JSON.stringify(data));
+
+    return {
+      ...data,
+      version,
     };
   }
 

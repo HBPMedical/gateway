@@ -5,6 +5,7 @@
 type Configuration {
   connectorId: String!
   galaxy: Boolean
+  version: String!
 }
 
 type Dataset {
