@@ -25,7 +25,10 @@ export class EngineController {
   ) {}
 
   @Get('assets/:name')
-  getFile(@Res() response: Response, @Param('name') name: string) {
+  getFile(
+    @Res({ passthrough: true }) response: Response,
+    @Param('name') name: string,
+  ) {
     // Construct file path based on the connector id
     let filePath = join(
       process.cwd(),
@@ -36,7 +39,11 @@ export class EngineController {
 
     // if file doesn't exist for the current connector fallback to default
     if (!fs.existsSync(filePath)) {
-      filePath = join(process.cwd(), 'assets/engines/default', name);
+      filePath = join(
+        process.cwd(),
+        'assets/engines/default',
+        name.toLowerCase(),
+      );
     }
 
     // Test if the file exist, if not send 404
