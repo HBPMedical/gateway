@@ -5,50 +5,46 @@ import {
   NotFoundException,
   Param,
   Post,
+  Req,
   Res,
   UseInterceptors,
 } from '@nestjs/common';
-import { Response } from 'express';
-import * as fs from 'fs';
+import { Request, Response } from 'express';
 import { join } from 'path/posix';
 import { Observable } from 'rxjs';
-import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
-import { IEngineOptions, IEngineService } from './engine.interfaces';
+import { AssetsService } from './assets.service';
+import { ENGINE_SERVICE } from './engine.constants';
+import { IEngineService } from './engine.interfaces';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
+
 @UseInterceptors(ErrorsInterceptor)
 @Controller()
 export class EngineController {
   constructor(
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
-    @Inject(ENGINE_MODULE_OPTIONS)
-    private readonly engineOptions: IEngineOptions,
+    private readonly assetsService: AssetsService,
   ) {}
 
   @Get('assets/:name')
   getFile(
-    @Res({ passthrough: true }) response: Response,
-    @Param('name') name: string,
+    @Req() request: Request,
+    @Res() response: Response,
+    @Param('name') filename: string,
   ) {
-    // Construct file path based on the connector id
-    let filePath = join(
-      process.cwd(),
-      'assets/engines',
-      this.engineOptions.type,
-      name,
-    );
-
-    // if file doesn't exist for the current connector fallback to default
-    if (!fs.existsSync(filePath)) {
-      filePath = join(
-        process.cwd(),
-        'assets/engines/default',
-        name.toLowerCase(),
-      );
+    if (filename.endsWith('.md')) {
+      const baseurl =
+        request.protocol +
+        '://' +
+        join(request.get('host'), process.env.BASE_URL_CONTEXT ?? '', 'assets'); // not full url, should consider "/services"
+      const text = this.assetsService.getMarkdown(filename, baseurl);
+      return response.send(text);
     }
 
+    const filepath = this.assetsService.getAssetFile(filename);
+
     // Test if the file exist, if not send 404
-    if (fs.existsSync(filePath)) {
-      return response.sendFile(filePath);
+    if (filepath) {
+      return response.sendFile(filepath);
     } else {
       throw new NotFoundException();
     }

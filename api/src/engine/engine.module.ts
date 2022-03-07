@@ -4,6 +4,7 @@ import { REQUEST } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Request } from 'express';
 import { join } from 'path';
+import { AssetsService } from './assets.service';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
@@ -44,7 +45,12 @@ export class EngineModule {
           },
         }),
       ],
-      providers: [optionsProvider, engineProvider, EngineResolver],
+      providers: [
+        optionsProvider,
+        engineProvider,
+        EngineResolver,
+        AssetsService,
+      ],
       controllers: [EngineController],
       exports: [optionsProvider, engineProvider],
     };
@@ -67,7 +73,6 @@ export class EngineModule {
         `There is a problem with the connector '${options.type}'`,
       );
       this.logger.verbose(e);
-      process.exit(); // We can't continue without an engine, shutdown the process...
     }
   }
 }
