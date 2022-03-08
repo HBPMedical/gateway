@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Configuration {
+  connectorId: String!
+  galaxy: Boolean
+  contactLink: String
+  version: String!
+}
+
 type Dataset {
   id: String!
   label: String
@@ -200,6 +207,7 @@ type ListExperiments {
 }
 
 type Query {
+  configuration: Configuration!
   domains(ids: [String!] = []): [Domain!]!
   experimentList(name: String = "", page: Float = 0): ListExperiments!
   experiment(id: String!): Experiment!
