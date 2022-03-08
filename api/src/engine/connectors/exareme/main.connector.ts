@@ -11,7 +11,11 @@ import { Request } from 'express';
 import { IncomingMessage } from 'http';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
-import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
+import {
+  IConfiguration,
+  IEngineOptions,
+  IEngineService,
+} from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
@@ -49,6 +53,13 @@ export default class ExaremeService implements IEngineService {
       gqlRequest && gqlRequest instanceof IncomingMessage
         ? gqlRequest.headers
         : req.headers;
+  }
+
+  getConfiguration(): IConfiguration {
+    return {
+      contactLink: 'https://ebrains.eu/support/',
+      galaxy: true,
+    };
   }
 
   async logout() {

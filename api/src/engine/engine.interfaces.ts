@@ -15,6 +15,8 @@ export interface IEngineOptions {
   baseurl: string;
 }
 
+export type IConfiguration = Pick<Configuration, 'contactLink' | 'galaxy'>;
+
 export interface IEngineService {
   //GraphQL
 
@@ -23,7 +25,7 @@ export interface IEngineService {
    *
    * `connectorId` is always overwrite by the engine module
    */
-  getConfiguration?(): Partial<Configuration>;
+  getConfiguration?(): IConfiguration;
 
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 

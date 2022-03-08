@@ -5,8 +5,11 @@ import { Request } from 'express';
 import { firstValueFrom, Observable } from 'rxjs';
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
-import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
-import { Configuration } from 'src/engine/models/configuration.model';
+import {
+  IConfiguration,
+  IEngineOptions,
+  IEngineService,
+} from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
@@ -33,7 +36,7 @@ export default class DataShieldService implements IEngineService {
     @Inject(REQUEST) private readonly req: Request,
   ) {}
 
-  getConfiguration(): Partial<Configuration> {
+  getConfiguration(): IConfiguration {
     return {};
   }
 
