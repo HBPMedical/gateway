@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="https://live-papers.brainsimulation.eu/imgs/ebrains_logo.png" />
+  <img src="$ASSETS_URL$/logo.png" />
 </p>
 
-![my image]($ASSETS_URL$/logo_small.png#center)  
+<br/> 
 
 The Medical Informatics Platform
 ================================
