@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 import {
@@ -14,8 +15,18 @@ export interface IEngineOptions {
   baseurl: string;
 }
 
+export type IConfiguration = Pick<Configuration, 'contactLink' | 'galaxy'>;
+
 export interface IEngineService {
   //GraphQL
+
+  /**
+   * Allow specific configuration for the engine
+   *
+   * `connectorId` is always overwrite by the engine module
+   */
+  getConfiguration?(): IConfiguration;
+
   getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
 
   createExperiment(
