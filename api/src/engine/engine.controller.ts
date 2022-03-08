@@ -37,6 +37,7 @@ export class EngineController {
         '://' +
         join(request.get('host'), process.env.BASE_URL_CONTEXT ?? '', 'assets'); // not full url, should consider "/services"
       const text = this.assetsService.getMarkdown(filename, baseurl);
+      response.setHeader('Content-Type', 'text/markdown');
       return response.send(text);
     }
 
