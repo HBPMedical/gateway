@@ -51,6 +51,6 @@ export class AssetsService {
 
     const md = fs.readFileSync(filePath).toString();
 
-    return md.replace(/\$ASSETS_URL\$/, baseurl);
+    return md.replace(/\$ASSETS_URL\$/g, baseurl);
   }
 }
