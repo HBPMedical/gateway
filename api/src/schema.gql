@@ -5,6 +5,7 @@
 type Configuration {
   connectorId: String!
   galaxy: Boolean
+  contactLink: String
   version: String!
 }
 

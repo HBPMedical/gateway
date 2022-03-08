@@ -7,6 +7,9 @@ export class Configuration {
   @Field({ nullable: true, defaultValue: false })
   galaxy?: boolean;
 
+  @Field({ nullable: true })
+  contactLink?: string;
+
   @Field()
   version: string;
 }
