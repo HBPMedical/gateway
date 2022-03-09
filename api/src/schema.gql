@@ -209,14 +209,14 @@ type ListExperiments {
 type Query {
   configuration: Configuration!
   domains(ids: [String!] = []): [Domain!]!
-  experimentList(name: String = "", page: Float = 0): ListExperiments!
+  experimentList(page: Float = 0, name: String = ""): ListExperiments!
   experiment(id: String!): Experiment!
   algorithms: [Algorithm!]!
 }
 
 type Mutation {
-  createExperiment(isTransient: Boolean = false, data: ExperimentCreateInput!): Experiment!
-  editExperiment(data: ExperimentEditInput!, id: String!): Experiment!
+  createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
+  editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
   removeExperiment(id: String!): PartialExperiment!
 }
 
