@@ -28,5 +28,6 @@ RUN npm ci --production --ignore-scripts
 COPY . .
 
 COPY --from=development /usr/src/app/dist ./dist
+COPY --from=development /usr/src/app/assets ./assets
 
 CMD ["node", "dist/main"]
