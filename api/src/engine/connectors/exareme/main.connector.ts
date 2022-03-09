@@ -199,7 +199,7 @@ export default class ExaremeService implements IEngineService {
 
     return this.httpService
       .get<string>(path, {
-        headers: this.req.headers,
+        headers: this.headers,
       })
       .pipe(map((response) => response.data));
   }
@@ -209,7 +209,7 @@ export default class ExaremeService implements IEngineService {
 
     return this.httpService
       .post<string>(path, this.req.body, {
-        headers: this.req.headers,
+        headers: this.headers,
       })
       .pipe(map((response) => response.data));
   }
@@ -219,7 +219,7 @@ export default class ExaremeService implements IEngineService {
 
     return this.httpService
       .get<string>(path, {
-        headers: this.req.headers,
+        headers: this.headers,
       })
       .pipe(map((response) => response.data));
   }
@@ -229,7 +229,7 @@ export default class ExaremeService implements IEngineService {
 
     return this.httpService
       .delete(path, {
-        headers: this.req.headers,
+        headers: this.headers,
       })
       .pipe(map((response) => response.data));
   }
@@ -239,7 +239,7 @@ export default class ExaremeService implements IEngineService {
 
     return this.httpService
       .patch(path, this.req.body, {
-        headers: this.req.headers,
+        headers: this.headers,
       })
       .pipe(map((response) => response.data));
   }
@@ -249,7 +249,7 @@ export default class ExaremeService implements IEngineService {
 
     return this.httpService
       .post(path, this.req.body, {
-        headers: this.req.headers,
+        headers: this.headers,
       })
       .pipe(map((response) => response.data));
   }
@@ -259,7 +259,7 @@ export default class ExaremeService implements IEngineService {
 
     return this.httpService
       .post(path, this.req.body, {
-        headers: this.req.headers,
+        headers: this.headers,
       })
       .pipe(map((response) => response.data));
   }
