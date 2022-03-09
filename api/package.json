@@ -23,7 +23,7 @@
     "prepare": "cd .. && husky install api/.husky"
   },
   "dependencies": {
-    "@nestjs/axios": "^0.0.1",
+    "@nestjs/axios": "^0.0.7",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^1.0.1",
     "@nestjs/core": "^8.0.0",
@@ -41,7 +41,7 @@
     "ts-md5": "^1.2.11"
   },
   "devDependencies": {
-    "@eclass/semantic-release-docker": "^2.0.0",
+    "@eclass/semantic-release-docker": "^3.0.0",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.2.2",
