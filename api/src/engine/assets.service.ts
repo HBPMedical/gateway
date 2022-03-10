@@ -34,6 +34,8 @@ export class AssetsService {
       );
     }
 
+    if (!filePath.includes('assets/engines')) return undefined;
+
     return fs.existsSync(filePath) ? filePath : undefined;
   }
 

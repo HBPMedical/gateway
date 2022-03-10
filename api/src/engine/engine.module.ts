@@ -1,3 +1,4 @@
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
@@ -33,7 +34,8 @@ export class EngineModule {
       module: EngineModule,
       imports: [
         HttpModule,
-        GraphQLModule.forRoot({
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+          driver: ApolloDriver,
           autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
           context: ({ req, res }) => ({ req, res }),
           cors: {
