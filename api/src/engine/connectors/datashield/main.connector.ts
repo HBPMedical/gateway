@@ -60,12 +60,12 @@ export default class DataShieldService implements IEngineService {
       }),
     );
 
-    if (response.data['breaks'] === undefined) {
+    if (response.data['global'] === undefined) {
       DataShieldService.logger.warn('Inconsistency on histogram result');
       DataShieldService.logger.verbose(path);
       return {
         rawdata: {
-          data: response.data[0],
+          data: 'Engine result are inconsitent',
           type: MIME_TYPES.ERROR,
         },
       };
@@ -164,16 +164,16 @@ export default class DataShieldService implements IEngineService {
   }
 
   async getDomains(): Promise<Domain[]> {
-    const path = this.options.baseurl + 'start';
+    const loginPath = this.options.baseurl + 'login';
 
-    const response = await firstValueFrom(
-      this.httpService.get(path, {
+    const loginData = await firstValueFrom(
+      this.httpService.get(loginPath, {
         auth: { username: 'guest', password: 'guest123' },
       }),
     );
 
-    if (response.headers && response.headers['set-cookie']) {
-      const cookies = response.headers['set-cookie'] as string[];
+    const cookies = (loginData.headers['set-cookie'] as string[]) ?? [];
+    if (loginData.headers && loginData.headers['set-cookie']) {
       cookies.forEach((cookie) => {
         const [key, value] = cookie.split(/={1}/);
         this.req.res.cookie(key, value, {
@@ -182,6 +182,16 @@ export default class DataShieldService implements IEngineService {
         });
       });
     }
+
+    const path = this.options.baseurl + 'getvars';
+
+    const response = await firstValueFrom(
+      this.httpService.get(path, {
+        headers: {
+          cookie: cookies.join(';'),
+        },
+      }),
+    );
 
     return [transformToDomains.evaluate(response.data)];
   }
