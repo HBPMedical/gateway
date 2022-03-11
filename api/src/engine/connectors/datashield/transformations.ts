@@ -32,7 +32,7 @@ export const transformToDomains = jsonata(`
 export const transformToHisto = jsonata(`
 (
   $nbBreaks := $count(global.breaks);
-  $excludes := ['xname', 'equidist'];
+  $excludes := ['counts'];
 
   {
   "chart": {
@@ -42,7 +42,7 @@ export const transformToHisto = jsonata(`
     "enabled": false
   },
   "series": global.$each(function ($v, $k) {
-      $not($k in $params) ? {
+      ($k in $params) ? {
           "name": $k,
           "data": $v 
       } : undefined
