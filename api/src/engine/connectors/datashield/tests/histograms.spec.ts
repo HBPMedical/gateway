@@ -19,3 +19,7 @@ const data = {
     intensities: [0.0093, 0.0526, 0.0104, 0.0023, 0.0014, 0, 0, 0, 0, 0],
   },
 };
+
+describe('Histograms', () => {
+  test.todo('TODO');
+});
