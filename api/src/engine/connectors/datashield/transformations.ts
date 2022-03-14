@@ -32,7 +32,7 @@ export const transformToDomains = jsonata(`
 export const transformToHisto = jsonata(`
 (
   $nbBreaks := $count(global.breaks);
-  $excludes := ['counts'];
+  $params := ["counts"];
 
   {
   "chart": {
@@ -42,11 +42,11 @@ export const transformToHisto = jsonata(`
     "enabled": false
   },
   "series": global.$each(function ($v, $k) {
-      ($k in $params) ? {
+      $k in $params ? {
           "name": $k,
           "data": $v 
       } : undefined
-  }),
+  })[],
   "title": {
     "text": title ? title : ''
   },
@@ -74,7 +74,7 @@ export const transformToTable = jsonata(`
       "type": "string"
   },
   "data": $.$each(function($v, $k) {
-         $not($k in $params) ? $append($k,$v) : undefined
+         $not($k in $params) ? $append($k,$v.*) : undefined
       })
 })
 `);
