@@ -82,6 +82,12 @@ type TableResult {
   name: String!
   data: [[String!]!]!
   headers: [Header!]!
+  theme: ThemeType!
+}
+
+enum ThemeType {
+  DEFAULT
+  NORMAL
 }
 
 type RawResult {

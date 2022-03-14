@@ -20,7 +20,10 @@ import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experi
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
-import { TableResult } from 'src/engine/models/result/table-result.model';
+import {
+  TableResult,
+  ThemeType,
+} from 'src/engine/models/result/table-result.model';
 import {
   transformToDomains,
   transformToHisto,
@@ -73,6 +76,7 @@ export default class DataShieldService implements IEngineService {
 
     const title = variable.replace(/\./g, ' ').trim();
     const data = { ...response.data, title };
+
     const chart = transformToHisto.evaluate(data);
 
     return {
@@ -96,7 +100,11 @@ export default class DataShieldService implements IEngineService {
 
     const title = variable.replace(/\./g, ' ').trim();
     const data = { ...response.data, title };
-    return transformToTable.evaluate(data);
+    const table = transformToTable.evaluate(data);
+    return {
+      ...table,
+      theme: ThemeType.NORMAL,
+    };
   }
 
   async createExperiment(
