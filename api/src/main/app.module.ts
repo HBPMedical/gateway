@@ -12,11 +12,12 @@ import { AppService } from './app.service';
       isGlobal: true,
       envFilePath: ['.env', '.env.defaults'],
     }),
-    EngineModule.register({
+    EngineModule.forRoot({
       type: process.env.ENGINE_TYPE,
       baseurl: process.env.ENGINE_BASE_URL,
     }),
     AuthModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
