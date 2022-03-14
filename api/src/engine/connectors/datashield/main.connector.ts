@@ -20,7 +20,10 @@ import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experi
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
-import { TableResult } from 'src/engine/models/result/table-result.model';
+import {
+  TableResult,
+  ThemeType,
+} from 'src/engine/models/result/table-result.model';
 import {
   transformToDomains,
   transformToHisto,
@@ -60,12 +63,12 @@ export default class DataShieldService implements IEngineService {
       }),
     );
 
-    if (response.data['breaks'] === undefined) {
+    if (response.data['global'] === undefined) {
       DataShieldService.logger.warn('Inconsistency on histogram result');
       DataShieldService.logger.verbose(path);
       return {
         rawdata: {
-          data: response.data[0],
+          data: 'Engine result are inconsitent',
           type: MIME_TYPES.ERROR,
         },
       };
@@ -73,6 +76,7 @@ export default class DataShieldService implements IEngineService {
 
     const title = variable.replace(/\./g, ' ').trim();
     const data = { ...response.data, title };
+
     const chart = transformToHisto.evaluate(data);
 
     return {
@@ -96,7 +100,11 @@ export default class DataShieldService implements IEngineService {
 
     const title = variable.replace(/\./g, ' ').trim();
     const data = { ...response.data, title };
-    return transformToTable.evaluate(data);
+    const table = transformToTable.evaluate(data);
+    return {
+      ...table,
+      theme: ThemeType.NORMAL,
+    };
   }
 
   async createExperiment(
@@ -164,16 +172,16 @@ export default class DataShieldService implements IEngineService {
   }
 
   async getDomains(): Promise<Domain[]> {
-    const path = this.options.baseurl + 'start';
+    const loginPath = this.options.baseurl + 'login';
 
-    const response = await firstValueFrom(
-      this.httpService.get(path, {
+    const loginData = await firstValueFrom(
+      this.httpService.get(loginPath, {
         auth: { username: 'guest', password: 'guest123' },
       }),
     );
 
-    if (response.headers && response.headers['set-cookie']) {
-      const cookies = response.headers['set-cookie'] as string[];
+    const cookies = (loginData.headers['set-cookie'] as string[]) ?? [];
+    if (loginData.headers && loginData.headers['set-cookie']) {
       cookies.forEach((cookie) => {
         const [key, value] = cookie.split(/={1}/);
         this.req.res.cookie(key, value, {
@@ -182,6 +190,16 @@ export default class DataShieldService implements IEngineService {
         });
       });
     }
+
+    const path = this.options.baseurl + 'getvars';
+
+    const response = await firstValueFrom(
+      this.httpService.get(path, {
+        headers: {
+          cookie: cookies.join(';'),
+        },
+      }),
+    );
 
     return [transformToDomains.evaluate(response.data)];
   }
