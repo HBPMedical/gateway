@@ -5,7 +5,7 @@ import { REQUEST } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Request } from 'express';
 import { join } from 'path';
-import { AssetsService } from './assets.service';
+import { FilesModule } from 'src/files/files.module';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
@@ -16,7 +16,7 @@ import { EngineResolver } from './engine.resolver';
 export class EngineModule {
   private static readonly logger = new Logger(EngineModule.name);
 
-  static async forRootAsync(options: IEngineOptions): Promise<DynamicModule> {
+  static register(options: IEngineOptions): DynamicModule {
     const optionsProvider = {
       provide: ENGINE_MODULE_OPTIONS,
       useValue: options,
@@ -46,13 +46,9 @@ export class EngineModule {
             ],
           },
         }),
+        FilesModule,
       ],
-      providers: [
-        optionsProvider,
-        engineProvider,
-        EngineResolver,
-        AssetsService,
-      ],
+      providers: [optionsProvider, engineProvider, EngineResolver],
       controllers: [EngineController],
       exports: [optionsProvider, engineProvider],
     };

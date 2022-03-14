@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { join } from 'path/posix';
-import { ENGINE_MODULE_OPTIONS } from './engine.constants';
-import { IEngineOptions } from './engine.interfaces';
+import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
+import { IEngineOptions } from '../engine/engine.interfaces';
 
 @Injectable()
-export class AssetsService {
+export class FilesService {
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS)
     private readonly engineOptions: IEngineOptions,
