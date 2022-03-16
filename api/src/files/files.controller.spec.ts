@@ -24,7 +24,19 @@ describe('FilesController', () => {
     service = module.get<FilesService>(FilesService);
   });
 
-  it('should be defined', () => {
-    expect(service.getAssetFile('tos.md')).toEqual(expect.anything());
+  it('getAssetFile', () => {
+    const filePathEmpty = service.getAssetFile('FILE_THAT_DOES_NOT_EXIST.txt');
+    const filePath = service.getAssetFile('tos.md');
+    const fileWithLFI = service.getAssetFile('../../../.env');
+
+    expect(filePathEmpty).toBeUndefined();
+    expect(fileWithLFI).toBeUndefined();
+    expect(filePath).toEqual(expect.anything());
+  });
+
+  it('markdown', () => {
+    const fileContent = service.getMarkdown('login.md', 'http://localtest');
+    expect(!!fileContent).toBeTruthy();
+    expect(fileContent.includes('http://localtest')).toBeTruthy();
   });
 });
