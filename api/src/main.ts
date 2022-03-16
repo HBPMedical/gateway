@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path/posix';
 import { AppModule } from './main/app.module';
+import * as cookieParser from 'cookie-parser';
 
 const CORS_URL = process.env.CORS_URL ?? process.env.ENGINE_BASE_URL;
 
@@ -16,6 +16,8 @@ async function bootstrap() {
       ],
     },
   });
+
+  app.use(cookieParser());
 
   await app.listen(process.env.GATEWAY_PORT);
 }
