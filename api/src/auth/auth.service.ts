@@ -17,7 +17,7 @@ export class AuthService {
     return await this.engineService.login?.(username, password);
   }
 
-  async login(user: User): Promise<Pick<AuthenticationOutput, 'accessToken'>> {
+  login(user: User): Pick<AuthenticationOutput, 'accessToken'> {
     const payload = { username: user.username, sub: user };
     return {
       accessToken: this.jwtService.sign(payload),

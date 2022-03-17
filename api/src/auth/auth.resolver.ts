@@ -20,7 +20,7 @@ import { AuthenticationInput } from './inputs/authentication.input';
 import { User } from './models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
 
-//Custom defined type because Pick<CookieOptions, 'sameSite'> not working
+//Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
 
 @Resolver()
