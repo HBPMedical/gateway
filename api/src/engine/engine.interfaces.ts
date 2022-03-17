@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { User } from 'src/auth/models/user.model';
 import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
@@ -69,7 +70,18 @@ export interface IEngineService {
 
   editActiveUser(): Observable<string> | string;
 
-  logout(): void;
+  logout?(): void;
+
+  /**
+   * Method that login a user with username and password
+   * @param username
+   * @param password
+   * @returns User object or empty if user not found
+   */
+  login?(
+    username: string,
+    password: string,
+  ): Promise<User | undefined> | User | undefined;
 
   getPassthrough?(suffix: string): Observable<string> | string;
 }
