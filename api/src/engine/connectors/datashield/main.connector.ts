@@ -3,7 +3,7 @@ import { Inject, Logger, NotImplementedException } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { catchError, firstValueFrom, Observable } from 'rxjs';
-import { User } from 'src/auth/models/user.model';
+import { User } from 'src/users/models/user.model';
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { errorAxiosHandler } from 'src/common/utilities';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';

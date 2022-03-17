@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { User } from 'src/auth/models/user.model';
+import { User } from '../users/models/user.model';
 import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
@@ -66,9 +66,9 @@ export interface IEngineService {
 
   startExperiment(): Observable<string> | string;
 
-  getActiveUser(): Observable<string> | string;
+  getActiveUser?(): Observable<string> | string;
 
-  editActiveUser(): Observable<string> | string;
+  editActiveUser?(): Observable<string> | string;
 
   logout?(): void;
 
