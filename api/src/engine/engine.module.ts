@@ -2,6 +2,7 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { IncomingMessage } from 'http';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
@@ -50,7 +51,10 @@ export class EngineModule {
   ): Promise<IEngineService> {
     try {
       const service = await import(`./connectors/${opt.type}/main.connector`);
-      const engine = new service.default(opt, httpService, req);
+      const gqlRequest = req && req['req']; // graphql headers exception
+      const request =
+        gqlRequest && gqlRequest instanceof IncomingMessage ? gqlRequest : req;
+      const engine = new service.default(opt, httpService, request);
 
       return engine;
     } catch (e) {

@@ -17,10 +17,10 @@ export class AuthService {
     return await this.engineService.login?.(username, password);
   }
 
-  login(user: User): Pick<AuthenticationOutput, 'accessToken'> {
+  async login(user: User): Promise<Pick<AuthenticationOutput, 'accessToken'>> {
     const payload = { username: user.username, sub: user };
-    return {
+    return Promise.resolve({
       accessToken: this.jwtService.sign(payload),
-    };
+    });
   }
 }
