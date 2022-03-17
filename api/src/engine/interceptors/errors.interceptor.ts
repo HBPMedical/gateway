@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import {
   CallHandler,
   HttpException,
@@ -17,7 +16,6 @@ export class ErrorsInterceptor implements NestInterceptor {
   private readonly logger: Logger;
 
   constructor(
-    private httpService: HttpService,
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
   ) {
     // Logger name is the engine name

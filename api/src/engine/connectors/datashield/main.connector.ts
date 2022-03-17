@@ -1,9 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Logger } from '@nestjs/common';
+import { Inject, Logger, NotImplementedException } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { firstValueFrom, Observable } from 'rxjs';
+import { catchError, firstValueFrom, Observable } from 'rxjs';
+import { User } from 'src/auth/models/user.model';
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
+import { errorAxiosHandler } from 'src/common/utilities';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import {
   IConfiguration,
@@ -43,22 +45,50 @@ export default class DataShieldService implements IEngineService {
     return {};
   }
 
-  logout(): void {
-    throw new Error('Method not implemented.');
+  async login(username: string, password: string): Promise<User> {
+    const loginPath = this.options.baseurl + 'login';
+
+    const user: User = {
+      id: username,
+      username,
+      extraFields: {
+        sid: '',
+      },
+    };
+
+    const loginData = await firstValueFrom(
+      this.httpService
+        .get(loginPath, {
+          auth: { username, password },
+        })
+        .pipe(catchError((e) => errorAxiosHandler(e))),
+    );
+
+    const cookies = (loginData.headers['set-cookie'] as string[]) ?? [];
+    if (loginData.headers && loginData.headers['set-cookie']) {
+      cookies.forEach((cookie) => {
+        const [key, value] = cookie.split(/={1}/);
+        if (key === 'sid') {
+          user.extraFields.sid = value;
+        }
+      });
+    }
+
+    return user;
   }
 
   getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
-  async getHistogram(variable: string): Promise<RawResult> {
+  async getHistogram(variable: string, cookie?: string): Promise<RawResult> {
     const path =
       this.options.baseurl + `histogram?var=${variable}&type=combine`;
 
     const response = await firstValueFrom(
       this.httpService.get(path, {
         headers: {
-          cookie: this.req['req'].headers['cookie'],
+          cookie,
         },
       }),
     );
@@ -87,13 +117,16 @@ export default class DataShieldService implements IEngineService {
     };
   }
 
-  async getDescriptiveStats(variable: string): Promise<TableResult> {
+  async getDescriptiveStats(
+    variable: string,
+    cookie?: string,
+  ): Promise<TableResult> {
     const path = this.options.baseurl + `quantiles?var=${variable}&type=split`;
 
     const response = await firstValueFrom(
       this.httpService.get(path, {
         headers: {
-          cookie: this.req['req'].headers['cookie'],
+          cookie,
         },
       }),
     );
@@ -111,6 +144,10 @@ export default class DataShieldService implements IEngineService {
     data: ExperimentCreateInput,
     isTransient: boolean,
   ): Promise<Experiment> {
+    const user = this.req.user as User;
+    const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
+      ';',
+    );
     const expResult: Experiment = {
       id: `${data.algorithm.id}-${Date.now()}`,
       variables: data.variables,
@@ -126,7 +163,7 @@ export default class DataShieldService implements IEngineService {
       case 'MULTIPLE_HISTOGRAMS': {
         expResult.results = await Promise.all<RawResult>(
           data.variables.map(
-            async (variable) => await this.getHistogram(variable),
+            async (variable) => await this.getHistogram(variable, cookie),
           ),
         );
         break;
@@ -134,7 +171,8 @@ export default class DataShieldService implements IEngineService {
       case 'DESCRIPTIVE_STATS': {
         expResult.results = await Promise.all<TableResult>(
           [...data.variables, ...data.coVariables].map(
-            async (variable) => await this.getDescriptiveStats(variable),
+            async (variable) =>
+              await this.getDescriptiveStats(variable, cookie),
           ),
         );
         break;
@@ -157,40 +195,23 @@ export default class DataShieldService implements IEngineService {
   }
 
   getExperiment(id: string): Experiment | Promise<Experiment> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   removeExperiment(id: string): PartialExperiment | Promise<PartialExperiment> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   editExperient(
     id: string,
     expriment: ExperimentEditInput,
   ): Experiment | Promise<Experiment> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   async getDomains(): Promise<Domain[]> {
-    const loginPath = this.options.baseurl + 'login';
-
-    const loginData = await firstValueFrom(
-      this.httpService.get(loginPath, {
-        auth: { username: 'guest', password: 'guest123' },
-      }),
-    );
-
-    const cookies = (loginData.headers['set-cookie'] as string[]) ?? [];
-    if (loginData.headers && loginData.headers['set-cookie']) {
-      cookies.forEach((cookie) => {
-        const [key, value] = cookie.split(/={1}/);
-        this.req.res.cookie(key, value, {
-          httpOnly: true,
-          //sameSite: 'none',
-        });
-      });
-    }
-
+    const user = this.req.user as User;
+    const cookies = [`sid=${user.extraFields['sid']}`, `user=${user.id}`];
     const path = this.options.baseurl + 'getvars';
 
     const response = await firstValueFrom(
@@ -216,27 +237,27 @@ export default class DataShieldService implements IEngineService {
   }
 
   editActiveUser(): Observable<string> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   getExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   deleteExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   editExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   startExperimentTransient(): Observable<string> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   startExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   getExperiments(): string {

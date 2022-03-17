@@ -2,6 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: String!
+  username: String!
+  fullname: String
+  email: String
+  agreeNDA: Boolean
+}
+
+type AuthenticationOutput {
+  user: User!
+  accessToken: String!
+}
+
 type Configuration {
   connectorId: String!
   galaxy: Boolean
@@ -224,6 +237,8 @@ type Mutation {
   createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
   editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
   removeExperiment(id: String!): PartialExperiment!
+  login(variables: AuthenticationInput!): AuthenticationOutput!
+  logout: Boolean!
 }
 
 input ExperimentCreateInput {
@@ -264,4 +279,9 @@ input ExperimentEditInput {
   name: String
   shared: Boolean
   viewed: Boolean
+}
+
+input AuthenticationInput {
+  username: String!
+  password: String!
 }
