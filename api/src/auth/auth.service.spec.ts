@@ -55,8 +55,8 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
   });
 
-  it('login', () => {
-    const data = service.login(user);
+  it('login', async () => {
+    const data = await service.login(user);
 
     expect(data.accessToken).toBe(jwtToken);
   });
