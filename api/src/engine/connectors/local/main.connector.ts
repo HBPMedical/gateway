@@ -9,7 +9,7 @@ import {
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { User } from 'src/auth/models/user.model';
+import { User } from 'src/users/models/user.model';
 
 export default class LocalService implements IEngineService {
   login(): User | Promise<User> {

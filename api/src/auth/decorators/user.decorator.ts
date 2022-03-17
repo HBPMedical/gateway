@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { User } from '../models/user.model';
+import { User } from '../../users/models/user.model';
 
 /**
  * Retrieve the current user within the graphQL request

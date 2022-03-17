@@ -17,7 +17,7 @@ import { CurrentUser } from './decorators/user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
-import { User } from './models/user.model';
+import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
