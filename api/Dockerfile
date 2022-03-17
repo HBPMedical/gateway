@@ -30,4 +30,7 @@ COPY . .
 COPY --from=development /usr/src/app/dist ./dist
 COPY --from=development /usr/src/app/assets ./assets
 
+ARG JWT_SECRET
+ENV AUTH_JWT_SECRET=${JWT_SECRET:-DefaultSecretNotToBeUse}
+
 CMD ["node", "dist/main"]
