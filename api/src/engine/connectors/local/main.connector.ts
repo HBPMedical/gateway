@@ -70,15 +70,15 @@ export default class LocalService implements IEngineService {
     ];
   }
 
-  getActiveUser(): string {
+  getActiveUser(): User {
     const dummyUser = {
       username: 'anonymous',
-      subjectId: 'anonymousId',
+      id: 'anonymousId',
       fullname: 'anonymous',
       email: 'anonymous@anonymous.com',
       agreeNDA: true,
     };
-    return JSON.stringify(dummyUser);
+    return dummyUser;
   }
 
   getAlgorithmsREST(): string {

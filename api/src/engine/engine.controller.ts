@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
@@ -28,13 +28,13 @@ export class EngineController {
   }
 
   @Get('activeUser')
-  getActiveUser(@Req() request: Request): Observable<string> | string {
-    return this.engineService.getActiveUser(request);
+  async getActiveUser(@Req() request: Request) {
+    return await this.engineService.getActiveUser(request);
   }
 
   @Post('activeUser/agreeNDA')
-  agreeNDA(@Req() request: Request): Observable<string> | string {
-    return this.engineService.updateUser(request);
+  async agreeNDA(@Req() request: Request) {
+    return await this.engineService.updateUser(request);
   }
 
   @Get('logout')

@@ -61,9 +61,9 @@ export interface IEngineService {
   // Standard REST API call
   getAlgorithmsREST(req?: Request): Observable<string> | string;
 
-  getActiveUser?(req?: Request): Observable<string> | string;
+  getActiveUser?(req?: Request): Promise<User> | User;
 
-  updateUser?(req?: Request): Observable<string> | string;
+  updateUser?(req?: Request): Promise<User> | User;
 
   logout?(req?: Request): void;
 

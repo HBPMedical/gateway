@@ -26,6 +26,8 @@ import { ExperimentEditInput } from 'src/engine/models/experiment/input/experime
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
+import { User } from 'src/users/models/user.model';
+import { transformToUser } from '../datashield/transformations';
 import {
   dataToAlgorithms,
   dataToDataset,
@@ -188,20 +190,22 @@ export default class ExaremeService implements IEngineService {
     }
   }
 
-  getActiveUser(request: Request): Observable<string> {
+  async getActiveUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser';
 
-    return this.get<string>(request, path).pipe(
-      map((response) => response.data),
-    );
+    const response = await firstValueFrom(this.get<string>(request, path));
+
+    return transformToUser.evaluate(response.data);
   }
 
-  updateUser(request: Request): Observable<string> {
+  async updateUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
 
-    return this.post<string>(request, path, request.body).pipe(
+    this.post<string>(request, path, request.body).pipe(
       map((response) => response.data),
     );
+
+    return this.getActiveUser(request);
   }
 
   getAlgorithmsREST(request: Request): Observable<string> {

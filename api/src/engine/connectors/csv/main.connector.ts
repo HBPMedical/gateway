@@ -12,6 +12,7 @@ import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { HttpService } from '@nestjs/axios';
 import { Group } from 'src/engine/models/group.model';
 import { Dictionary } from 'src/common/interfaces/utilities.interface';
+import { User } from 'src/users/models/user.model';
 
 export default class CSVService implements IEngineService {
   constructor(
@@ -156,15 +157,15 @@ export default class CSVService implements IEngineService {
     ];
   }
 
-  getActiveUser(): string {
+  getActiveUser(): User {
     const dummyUser = {
       username: 'anonymous',
-      subjectId: 'anonymousId',
+      id: 'anonymousId',
       fullname: 'anonymous',
       email: 'anonymous@anonymous.com',
       agreeNDA: true,
     };
-    return JSON.stringify(dummyUser);
+    return dummyUser;
   }
 
   getAlgorithmsREST(): string {
