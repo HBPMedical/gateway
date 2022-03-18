@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { User } from '../users/models/user.model';
 import { Configuration } from './models/configuration.model';
@@ -28,49 +29,43 @@ export interface IEngineService {
    */
   getConfiguration?(): IConfiguration;
 
-  getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
+  getDomains(ids: string[], req?: Request): Domain[] | Promise<Domain[]>;
 
   createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
+    req?: Request,
   ): Promise<Experiment> | Experiment;
 
   listExperiments(
     page: number,
     name: string,
+    req?: Request,
   ): Promise<ListExperiments> | ListExperiments;
 
-  getExperiment(id: string): Promise<Experiment> | Experiment;
+  getExperiment(id: string, req?: Request): Promise<Experiment> | Experiment;
 
-  removeExperiment(id: string): Promise<PartialExperiment> | PartialExperiment;
+  removeExperiment(
+    id: string,
+    req?: Request,
+  ): Promise<PartialExperiment> | PartialExperiment;
 
   editExperient(
     id: string,
     expriment: ExperimentEditInput,
+    req?: Request,
   ): Promise<Experiment> | Experiment;
 
-  getAlgorithms(): Promise<Algorithm[]> | Algorithm[];
+  getAlgorithms(req?: Request): Promise<Algorithm[]> | Algorithm[];
 
   // Standard REST API call
-  getAlgorithmsREST(): Observable<string> | string;
+  getAlgorithmsREST(req?: Request): Observable<string> | string;
 
-  getExperiments(): Observable<string> | string;
+  getActiveUser?(req?: Request): Observable<string> | string;
 
-  getExperimentREST(id: string): Observable<string> | string;
+  updateUser?(req?: Request): Observable<string> | string;
 
-  deleteExperiment(id: string): Observable<string> | string;
-
-  editExperimentREST(id: string): Observable<string> | string;
-
-  startExperimentTransient(): Observable<string> | string;
-
-  startExperiment(): Observable<string> | string;
-
-  getActiveUser?(): Observable<string> | string;
-
-  editActiveUser?(): Observable<string> | string;
-
-  logout?(): void;
+  logout?(req?: Request): void;
 
   /**
    * Method that login a user with username and password
@@ -81,7 +76,8 @@ export interface IEngineService {
   login?(
     username: string,
     password: string,
+    req?: Request,
   ): Promise<User | undefined> | User | undefined;
 
-  getPassthrough?(suffix: string): Observable<string> | string;
+  getPassthrough?(suffix: string, req?: Request): Observable<string> | string;
 }

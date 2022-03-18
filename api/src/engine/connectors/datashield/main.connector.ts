@@ -1,9 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Logger, NotImplementedException } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { catchError, firstValueFrom, Observable } from 'rxjs';
-import { User } from 'src/users/models/user.model';
+import { catchError, firstValueFrom } from 'rxjs';
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { errorAxiosHandler } from 'src/common/utilities';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
@@ -26,6 +24,7 @@ import {
   TableResult,
   ThemeType,
 } from 'src/engine/models/result/table-result.model';
+import { User } from 'src/users/models/user.model';
 import {
   transformToDomains,
   transformToHisto,
@@ -38,7 +37,6 @@ export default class DataShieldService implements IEngineService {
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
-    @Inject(REQUEST) private readonly req: Request,
   ) {}
 
   getConfiguration(): IConfiguration {
@@ -143,8 +141,9 @@ export default class DataShieldService implements IEngineService {
   async createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
+    request: Request,
   ): Promise<Experiment> {
-    const user = this.req.user as User;
+    const user = request.user as User;
     const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
       ';',
     );
@@ -209,8 +208,8 @@ export default class DataShieldService implements IEngineService {
     throw new NotImplementedException();
   }
 
-  async getDomains(): Promise<Domain[]> {
-    const user = this.req.user as User;
+  async getDomains(ids: string[], request: Request): Promise<Domain[]> {
+    const user = request.user as User;
     const cookies = [`sid=${user.extraFields['sid']}`, `user=${user.id}`];
     const path = this.options.baseurl + 'getvars';
 
@@ -234,34 +233,6 @@ export default class DataShieldService implements IEngineService {
       agreeNDA: true,
     };
     return JSON.stringify(dummyUser);
-  }
-
-  editActiveUser(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  getExperimentREST(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  deleteExperiment(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  editExperimentREST(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  startExperimentTransient(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  startExperiment(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  getExperiments(): string {
-    return '[]';
   }
 
   getAlgorithmsREST(): string {

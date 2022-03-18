@@ -1,4 +1,4 @@
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
@@ -165,34 +165,6 @@ export default class CSVService implements IEngineService {
       agreeNDA: true,
     };
     return JSON.stringify(dummyUser);
-  }
-
-  editActiveUser(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  getExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  deleteExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  editExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  startExperimentTransient(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  startExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  getExperiments(): string {
-    return '[]';
   }
 
   getAlgorithmsREST(): string {
