@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { UpdateUserInput } from 'src/users/inputs/update-user.input';
 import { User } from '../users/models/user.model';
 import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
@@ -63,7 +64,7 @@ export interface IEngineService {
 
   getActiveUser?(req?: Request): Promise<User> | User;
 
-  updateUser?(req?: Request): Promise<User> | User;
+  updateUser?(req?: Request, data?: UpdateUserInput): Promise<User> | User;
 
   logout?(req?: Request): void;
 
