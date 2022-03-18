@@ -76,7 +76,6 @@ export interface IEngineService {
   login?(
     username: string,
     password: string,
-    req?: Request,
   ): Promise<User | undefined> | User | undefined;
 
   getPassthrough?(suffix: string, req?: Request): Observable<string> | string;
