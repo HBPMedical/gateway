@@ -62,7 +62,6 @@ export class AuthResolver {
     });
 
     return {
-      user,
       accessToken: data.accessToken,
     };
   }

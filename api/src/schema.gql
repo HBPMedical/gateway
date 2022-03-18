@@ -11,7 +11,6 @@ type User {
 }
 
 type AuthenticationOutput {
-  user: User!
   accessToken: String!
 }
 
@@ -231,6 +230,7 @@ type Query {
   experimentList(page: Float = 0, name: String = ""): ListExperiments!
   experiment(id: String!): Experiment!
   algorithms: [Algorithm!]!
+  user: User!
 }
 
 type Mutation {
@@ -239,6 +239,7 @@ type Mutation {
   removeExperiment(id: String!): PartialExperiment!
   login(variables: AuthenticationInput!): AuthenticationOutput!
   logout: Boolean!
+  updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 input ExperimentCreateInput {
@@ -284,4 +285,8 @@ input ExperimentEditInput {
 input AuthenticationInput {
   username: String!
   password: String!
+}
+
+input UpdateUserInput {
+  agreeNDA: Boolean!
 }
