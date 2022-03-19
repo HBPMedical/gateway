@@ -1,9 +1,13 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Logger, NotImplementedException } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
+import {
+  Inject,
+  InternalServerErrorException,
+  Logger,
+  NotImplementedException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request } from 'express';
-import { catchError, firstValueFrom, Observable } from 'rxjs';
-import { User } from 'src/auth/models/user.model';
+import { catchError, firstValueFrom } from 'rxjs';
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { errorAxiosHandler } from 'src/common/utilities';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
@@ -26,6 +30,7 @@ import {
   TableResult,
   ThemeType,
 } from 'src/engine/models/result/table-result.model';
+import { User } from 'src/users/models/user.model';
 import {
   transformToDomains,
   transformToHisto,
@@ -38,7 +43,6 @@ export default class DataShieldService implements IEngineService {
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
-    @Inject(REQUEST) private readonly req: Request,
   ) {}
 
   getConfiguration(): IConfiguration {
@@ -77,7 +81,7 @@ export default class DataShieldService implements IEngineService {
     return user;
   }
 
-  getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
+  async getAlgorithms(): Promise<Algorithm[]> {
     throw new NotImplementedException();
   }
 
@@ -143,8 +147,9 @@ export default class DataShieldService implements IEngineService {
   async createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
+    request: Request,
   ): Promise<Experiment> {
-    const user = this.req.user as User;
+    const user = request.user as User;
     const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
       ';',
     );
@@ -182,10 +187,7 @@ export default class DataShieldService implements IEngineService {
     return expResult;
   }
 
-  listExperiments(
-    page: number,
-    name: string,
-  ): ListExperiments | Promise<ListExperiments> {
+  async listExperiments(page: number, name: string): Promise<ListExperiments> {
     return {
       totalExperiments: 0,
       experiments: [],
@@ -194,23 +196,30 @@ export default class DataShieldService implements IEngineService {
     };
   }
 
-  getExperiment(id: string): Experiment | Promise<Experiment> {
+  async getExperiment(id: string): Promise<Experiment> {
     throw new NotImplementedException();
   }
 
-  removeExperiment(id: string): PartialExperiment | Promise<PartialExperiment> {
+  async removeExperiment(id: string): Promise<PartialExperiment> {
     throw new NotImplementedException();
   }
 
-  editExperient(
+  async editExperient(
     id: string,
     expriment: ExperimentEditInput,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new NotImplementedException();
   }
 
-  async getDomains(): Promise<Domain[]> {
-    const user = this.req.user as User;
+  async getDomains(ids: string[], request: Request): Promise<Domain[]> {
+    const user = request.user as User;
+    const sid = user && user.extraFields && user.extraFields['sid'];
+
+    if (!sid)
+      throw new InternalServerErrorException(
+        'Datashield sid is missing from the user',
+      );
+
     const cookies = [`sid=${user.extraFields['sid']}`, `user=${user.id}`];
     const path = this.options.baseurl + 'getvars';
 
@@ -225,43 +234,15 @@ export default class DataShieldService implements IEngineService {
     return [transformToDomains.evaluate(response.data)];
   }
 
-  getActiveUser(): string {
+  async getActiveUser(): Promise<User> {
     const dummyUser = {
       username: 'anonymous',
-      subjectId: 'anonymousId',
+      id: 'anonymousId',
       fullname: 'anonymous',
       email: 'anonymous@anonymous.com',
       agreeNDA: true,
     };
-    return JSON.stringify(dummyUser);
-  }
-
-  editActiveUser(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  getExperimentREST(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  deleteExperiment(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  editExperimentREST(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  startExperimentTransient(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  startExperiment(): Observable<string> {
-    throw new NotImplementedException();
-  }
-
-  getExperiments(): string {
-    return '[]';
+    return dummyUser;
   }
 
   getAlgorithmsREST(): string {

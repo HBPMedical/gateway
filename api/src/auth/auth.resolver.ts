@@ -12,13 +12,13 @@ import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
 import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
-import { GQLResponse } from './decorators/gql-request.decoractor';
 import { CurrentUser } from './decorators/user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
-import { User } from './models/user.model';
+import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
+import { GQLResponse } from '../common/decorators/gql-response.decoractor';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
@@ -62,7 +62,6 @@ export class AuthResolver {
     });
 
     return {
-      user,
       accessToken: data.accessToken,
     };
   }
