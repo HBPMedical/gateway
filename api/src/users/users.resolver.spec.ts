@@ -1,4 +1,5 @@
 import { getMockReq } from '@jest-mock/express';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
@@ -12,6 +13,7 @@ const moduleMocker = new ModuleMocker(global);
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
   const req = getMockReq();
+
   const user: User = {
     id: 'guest',
     username: 'guest',
@@ -32,6 +34,21 @@ describe('UsersResolver', () => {
     agreeNDA: false,
   };
 
+  const findOne = jest
+    .fn()
+    .mockResolvedValueOnce(internUserWrong)
+    .mockResolvedValueOnce(internUserWrong)
+    .mockImplementationOnce(() => {
+      throw new NotFoundException();
+    })
+    .mockResolvedValue(internUser);
+
+  const getActiveUser = jest
+    .fn()
+    .mockResolvedValueOnce(user)
+    .mockResolvedValueOnce({})
+    .mockResolvedValue(user);
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [UsersResolver],
@@ -39,16 +56,17 @@ describe('UsersResolver', () => {
       .useMocker((token) => {
         if (token == UsersService) {
           return {
-            findOne: jest
-              .fn()
-              .mockResolvedValue(internUser)
-              .mockResolvedValueOnce(internUserWrong),
+            findOne,
             update: jest.fn().mockResolvedValue({ ...user, ...internUser }),
           };
         }
         if (token == ENGINE_SERVICE) {
           return {
-            getActiveUser: jest.fn().mockResolvedValue(user),
+            getActiveUser,
+            updateUser: jest
+              .fn()
+              .mockImplementationOnce(undefined)
+              .mockResolvedValue({ ...user, ...updateData }),
           };
         }
         if (typeof token === 'function') {
@@ -64,17 +82,35 @@ describe('UsersResolver', () => {
     resolver = module.get<UsersResolver>(UsersResolver);
   });
 
-  it('getUser', async () => {
+  it('Get user with different id from engine and database', async () => {
     expect(await resolver.getUser(req, user)).toStrictEqual({
       ...user,
     });
+  });
+
+  it('Get user incomplete merge', async () => {
+    expect(resolver.getUser(req, user)).rejects.toThrowError();
+  });
+
+  it('Get user not found in db', async () => {
+    expect(await resolver.getUser(req, user)).toStrictEqual(user);
+  });
+
+  it('Get user in engine and database (merge)', async () => {
     expect(await resolver.getUser(req, user)).toStrictEqual({
       ...user,
       ...internUser,
     });
   });
 
-  it('updateUser', async () => {
+  it('Update user from engine ', async () => {
+    expect(await resolver.updateUser(req, updateData, user)).toStrictEqual({
+      ...user,
+      ...updateData,
+    });
+  });
+
+  it('Update user from database', async () => {
     expect(await resolver.updateUser(req, updateData, user)).toBeDefined();
   });
 });
