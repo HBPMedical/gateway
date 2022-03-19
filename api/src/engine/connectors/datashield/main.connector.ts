@@ -75,7 +75,7 @@ export default class DataShieldService implements IEngineService {
     return user;
   }
 
-  getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
+  async getAlgorithms(): Promise<Algorithm[]> {
     throw new NotImplementedException();
   }
 
@@ -181,10 +181,7 @@ export default class DataShieldService implements IEngineService {
     return expResult;
   }
 
-  listExperiments(
-    page: number,
-    name: string,
-  ): ListExperiments | Promise<ListExperiments> {
+  async listExperiments(page: number, name: string): Promise<ListExperiments> {
     return {
       totalExperiments: 0,
       experiments: [],
@@ -193,18 +190,18 @@ export default class DataShieldService implements IEngineService {
     };
   }
 
-  getExperiment(id: string): Experiment | Promise<Experiment> {
+  async getExperiment(id: string): Promise<Experiment> {
     throw new NotImplementedException();
   }
 
-  removeExperiment(id: string): PartialExperiment | Promise<PartialExperiment> {
+  async removeExperiment(id: string): Promise<PartialExperiment> {
     throw new NotImplementedException();
   }
 
-  editExperient(
+  async editExperient(
     id: string,
     expriment: ExperimentEditInput,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new NotImplementedException();
   }
 
@@ -224,7 +221,7 @@ export default class DataShieldService implements IEngineService {
     return [transformToDomains.evaluate(response.data)];
   }
 
-  getActiveUser(): User {
+  async getActiveUser(): Promise<User> {
     const dummyUser = {
       username: 'anonymous',
       id: 'anonymousId',

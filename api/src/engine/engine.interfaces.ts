@@ -36,37 +36,38 @@ export interface IEngineService {
     data: ExperimentCreateInput,
     isTransient: boolean,
     req?: Request,
-  ): Promise<Experiment> | Experiment;
+  ): Promise<Experiment>;
 
   listExperiments(
     page: number,
     name: string,
     req?: Request,
-  ): Promise<ListExperiments> | ListExperiments;
+  ): Promise<ListExperiments>;
 
-  getExperiment(id: string, req?: Request): Promise<Experiment> | Experiment;
+  getExperiment(id: string, req?: Request): Promise<Experiment>;
 
-  removeExperiment(
-    id: string,
-    req?: Request,
-  ): Promise<PartialExperiment> | PartialExperiment;
+  removeExperiment(id: string, req?: Request): Promise<PartialExperiment>;
 
   editExperient(
     id: string,
     expriment: ExperimentEditInput,
     req?: Request,
-  ): Promise<Experiment> | Experiment;
+  ): Promise<Experiment>;
 
-  getAlgorithms(req?: Request): Promise<Algorithm[]> | Algorithm[];
+  getAlgorithms(req?: Request): Promise<Algorithm[]>;
 
   // Standard REST API call
   getAlgorithmsREST(req?: Request): Observable<string> | string;
 
-  getActiveUser?(req?: Request): Promise<User> | User;
+  getActiveUser?(req?: Request): Promise<User>;
 
-  updateUser?(req?: Request, data?: UpdateUserInput): Promise<User> | User;
+  updateUser?(
+    req?: Request,
+    userId?: string,
+    data?: UpdateUserInput,
+  ): Promise<User>;
 
-  logout?(req?: Request): void;
+  logout?(req?: Request): Promise<void>;
 
   /**
    * Method that login a user with username and password

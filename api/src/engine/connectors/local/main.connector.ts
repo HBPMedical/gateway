@@ -18,36 +18,33 @@ export default class LocalService implements IEngineService {
     };
   }
 
-  getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
+  async getAlgorithms(): Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }
 
-  createExperiment(
+  async createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
-  listExperiments(
-    page: number,
-    name: string,
-  ): ListExperiments | Promise<ListExperiments> {
+  async listExperiments(page: number, name: string): Promise<ListExperiments> {
     throw new Error('Method not implemented.');
   }
 
-  getExperiment(id: string): Experiment | Promise<Experiment> {
+  async getExperiment(id: string): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
-  removeExperiment(id: string): PartialExperiment | Promise<PartialExperiment> {
+  async removeExperiment(id: string): Promise<PartialExperiment> {
     throw new Error('Method not implemented.');
   }
 
-  editExperient(
+  async editExperient(
     id: string,
     expriment: ExperimentEditInput,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
@@ -70,7 +67,7 @@ export default class LocalService implements IEngineService {
     ];
   }
 
-  getActiveUser(): User {
+  async getActiveUser(): Promise<User> {
     const dummyUser = {
       username: 'anonymous',
       id: 'anonymousId',

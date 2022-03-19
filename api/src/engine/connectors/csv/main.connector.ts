@@ -20,18 +20,18 @@ export default class CSVService implements IEngineService {
     private readonly httpService: HttpService,
   ) {}
 
-  logout() {
+  async logout() {
     throw new Error('Method not implemented.');
   }
 
-  getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
+  async getAlgorithms(): Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }
 
-  createExperiment(
+  async createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     return {
       id: '',
       domain: '',
@@ -45,10 +45,7 @@ export default class CSVService implements IEngineService {
     };
   }
 
-  listExperiments(
-    page: number,
-    name: string,
-  ): ListExperiments | Promise<ListExperiments> {
+  async listExperiments(page: number, name: string): Promise<ListExperiments> {
     return {
       experiments: [],
       currentPage: 0,
@@ -57,18 +54,18 @@ export default class CSVService implements IEngineService {
     };
   }
 
-  getExperiment(id: string): Experiment | Promise<Experiment> {
+  async getExperiment(id: string): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
-  removeExperiment(id: string): PartialExperiment | Promise<PartialExperiment> {
+  async removeExperiment(id: string): Promise<PartialExperiment> {
     throw new Error('Method not implemented.');
   }
 
-  editExperient(
+  async editExperient(
     id: string,
     expriment: ExperimentEditInput,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
@@ -157,7 +154,7 @@ export default class CSVService implements IEngineService {
     ];
   }
 
-  getActiveUser(): User {
+  async getActiveUser(): Promise<User> {
     const dummyUser = {
       username: 'anonymous',
       id: 'anonymousId',
