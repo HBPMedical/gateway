@@ -2,7 +2,7 @@ import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
-import { User } from './models/user.model';
+import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
 
 @Injectable()

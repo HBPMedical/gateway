@@ -6,7 +6,7 @@ import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { authConstants } from './auth-constants';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { User } from './models/user.model';
+import { User } from '../users/models/user.model';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -68,7 +68,6 @@ describe('AuthResolver', () => {
     expect(mockCookie.mock.calls[0][0]).toBe(authConstants.cookie.name);
     expect(mockCookie.mock.calls[0][1]).toBe(authData.accessToken);
     expect(data.accessToken).toBe(authData.accessToken);
-    expect(data.user).toBe(user);
   });
 
   it('logout', () => {

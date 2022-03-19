@@ -32,7 +32,7 @@
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
-    "@nestjs/typeorm": "^8.0.2",
+    "@nestjs/typeorm": "^8.0.3",
     "apollo-server-express": "^3.6.3",
     "axios": "^0.21.1",
     "cookie-parser": "^1.4.6",
@@ -42,10 +42,12 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "ts-md5": "^1.2.11"
+    "ts-md5": "^1.2.11",
+    "typeorm": "^0.2.45"
   },
   "devDependencies": {
     "@eclass/semantic-release-docker": "^3.0.0",

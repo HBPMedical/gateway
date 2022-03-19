@@ -25,14 +25,13 @@ export class EngineModule {
 
     const engineProvider = {
       provide: ENGINE_SERVICE,
-      useFactory: async (httpService: HttpService, req: Request) => {
+      useFactory: async (httpService: HttpService) => {
         return await this.createEngineConnection(
           optionsProvider.useValue,
           httpService,
-          req,
         );
       },
-      inject: [HttpService, REQUEST],
+      inject: [HttpService],
     };
 
     return {
@@ -47,14 +46,10 @@ export class EngineModule {
   private static async createEngineConnection(
     opt: IEngineOptions,
     httpService: HttpService,
-    req: Request,
   ): Promise<IEngineService> {
     try {
       const service = await import(`./connectors/${opt.type}/main.connector`);
-      const gqlRequest = req && req['req']; // graphql headers exception
-      const request =
-        gqlRequest && gqlRequest instanceof IncomingMessage ? gqlRequest : req;
-      const engine = new service.default(opt, httpService, request);
+      const engine = new service.default(opt, httpService);
 
       return engine;
     } catch (e) {

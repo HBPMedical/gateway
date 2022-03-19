@@ -78,3 +78,7 @@ export const transformToTable = jsonata(`
       })
 })
 `);
+
+export const transformToUser = jsonata(`
+$ ~> |$|{'id': subjectId}, ['subjectId']|
+`);

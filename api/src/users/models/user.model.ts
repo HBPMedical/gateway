@@ -1,7 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Entity, PrimaryColumn, Column } from 'typeorm';
 
+@Entity()
 @ObjectType()
 export class User {
+  @PrimaryColumn()
   @Field()
   id: string;
 
@@ -14,6 +17,7 @@ export class User {
   @Field({ nullable: true })
   email?: string;
 
+  @Column()
   @Field({ nullable: true })
   agreeNDA?: boolean;
 
