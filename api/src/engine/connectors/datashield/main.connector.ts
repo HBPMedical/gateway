@@ -1,5 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Logger, NotImplementedException } from '@nestjs/common';
+import {
+  Inject,
+  InternalServerErrorException,
+  Logger,
+  NotImplementedException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
@@ -207,6 +213,13 @@ export default class DataShieldService implements IEngineService {
 
   async getDomains(ids: string[], request: Request): Promise<Domain[]> {
     const user = request.user as User;
+    const sid = user && user.extraFields && user.extraFields['sid'];
+
+    if (!sid)
+      throw new InternalServerErrorException(
+        'Datashield sid is missing from the user',
+      );
+
     const cookies = [`sid=${user.extraFields['sid']}`, `user=${user.id}`];
     const path = this.options.baseurl + 'getvars';
 
