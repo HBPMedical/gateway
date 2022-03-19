@@ -68,7 +68,6 @@ describe('AuthResolver', () => {
     expect(mockCookie.mock.calls[0][0]).toBe(authConstants.cookie.name);
     expect(mockCookie.mock.calls[0][1]).toBe(authData.accessToken);
     expect(data.accessToken).toBe(authData.accessToken);
-    expect(data.user).toBe(user);
   });
 
   it('logout', () => {
