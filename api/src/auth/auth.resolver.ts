@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { Response } from 'express';
-import { parseToBoolean } from '../common/interfaces/utilities.interface';
+import { parseToBoolean } from '../common/utilities';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
 import { authConstants } from './auth-constants';

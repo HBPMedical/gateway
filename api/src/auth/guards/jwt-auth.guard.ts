@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
-import { parseToBoolean } from '../../common/interfaces/utilities.interface';
+import { parseToBoolean } from '../../common/utilities';
 import { authConstants } from '../auth-constants';
 
 @Injectable()
