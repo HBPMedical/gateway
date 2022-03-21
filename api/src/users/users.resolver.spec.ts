@@ -49,6 +49,11 @@ describe('UsersResolver', () => {
     .mockResolvedValueOnce({})
     .mockResolvedValue(user);
 
+  const engineService = {
+    getActiveUser,
+    updateUser: jest.fn().mockResolvedValue({ ...user, ...updateData }),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [UsersResolver],
@@ -61,13 +66,7 @@ describe('UsersResolver', () => {
           };
         }
         if (token == ENGINE_SERVICE) {
-          return {
-            getActiveUser,
-            updateUser: jest
-              .fn()
-              .mockImplementationOnce(undefined)
-              .mockResolvedValue({ ...user, ...updateData }),
-          };
+          return engineService;
         }
         if (typeof token === 'function') {
           const mockMetadata = moduleMocker.getMetadata(
@@ -111,6 +110,10 @@ describe('UsersResolver', () => {
   });
 
   it('Update user from database', async () => {
-    expect(await resolver.updateUser(req, updateData, user)).toBeDefined();
+    engineService.updateUser = undefined;
+    expect(await resolver.updateUser(req, updateData, user)).toStrictEqual({
+      ...user,
+      ...internUser,
+    });
   });
 });
