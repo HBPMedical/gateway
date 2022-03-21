@@ -4,7 +4,11 @@ import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { Md5 } from 'ts-md5';
-import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
+import {
+  ENGINE_MODULE_OPTIONS,
+  ENGINE_SERVICE,
+  ENGINE_SKIP_TOS,
+} from './engine.constants';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
@@ -16,6 +20,9 @@ import {
 import { ExperimentCreateInput } from './models/experiment/input/experiment-create.input';
 import { ExperimentEditInput } from './models/experiment/input/experiment-edit.input';
 import { ListExperiments } from './models/experiment/list-experiments.model';
+import { ConfigService } from '@nestjs/config';
+import { parseToBoolean } from '../common/utilities';
+import { authConstants } from '../auth/auth-constants';
 
 @UseGuards(JwtAuthGuard)
 @Resolver()
@@ -24,6 +31,7 @@ export class EngineResolver {
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
     @Inject(ENGINE_MODULE_OPTIONS)
     private readonly engineOptions: IEngineOptions,
+    private readonly configSerivce: ConfigService,
   ) {}
 
   @Query(() => Configuration)
@@ -32,6 +40,11 @@ export class EngineResolver {
 
     const data = {
       ...(config ?? {}),
+      skipAuth: parseToBoolean(
+        this.configSerivce.get(authConstants.skipAuth),
+        true,
+      ),
+      skipTOS: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
       connectorId: this.engineOptions.type,
     };
 

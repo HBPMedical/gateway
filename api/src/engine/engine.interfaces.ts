@@ -18,7 +18,7 @@ export interface IEngineOptions {
   baseurl: string;
 }
 
-export type IConfiguration = Pick<Configuration, 'contactLink' | 'galaxy'>;
+export type IConfiguration = Pick<Configuration, 'contactLink' | 'hasGalaxy'>;
 
 export interface IEngineService {
   //GraphQL

@@ -16,9 +16,11 @@ type AuthenticationOutput {
 
 type Configuration {
   connectorId: String!
-  galaxy: Boolean
+  hasGalaxy: Boolean
   contactLink: String
   version: String!
+  skipAuth: Boolean
+  skipTos: Boolean
 }
 
 type Dataset {

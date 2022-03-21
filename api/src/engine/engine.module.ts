@@ -1,8 +1,5 @@
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
-import { IncomingMessage } from 'http';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
