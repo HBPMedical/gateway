@@ -23,6 +23,7 @@ import { ListExperiments } from './models/experiment/list-experiments.model';
 import { ConfigService } from '@nestjs/config';
 import { parseToBoolean } from '../common/utilities';
 import { authConstants } from '../auth/auth-constants';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Resolver()
@@ -35,6 +36,7 @@ export class EngineResolver {
   ) {}
 
   @Query(() => Configuration)
+  @Public()
   configuration(): Configuration {
     const config = this.engineService.getConfiguration?.();
 
@@ -45,6 +47,9 @@ export class EngineResolver {
         true,
       ),
       skipTOS: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
+      enableSSO: parseToBoolean(
+        this.configSerivce.get(authConstants.enableSSO),
+      ),
       connectorId: this.engineOptions.type,
     };
 

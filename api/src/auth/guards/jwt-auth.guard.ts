@@ -1,5 +1,6 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
@@ -8,7 +9,10 @@ import { authConstants } from '../auth-constants';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(['jwt-cookies', 'jwt-bearer']) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly reflector: Reflector,
+  ) {
     super();
   }
 
@@ -22,11 +26,16 @@ export class JwtAuthGuard extends AuthGuard(['jwt-cookies', 'jwt-bearer']) {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
+    const isPublic = this.reflector.get<boolean>(
+      'isPublic',
+      context.getHandler(),
+    );
+
     const skipAuth = parseToBoolean(
       this.configService.get(authConstants.skipAuth, 'false'),
     );
 
-    if (skipAuth) {
+    if (skipAuth || isPublic) {
       return true;
     }
 
