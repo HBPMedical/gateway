@@ -18,4 +18,7 @@ export class Configuration {
 
   @Field({ nullable: true })
   skipTos?: boolean;
+
+  @Field({ nullable: true, defaultValue: true })
+  enableSSO?: boolean;
 }

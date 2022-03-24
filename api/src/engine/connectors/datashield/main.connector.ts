@@ -4,7 +4,6 @@ import {
   InternalServerErrorException,
   Logger,
   NotImplementedException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -102,7 +101,9 @@ export default class DataShieldService implements IEngineService {
       DataShieldService.logger.verbose(path);
       return {
         rawdata: {
-          data: 'Engine result are inconsitent',
+          data:
+            'Engine error when processing the request. Reason: ' +
+            response.data,
           type: MIME_TYPES.ERROR,
         },
       };
