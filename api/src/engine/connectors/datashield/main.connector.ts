@@ -235,15 +235,13 @@ export default class DataShieldService implements IEngineService {
     return [transformToDomains.evaluate(response.data)];
   }
 
-  async getActiveUser(): Promise<User> {
-    const dummyUser = {
-      username: 'anonymous',
-      id: 'anonymousId',
-      fullname: 'anonymous',
-      email: 'anonymous@anonymous.com',
-      agreeNDA: true,
+  async getActiveUser(req: Request): Promise<User> {
+    const user = req.user as User;
+    return {
+      username: user.id,
+      id: user.id,
+      fullname: user.id,
     };
-    return dummyUser;
   }
 
   getAlgorithmsREST(): string {

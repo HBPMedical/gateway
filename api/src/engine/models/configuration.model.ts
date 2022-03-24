@@ -16,7 +16,7 @@ export class Configuration {
   @Field({ nullable: true })
   skipAuth?: boolean;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, defaultValue: false })
   skipTos?: boolean;
 
   @Field({ nullable: true, defaultValue: true })

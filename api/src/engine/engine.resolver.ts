@@ -46,7 +46,7 @@ export class EngineResolver {
         this.configSerivce.get(authConstants.skipAuth),
         true,
       ),
-      skipTOS: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
+      skipTos: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
       enableSSO: parseToBoolean(
         this.configSerivce.get(authConstants.enableSSO),
       ),
