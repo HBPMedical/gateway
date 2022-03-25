@@ -16,9 +16,12 @@ type AuthenticationOutput {
 
 type Configuration {
   connectorId: String!
-  galaxy: Boolean
+  hasGalaxy: Boolean
   contactLink: String
   version: String!
+  skipAuth: Boolean
+  skipTos: Boolean
+  enableSSO: Boolean
 }
 
 type Dataset {
@@ -94,7 +97,7 @@ type TableResult {
   name: String!
   data: [[String!]!]!
   headers: [Header!]!
-  theme: ThemeType!
+  theme: ThemeType
 }
 
 enum ThemeType {

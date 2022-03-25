@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GraphQLError } from 'graphql';
 import { join } from 'path';
 import { AuthModule } from 'src/auth/auth.module';
 import { EngineModule } from 'src/engine/engine.module';
@@ -24,6 +25,19 @@ import { AppService } from './app.service';
       cors: {
         credentials: true,
         origin: [/http:\/\/localhost($|:\d*)/, /http:\/\/127.0.0.1($|:\d*)/],
+      },
+      formatError: (error: GraphQLError) => {
+        const extensions = {
+          code: error.extensions.code,
+          status:
+            error.extensions?.response?.statusCode ??
+            error.extensions.exception.status,
+          message:
+            error.extensions?.response?.message ??
+            error.extensions?.exception?.message,
+        };
+
+        return { ...error, extensions: { ...error.extensions, ...extensions } };
       },
     }),
     EngineModule.forRoot({

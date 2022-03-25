@@ -100,8 +100,8 @@
       "!**/*.decorator.ts",
       "!**/*.model.ts", 
       "!**/*.input.ts", 
-      "!src/jest.config.js",
-      "!src/main.js"
+      "!**/jest.config.ts",
+      "!**/main.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

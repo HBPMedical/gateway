@@ -17,6 +17,11 @@ export class AuthService {
     return await this.engineService.login?.(username, password);
   }
 
+  /**
+   * It takes a user and returns an access token
+   * @param {User} user - The user object that is being authenticated.
+   * @returns An object with an accessToken property.
+   */
   async login(user: User): Promise<Pick<AuthenticationOutput, 'accessToken'>> {
     const payload = { username: user.username, sub: user };
     return Promise.resolve({

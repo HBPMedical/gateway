@@ -22,6 +22,6 @@ export class TableResult extends Result {
   @Field(() => [Header])
   headers: Header[];
 
-  @Field(() => ThemeType, { defaultValue: ThemeType.DEFAULT })
+  @Field(() => ThemeType, { defaultValue: ThemeType.DEFAULT, nullable: true })
   theme?: ThemeType;
 }

@@ -1,10 +1,14 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { Inject, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { Md5 } from 'ts-md5';
-import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
+import {
+  ENGINE_MODULE_OPTIONS,
+  ENGINE_SERVICE,
+  ENGINE_SKIP_TOS,
+} from './engine.constants';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
@@ -16,7 +20,13 @@ import {
 import { ExperimentCreateInput } from './models/experiment/input/experiment-create.input';
 import { ExperimentEditInput } from './models/experiment/input/experiment-edit.input';
 import { ListExperiments } from './models/experiment/list-experiments.model';
+import { ConfigService } from '@nestjs/config';
+import { parseToBoolean } from '../common/utilities';
+import { authConstants } from '../auth/auth-constants';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 
+@UseInterceptors(ErrorsInterceptor)
 @UseGuards(JwtAuthGuard)
 @Resolver()
 export class EngineResolver {
@@ -24,14 +34,24 @@ export class EngineResolver {
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
     @Inject(ENGINE_MODULE_OPTIONS)
     private readonly engineOptions: IEngineOptions,
+    private readonly configSerivce: ConfigService,
   ) {}
 
   @Query(() => Configuration)
+  @Public()
   configuration(): Configuration {
     const config = this.engineService.getConfiguration?.();
 
     const data = {
       ...(config ?? {}),
+      skipAuth: parseToBoolean(
+        this.configSerivce.get(authConstants.skipAuth),
+        true,
+      ),
+      skipTos: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
+      enableSSO: parseToBoolean(
+        this.configSerivce.get(authConstants.enableSSO),
+      ),
       connectorId: this.engineOptions.type,
     };
 

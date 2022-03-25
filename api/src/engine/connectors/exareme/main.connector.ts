@@ -54,7 +54,7 @@ export default class ExaremeService implements IEngineService {
   getConfiguration(): IConfiguration {
     return {
       contactLink: 'https://ebrains.eu/support/',
-      galaxy: true,
+      hasGalaxy: true,
     };
   }
 

@@ -102,6 +102,10 @@ describe('UsersResolver', () => {
     });
   });
 
+  it('Undefined user should not throw exception', async () => {
+    expect(await resolver.getUser(req, undefined)).toBeTruthy();
+  });
+
   it('Update user from engine ', async () => {
     expect(await resolver.updateUser(req, updateData, user)).toStrictEqual({
       ...user,
@@ -115,5 +119,9 @@ describe('UsersResolver', () => {
       ...user,
       ...internUser,
     });
+  });
+
+  it('Undefined user should not throw exception', async () => {
+    expect(await resolver.updateUser(req, updateData, user)).toBeTruthy();
   });
 });
