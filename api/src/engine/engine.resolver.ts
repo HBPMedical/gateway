@@ -1,4 +1,4 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { Inject, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -24,7 +24,9 @@ import { ConfigService } from '@nestjs/config';
 import { parseToBoolean } from '../common/utilities';
 import { authConstants } from '../auth/auth-constants';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 
+@UseInterceptors(ErrorsInterceptor)
 @UseGuards(JwtAuthGuard)
 @Resolver()
 export class EngineResolver {
