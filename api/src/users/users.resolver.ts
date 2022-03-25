@@ -43,7 +43,9 @@ export class UsersResolver {
 
     // Checking if the user exists in the internal database. If it does, it will assign the user to the `user` object.
     try {
-      const internalUser = await this.usersService.findOne(reqUser.id);
+      const internalUser = reqUser
+        ? await this.usersService.findOne(reqUser.id)
+        : undefined;
 
       if (internalUser && (!user.id || internalUser.id === user.id)) {
         Object.assign(user, internalUser);
@@ -71,10 +73,10 @@ export class UsersResolver {
   async updateUser(
     @GQLRequest() request: Request,
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
-    @CurrentUser() user: User,
+    @CurrentUser() user?: User,
   ) {
     if (this.engineService.updateUser)
-      return this.engineService.updateUser(request, user.id, updateUserInput);
+      return this.engineService.updateUser(request, user?.id, updateUserInput);
 
     await this.usersService.update(user.id, updateUserInput);
 

@@ -7,18 +7,18 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { Response } from 'express';
-import { parseToBoolean } from '../common/interfaces/utilities.interface';
+import { GQLResponse } from '../common/decorators/gql-response.decoractor';
+import { parseToBoolean } from '../common/utilities';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
+import { User } from '../users/models/user.model';
 import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
-import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
-import { GQLResponse } from '../common/decorators/gql-response.decoractor';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
@@ -69,7 +69,7 @@ export class AuthResolver {
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   logout(@GQLResponse() res: Response, @CurrentUser() user: User): boolean {
-    this.logger.verbose(`${user.username} logged out`);
+    if (user) this.logger.verbose(`${user.username} logged out`);
 
     res.clearCookie(authConstants.cookie.name);
     this.engineService.logout?.();

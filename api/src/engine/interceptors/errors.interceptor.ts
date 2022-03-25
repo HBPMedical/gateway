@@ -30,7 +30,9 @@ export class ErrorsInterceptor implements NestInterceptor {
 
         this.logger.log(e.message);
         this.logger.verbose(
-          `[Error ${e.response.status}] ${e.response.data.message}`,
+          `[Error ${e.response.status}] ${
+            e.response.data.message ?? e.response.data
+          }`,
         );
         throw new HttpException(e.response.data, e.response.status); // catch errors, maybe make it optional (module parameter)
       }),
