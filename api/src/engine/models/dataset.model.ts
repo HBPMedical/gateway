@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity } from './entity.model';
+import { BaseModel } from './entity.model';
 
 @ObjectType()
-export class Dataset extends Entity {
+export class Dataset extends BaseModel {
   @Field({ nullable: true, defaultValue: false })
   isLongitudinal?: boolean;
 }

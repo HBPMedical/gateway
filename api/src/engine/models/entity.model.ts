@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 
 @InputType()
 @ObjectType()
-export class Entity {
+export class BaseModel {
   @Field()
   id: string;
 

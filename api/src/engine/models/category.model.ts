@@ -1,5 +1,5 @@
 import { ObjectType } from '@nestjs/graphql';
-import { Entity } from './entity.model';
+import { BaseModel } from './entity.model';
 
 @ObjectType()
-export class Category extends Entity {}
+export class Category extends BaseModel {}

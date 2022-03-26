@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity } from './entity.model';
+import { BaseModel } from './entity.model';
 
 @ObjectType()
-export class Group extends Entity {
+export class Group extends BaseModel {
   @Field({ nullable: true })
   description?: string;
 

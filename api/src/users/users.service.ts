@@ -33,11 +33,11 @@ export class UsersService {
    * @returns The updated user.
    */
   async update(id: string, data: UpdateUserInput): Promise<InternalUser> {
-    const test = {
+    const updateData = {
       id,
       ...data,
     };
 
-    return await this.userRepository.save(test);
+    return await this.userRepository.save(updateData);
   }
 }
