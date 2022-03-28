@@ -85,13 +85,21 @@ type Algorithm {
   description: String
 }
 
+type ChartAxis {
+  """label of the Axis"""
+  label: String
+
+  """label of each element on this Axis"""
+  categories: [String!]
+}
+
 type GroupResult {
   name: String!
   description: String
   results: [ResultUnion!]!
 }
 
-union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult
+union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult
 
 type TableResult {
   name: String!
@@ -132,12 +140,14 @@ type LineChartResult {
   lines: [LineResult!]!
 }
 
-type ChartAxis {
-  """label of the Axis"""
-  label: String
+type BarChartResult {
+  name: String!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
 
-  """label of each element on this Axis"""
-  categories: [String!]
+  """List of bar's value"""
+  bars: [String!]!
+  hasConnectedBars: Boolean
 }
 
 type ExtraLineInfo {
