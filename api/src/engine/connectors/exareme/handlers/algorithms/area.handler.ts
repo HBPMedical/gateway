@@ -4,7 +4,7 @@ import { ResultChartExperiment } from '../../interfaces/experiment/result-chart-
 import BaseHandler from '../base.handler';
 
 export default class AreaHandler extends BaseHandler {
-  static readonly transform = jsonata(`
+  private static readonly transform = jsonata(`
   ({
       "name": data.title.text,
       "xAxis": {
