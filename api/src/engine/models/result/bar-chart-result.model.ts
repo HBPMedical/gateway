@@ -14,7 +14,7 @@ export class BarChartResult extends Result {
   yAxis?: ChartAxis;
 
   @Field(() => [String], { description: "List of bar's value" })
-  bars: string[];
+  barValues: string[];
 
   @Field({ defaultValue: false, nullable: true })
   hasConnectedBars?: boolean;

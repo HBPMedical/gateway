@@ -131,6 +131,13 @@ type HeatMapResult {
   xAxis: ChartAxis
   yAxis: ChartAxis
   matrix: [[Float!]!]!
+  heatMapStyle: HeatMapStyle
+}
+
+"""Type of display."""
+enum HeatMapStyle {
+  NORMAL
+  BUBBLE
 }
 
 type LineChartResult {
@@ -146,7 +153,7 @@ type BarChartResult {
   yAxis: ChartAxis
 
   """List of bar's value"""
-  bars: [String!]!
+  barValues: [String!]!
   hasConnectedBars: Boolean
 }
 

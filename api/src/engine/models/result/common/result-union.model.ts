@@ -33,7 +33,7 @@ export const ResultUnion = createUnionType({
       return LineChartResult;
     }
 
-    if (value.bar) {
+    if (value.barValues) {
       return BarChartResult;
     }
 
