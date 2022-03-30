@@ -91,6 +91,7 @@
       "json",
       "ts"
     ],
+    "slowTestThreshold": 30,
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {

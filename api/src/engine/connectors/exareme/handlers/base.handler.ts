@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { AlgoResults } from 'src/common/interfaces/utilities.interface';
+import { Experiment } from '../../../models/experiment/experiment.model';
 import ResultHandler from './result-handler.interface';
 
 export default abstract class BaseHandler implements ResultHandler {
@@ -12,7 +12,7 @@ export default abstract class BaseHandler implements ResultHandler {
     return h;
   }
 
-  handle(algorithm: string, data: unknown, res: AlgoResults): void {
-    this.next?.handle(algorithm, data, res);
+  handle(partialExperiment: Experiment, data: unknown): void {
+    this.next?.handle(partialExperiment, data);
   }
 }
