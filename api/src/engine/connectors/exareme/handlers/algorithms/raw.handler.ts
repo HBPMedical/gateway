@@ -1,8 +1,6 @@
-import {
-  AlgoResults,
-  MIME_TYPES,
-} from 'src/common/interfaces/utilities.interface';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
+import { MIME_TYPES } from '../../../../../common/interfaces/utilities.interface';
+import { Experiment } from '../../../../models/experiment/experiment.model';
+import { RawResult } from '../../../../models/result/raw-result.model';
 import { ResultExperiment } from '../../interfaces/experiment/result-experiment.interface';
 import BaseHandler from '../base.handler';
 
@@ -17,13 +15,15 @@ export default class RawHandler extends BaseHandler {
     return { rawdata: data };
   };
 
-  handle(algorithm: string, data: unknown, res: AlgoResults): void {
+  handle(exp: Experiment, data: unknown): void {
     const inputs = data as ResultExperiment[];
 
-    inputs
-      .map((input) => this.dataToRaw(algorithm, input))
-      .forEach((input) => res.push(input));
+    if (inputs && Array.isArray(inputs))
+      inputs
+        .filter((input) => !!input.data && !!input.type)
+        .map((input) => this.dataToRaw(exp.algorithm.id, input))
+        .forEach((input) => exp.results.push(input));
 
-    this.next?.handle(algorithm, data, res);
+    this.next?.handle(exp, data);
   }
 }

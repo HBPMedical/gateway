@@ -2,7 +2,7 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ChartAxis } from './common/chart-axis.model';
 import { Result } from './common/result.model';
 
-enum HeatMapStyle {
+export enum HeatMapStyle {
   NORMAL,
   BUBBLE,
 }

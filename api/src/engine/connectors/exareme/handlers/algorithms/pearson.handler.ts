@@ -1,7 +1,7 @@
-import { Expression } from 'jsonata';
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
-import { AlgoResults } from 'src/common/interfaces/utilities.interface';
-import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
+import { Expression } from 'jsonata';
+import { Experiment } from '../../../../models/experiment/experiment.model';
+import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import BaseHandler from '../base.handler';
 
 export default class PearsonHandler extends BaseHandler {
@@ -40,15 +40,15 @@ export default class PearsonHandler extends BaseHandler {
    * @param {AlgoResults} res - list of possible results
    * @returns
    */
-  handle(algorithm: string, data: unknown, res: AlgoResults): void {
-    if (this.canHandle(algorithm)) {
+  handle(exp: Experiment, data: unknown): void {
+    if (this.canHandle(exp.algorithm.id)) {
       try {
         const results = PearsonHandler.transform.evaluate(
           data,
         ) as HeatMapResult[];
         results
           .filter((heatMap) => heatMap.matrix.length > 0 && heatMap.name)
-          .forEach((heatMap) => res.push(heatMap));
+          .forEach((heatMap) => exp.results.push(heatMap));
       } catch (e) {
         PearsonHandler.logger.warn(
           'An error occur when converting result from Pearson',
@@ -57,6 +57,6 @@ export default class PearsonHandler extends BaseHandler {
       }
     }
 
-    this.next?.handle(algorithm, data, res);
+    this.next?.handle(exp, data);
   }
 }
