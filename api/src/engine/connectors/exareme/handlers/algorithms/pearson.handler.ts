@@ -1,11 +1,11 @@
-import { Expression } from 'jsonata';
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
-import { AlgoResults } from 'src/common/interfaces/utilities.interface';
-import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
+import { Expression } from 'jsonata';
+import { Experiment } from '../../../../models/experiment/experiment.model';
+import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import BaseHandler from '../base.handler';
 
 export default class PearsonHandler extends BaseHandler {
-  readonly transform: Expression = jsonata(`
+  private static readonly transform: Expression = jsonata(`
   (
     $params := ['correlations', 'p-values', 'low_confidence_intervals', 'high_confidence_intervals'];
 
@@ -23,17 +23,32 @@ export default class PearsonHandler extends BaseHandler {
     })
   )`);
 
+  /**
+   * This function returns true if the algorithm is Pearson.
+   * @param {string} algorithm - The name of the algorithm to use.
+   * @returns a boolean value.
+   */
   canHandle(algorithm: string): boolean {
     return algorithm.toLocaleLowerCase() === 'pearson';
   }
 
-  handle(algorithm: string, data: unknown, res: AlgoResults): void {
-    if (this.canHandle(algorithm)) {
+  /**
+   * If the algorithm is Pearson, then transform the data into a HeatMapResult and push it into the
+   * results array
+   * @param {string} algorithm - The name of the algorithm.
+   * @param {unknown} data - The data that is passed to the algorithm.
+   * @param {AlgoResults} res - list of possible results
+   * @returns
+   */
+  handle(exp: Experiment, data: unknown): void {
+    if (this.canHandle(exp.algorithm.id)) {
       try {
-        const results = this.transform.evaluate(data) as HeatMapResult[];
+        const results = PearsonHandler.transform.evaluate(
+          data,
+        ) as HeatMapResult[];
         results
           .filter((heatMap) => heatMap.matrix.length > 0 && heatMap.name)
-          .forEach((heatMap) => res.push(heatMap));
+          .forEach((heatMap) => exp.results.push(heatMap));
       } catch (e) {
         PearsonHandler.logger.warn(
           'An error occur when converting result from Pearson',
@@ -42,6 +57,6 @@ export default class PearsonHandler extends BaseHandler {
       }
     }
 
-    this.next?.handle(algorithm, data, res);
+    this.next?.handle(exp, data);
   }
 }

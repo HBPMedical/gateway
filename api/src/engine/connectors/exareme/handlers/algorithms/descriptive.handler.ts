@@ -1,11 +1,11 @@
-import { AlgoResults } from 'src/common/interfaces/utilities.interface';
+import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
+import { Experiment } from '../../../../models/experiment/experiment.model';
 import {
   GroupResult,
   GroupsResult,
-} from 'src/engine/models/result/groups-result.model';
+} from '../../../../models/result/groups-result.model';
 import { ResultExperiment } from '../../interfaces/experiment/result-experiment.interface';
 import BaseHandler from '../base.handler';
-import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 
 export default class DescriptiveHandler extends BaseHandler {
   private static readonly headerDescriptive = `
@@ -110,22 +110,24 @@ $fn := function($o, $prefix) {
     return result;
   }
 
-  handle(algorithm: string, data: unknown, res: AlgoResults): void {
+  handle(exp: Experiment, data: unknown): void {
     let req = data;
 
-    if (algorithm.toLowerCase() === 'descriptive_stats') {
+    if (exp.algorithm.id.toLowerCase() === 'descriptive_stats') {
       const inputs = data as ResultExperiment[];
 
-      inputs
-        .filter((input) => input.type === 'application/json')
-        .map((input) => this.descriptiveDataToTableResult(input))
-        .forEach((input) => res.push(input));
+      if (inputs && Array.isArray(inputs)) {
+        inputs
+          .filter((input) => input.type === 'application/json')
+          .map((input) => this.descriptiveDataToTableResult(input))
+          .forEach((input) => exp.results.push(input));
 
-      req = JSON.stringify(
-        inputs.filter((input) => input.type !== 'application/json'),
-      );
+        req = JSON.stringify(
+          inputs.filter((input) => input.type !== 'application/json'),
+        );
+      }
     }
 
-    this.next?.handle(algorithm, req, res);
+    this.next?.handle(exp, req);
   }
 }

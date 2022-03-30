@@ -1,6 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { ChartAxis } from './common/chart-axis.model';
 import { Result } from './common/result.model';
+
+export enum HeatMapStyle {
+  NORMAL,
+  BUBBLE,
+}
+
+registerEnumType(HeatMapStyle, {
+  name: 'HeatMapStyle',
+  description: 'Type of display.',
+});
 
 @ObjectType()
 export class HeatMapResult extends Result {
@@ -15,4 +25,10 @@ export class HeatMapResult extends Result {
 
   @Field(() => [[Number]])
   matrix: number[][];
+
+  @Field(() => HeatMapStyle, {
+    defaultValue: HeatMapStyle.NORMAL,
+    nullable: true,
+  })
+  heatMapStyle?: HeatMapStyle;
 }
