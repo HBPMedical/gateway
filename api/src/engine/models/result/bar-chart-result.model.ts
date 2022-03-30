@@ -13,8 +13,8 @@ export class BarChartResult extends Result {
   @Field(() => ChartAxis, { nullable: true })
   yAxis?: ChartAxis;
 
-  @Field(() => [String], { description: "List of bar's value" })
-  barValues: string[];
+  @Field(() => [Number], { description: "List of bar's value" })
+  barValues: number[];
 
   @Field({ defaultValue: false, nullable: true })
   hasConnectedBars?: boolean;

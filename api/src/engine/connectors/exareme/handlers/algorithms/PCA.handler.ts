@@ -16,9 +16,7 @@ export default class PCAHandler extends BaseHandler {
       barValues: data['eigen_vals'],
       xAxis: {
         label: 'Dimensions',
-        categories: [...Array(exp.variables.length).keys()]
-          .map((i) => i + 1)
-          .map(String),
+        categories: exp.variables.map((_, i) => i + 1).map(String),
       },
       hasConnectedBars: true,
       yAxis: {

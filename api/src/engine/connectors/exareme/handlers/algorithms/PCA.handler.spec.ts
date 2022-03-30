@@ -90,8 +90,8 @@ describe('PCA result handler', () => {
     });
     exp.results.forEach((it) => {
       if (it['barValues']) {
-        const heatmap = it as BarChartResult;
-        expect(heatmap.barValues).toEqual(data.eigen_vals);
+        const barchart = it as BarChartResult;
+        expect(barchart.barValues).toEqual(data.eigen_vals);
       }
     });
   });
