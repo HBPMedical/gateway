@@ -1,19 +1,11 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Inject,
-  Param,
-  Patch,
-  Post,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Inject, Req, UseInterceptors } from '@nestjs/common';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { ENGINE_SERVICE } from './engine.constants';
 import { IEngineService } from './engine.interfaces';
-import { HeadersInterceptor } from './interceptors/headers.interceptor';
+import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 
-@UseInterceptors(HeadersInterceptor)
+@UseInterceptors(ErrorsInterceptor)
 @Controller()
 export class EngineController {
   constructor(
@@ -21,57 +13,12 @@ export class EngineController {
   ) {}
 
   @Get('/algorithms')
-  getAlgorithms(): Observable<string> | string {
-    return this.engineService.getAlgorithmsREST();
-  }
-
-  @Get('/experiments')
-  getExperiments(): Observable<string> | string {
-    return this.engineService.getExperiments();
-  }
-
-  @Get('/experiments/:uuid')
-  getExperiment(@Param('uuid') uuid: string): Observable<string> | string {
-    return this.engineService.getExperimentREST(uuid);
-  }
-
-  @Delete('/experiments/:uuid')
-  deleteExperiment(@Param('uuid') uuid: string): Observable<string> | string {
-    return this.engineService.deleteExperiment(uuid);
-  }
-
-  @Patch('/experiments/:uuid')
-  editExperiment(@Param('uuid') uuid: string): Observable<string> | string {
-    return this.engineService.editExperimentREST(uuid);
-  }
-
-  @Post('experiments/transient')
-  startExperimentTransient(): Observable<string> | string {
-    return this.engineService.startExperimentTransient();
-  }
-
-  @Post('experiments')
-  startExperiment(): Observable<string> | string {
-    return this.engineService.startExperiment();
-  }
-
-  @Get('activeUser')
-  getActiveUser(): Observable<string> | string {
-    return this.engineService.getActiveUser();
-  }
-
-  @Post('activeUser/agreeNDA')
-  agreeNDA(): Observable<string> | string {
-    return this.engineService.editActiveUser();
-  }
-
-  @Get('logout')
-  logout(): void {
-    this.engineService.logout();
+  getAlgorithms(@Req() request: Request): Observable<string> | string {
+    return this.engineService.getAlgorithmsREST(request);
   }
 
   @Get('galaxy')
-  galaxy(): Observable<string> | string {
-    return this.engineService.getPassthrough?.('galaxy');
+  galaxy(@Req() request: Request): Observable<string> | string {
+    return this.engineService.getPassthrough?.('galaxy', request);
   }
 }

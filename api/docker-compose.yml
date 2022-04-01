@@ -1,0 +1,43 @@
+services:
+  db:
+    image:  postgres
+    restart: always 
+    ports:
+      - "5454:5432"
+    environment:
+       POSTGRES_PASSWORD: pass123
+    volumes:
+      - db-volume:/var/lib/postgres
+    networks:
+      - back
+
+  # dev:
+  #   container_name: backend-dev
+  #   build:
+  #       context: .
+  #       target: development
+  #       dockerfile: ./dockerfile
+  #   volumes:
+  #       - .:/usr/src/app
+  #       - /usr/src/app/node_modules
+  #   links: 
+  #       - db
+  #   ports: 
+  #       - ${BE_PORT}:${BE_PORT}
+  #   expose: 
+  #       - 9229
+  #   command: npm run start:dev
+  #   env_file:
+  #     - .env.defaults 
+  #     - .env
+  #   networks:
+  #       - back
+  #   depends_on:
+  #       - db
+  #   environment:
+  #       - DB_URL=mongodb://mongo/backdev
+
+networks:
+  back:
+volumes: 
+  db-volume:

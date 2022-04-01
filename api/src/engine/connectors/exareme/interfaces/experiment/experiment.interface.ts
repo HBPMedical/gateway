@@ -5,6 +5,7 @@ export interface ExperimentData {
   uuid?: string;
   status?: string;
   createdBy?: string;
+  created: string;
   shared?: boolean;
   viewed?: boolean;
   result?: ResultExperiment[];

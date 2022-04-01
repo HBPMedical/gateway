@@ -1,52 +1,50 @@
-import { Observable } from 'rxjs';
 import { IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
+import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
   Experiment,
   PartialExperiment,
 } from 'src/engine/models/experiment/experiment.model';
-import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
+import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
+import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
+import { User } from 'src/users/models/user.model';
 
 export default class LocalService implements IEngineService {
-  logout(): void {
+  login(): User | Promise<User> {
+    return {
+      id: '1',
+      username: 'LocalServiceUser',
+    };
+  }
+
+  async getAlgorithms(): Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }
 
-  getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
-    throw new Error('Method not implemented.');
-  }
-
-  createExperiment(
+  async createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
-  listExperiments(
-    page: number,
-    name: string,
-  ): ListExperiments | Promise<ListExperiments> {
+  async listExperiments(page: number, name: string): Promise<ListExperiments> {
     throw new Error('Method not implemented.');
   }
 
-  getExperiment(uuid: string): Experiment | Promise<Experiment> {
+  async getExperiment(id: string): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
-  removeExperiment(
-    uuid: string,
-  ): PartialExperiment | Promise<PartialExperiment> {
+  async removeExperiment(id: string): Promise<PartialExperiment> {
     throw new Error('Method not implemented.');
   }
 
-  editExperient(
-    uuid: string,
+  async editExperient(
+    id: string,
     expriment: ExperimentEditInput,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
@@ -69,43 +67,15 @@ export default class LocalService implements IEngineService {
     ];
   }
 
-  getActiveUser(): string {
+  async getActiveUser(): Promise<User> {
     const dummyUser = {
       username: 'anonymous',
-      subjectId: 'anonymousId',
+      id: 'anonymousId',
       fullname: 'anonymous',
       email: 'anonymous@anonymous.com',
       agreeNDA: true,
     };
-    return JSON.stringify(dummyUser);
-  }
-
-  editActiveUser(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  getExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  deleteExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  editExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  startExperimentTransient(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  startExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  getExperiments(): string {
-    return '[]';
+    return dummyUser;
   }
 
   getAlgorithmsREST(): string {

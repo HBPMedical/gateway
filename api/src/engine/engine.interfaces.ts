@@ -1,4 +1,8 @@
+import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { UpdateUserInput } from 'src/users/inputs/update-user.input';
+import { User } from '../users/models/user.model';
+import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 import {
@@ -14,53 +18,67 @@ export interface IEngineOptions {
   baseurl: string;
 }
 
+export type IConfiguration = Pick<Configuration, 'contactLink' | 'hasGalaxy'>;
+
 export interface IEngineService {
   //GraphQL
-  getDomains(ids: string[]): Domain[] | Promise<Domain[]>;
+
+  /**
+   * Allow specific configuration for the engine
+   *
+   * `connectorId` is always overwrite by the engine module
+   */
+  getConfiguration?(): IConfiguration;
+
+  getDomains(ids: string[], req?: Request): Domain[] | Promise<Domain[]>;
 
   createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
-  ): Promise<Experiment> | Experiment;
+    req?: Request,
+  ): Promise<Experiment>;
 
   listExperiments(
     page: number,
     name: string,
-  ): Promise<ListExperiments> | ListExperiments;
+    req?: Request,
+  ): Promise<ListExperiments>;
 
-  getExperiment(uuid: string): Promise<Experiment> | Experiment;
+  getExperiment(id: string, req?: Request): Promise<Experiment>;
 
-  removeExperiment(
-    uuid: string,
-  ): Promise<PartialExperiment> | PartialExperiment;
+  removeExperiment(id: string, req?: Request): Promise<PartialExperiment>;
 
   editExperient(
-    uuid: string,
+    id: string,
     expriment: ExperimentEditInput,
-  ): Promise<Experiment> | Experiment;
+    req?: Request,
+  ): Promise<Experiment>;
 
-  getAlgorithms(): Promise<Algorithm[]> | Algorithm[];
+  getAlgorithms(req?: Request): Promise<Algorithm[]>;
 
   // Standard REST API call
-  getAlgorithmsREST(): Observable<string> | string;
+  getAlgorithmsREST(req?: Request): Observable<string> | string;
 
-  getExperiments(): Observable<string> | string;
+  getActiveUser?(req?: Request): Promise<User>;
 
-  getExperimentREST(uuid: string): Observable<string> | string;
+  updateUser?(
+    req?: Request,
+    userId?: string,
+    data?: UpdateUserInput,
+  ): Promise<User>;
 
-  deleteExperiment(uuid: string): Observable<string> | string;
+  logout?(req?: Request): Promise<void>;
 
-  editExperimentREST(uuid: string): Observable<string> | string;
+  /**
+   * Method that login a user with username and password
+   * @param username
+   * @param password
+   * @returns User object or empty if user not found
+   */
+  login?(
+    username: string,
+    password: string,
+  ): Promise<User | undefined> | User | undefined;
 
-  startExperimentTransient(): Observable<string> | string;
-
-  startExperiment(): Observable<string> | string;
-
-  getActiveUser(): Observable<string> | string;
-
-  editActiveUser(): Observable<string> | string;
-
-  logout(): void;
-
-  getPassthrough?(suffix: string): Observable<string> | string;
+  getPassthrough?(suffix: string, req?: Request): Observable<string> | string;
 }

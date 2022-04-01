@@ -1,4 +1,4 @@
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
@@ -12,6 +12,7 @@ import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { HttpService } from '@nestjs/axios';
 import { Group } from 'src/engine/models/group.model';
 import { Dictionary } from 'src/common/interfaces/utilities.interface';
+import { User } from 'src/users/models/user.model';
 
 export default class CSVService implements IEngineService {
   constructor(
@@ -19,42 +20,52 @@ export default class CSVService implements IEngineService {
     private readonly httpService: HttpService,
   ) {}
 
-  logout() {
+  async logout() {
     throw new Error('Method not implemented.');
   }
 
-  getAlgorithms(): Algorithm[] | Promise<Algorithm[]> {
+  async getAlgorithms(): Promise<Algorithm[]> {
     throw new Error('Method not implemented.');
   }
 
-  createExperiment(
+  async createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
+    return {
+      id: '',
+      domain: '',
+      datasets: [],
+      algorithm: {
+        id: '',
+        description: '',
+      },
+      name: 'test',
+      variables: [],
+    };
+  }
+
+  async listExperiments(page: number, name: string): Promise<ListExperiments> {
+    return {
+      experiments: [],
+      currentPage: 0,
+      totalExperiments: 0,
+      totalPages: 0,
+    };
+  }
+
+  async getExperiment(id: string): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
-  listExperiments(
-    page: number,
-    name: string,
-  ): ListExperiments | Promise<ListExperiments> {
+  async removeExperiment(id: string): Promise<PartialExperiment> {
     throw new Error('Method not implemented.');
   }
 
-  getExperiment(uuid: string): Experiment | Promise<Experiment> {
-    throw new Error('Method not implemented.');
-  }
-
-  removeExperiment(
-    uuid: string,
-  ): PartialExperiment | Promise<PartialExperiment> {
-    throw new Error('Method not implemented.');
-  }
-
-  editExperient(
-    uuid: string,
+  async editExperient(
+    id: string,
     expriment: ExperimentEditInput,
-  ): Experiment | Promise<Experiment> {
+  ): Promise<Experiment> {
     throw new Error('Method not implemented.');
   }
 
@@ -66,7 +77,7 @@ export default class CSVService implements IEngineService {
     const rows = data
       .split('\r\n')
       .map((row) => row.split('\t').filter((i) => i))
-      .filter((row) => row.length >= 2);
+      .filter((row) => row.length >= 1);
 
     rows.shift(); // remove headers
 
@@ -75,6 +86,7 @@ export default class CSVService implements IEngineService {
     const rootGroup: Group = {
       id: 'Global group',
       groups: [],
+      variables: [],
     };
 
     rows.forEach((row) => {
@@ -85,35 +97,45 @@ export default class CSVService implements IEngineService {
 
       row.shift(); // get ride of the variable name, keep only groups
 
-      vars.push(variable);
+      if (!vars.find((v) => v.id === variable.id)) vars.push(variable); // avoid duplicate
 
-      row
-        .filter((group) => !groups[group.toLowerCase()])
-        .forEach((group, i) => {
-          const groupId = group.toLowerCase();
-          if (i === 0) rootGroup.groups.push(groupId);
-          groups[groupId] = {
-            id: groupId,
-            label: group,
-            variables: [],
-            groups: [],
-          };
-        });
+      if (row.length < 1) {
+        rootGroup.variables.push(variable.id);
+        return;
+      }
 
-      const groupId = row[row.length - 1].toLowerCase(); // group's variable container
+      let pathId = '';
+
+      row.forEach((group, i) => {
+        const groupId = `${pathId}/${group.toLowerCase()}`;
+        pathId = groupId;
+        if (groups[groupId]) return;
+        if (i === 0) {
+          rootGroup.groups.push(groupId);
+        }
+        groups[groupId] = {
+          id: groupId,
+          label: group,
+          variables: [],
+          groups: [],
+        };
+      });
+
+      const groupId = pathId; // group's variable container
 
       groups[groupId].variables.push(variable.id); // add variable
 
-      row
+      row // fill groups with childrens
         .reverse()
         .map((group) => group.toLowerCase())
         .forEach((group, i) => {
-          const groupId = group.toLowerCase();
+          const id = pathId;
+          pathId = pathId.replace(`/${group}`, '');
 
           if (i !== row.length - 1) {
-            const parentId = row[i + 1].toLowerCase();
-            if (groups[parentId].groups.indexOf(groupId) === -1)
-              groups[parentId].groups.push(groupId);
+            const parentId = pathId;
+            if (groups[parentId].groups.indexOf(id) === -1)
+              groups[parentId].groups.push(id);
           }
         });
     });
@@ -132,43 +154,15 @@ export default class CSVService implements IEngineService {
     ];
   }
 
-  getActiveUser(): string {
+  async getActiveUser(): Promise<User> {
     const dummyUser = {
       username: 'anonymous',
-      subjectId: 'anonymousId',
+      id: 'anonymousId',
       fullname: 'anonymous',
       email: 'anonymous@anonymous.com',
       agreeNDA: true,
     };
-    return JSON.stringify(dummyUser);
-  }
-
-  editActiveUser(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  getExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  deleteExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  editExperimentREST(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  startExperimentTransient(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  startExperiment(): Observable<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  getExperiments(): string {
-    return '[]';
+    return dummyUser;
   }
 
   getAlgorithmsREST(): string {

@@ -1,14 +1,36 @@
 import { Field, ObjectType, PartialType } from '@nestjs/graphql';
 import { ResultUnion } from '../result/common/result-union.model';
 import { Algorithm } from './algorithm.model';
+import { Author } from './author.model';
+
+@ObjectType()
+export class Transformation {
+  @Field({ description: "Variable's id on which to apply the transformation" })
+  id: string;
+
+  @Field({ description: 'Transformation to apply' })
+  operation: string;
+}
+
+@ObjectType()
+export class Formula {
+  @Field(() => [Transformation], { nullable: true, defaultValue: [] })
+  transformations: Transformation[];
+
+  @Field(() => [[String]], { nullable: true, defaultValue: [] })
+  interactions: string[][];
+}
 
 @ObjectType()
 export class Experiment {
-  @Field({ nullable: true })
-  uuid?: string;
+  @Field()
+  id: string;
 
-  @Field({ nullable: true, defaultValue: '' })
-  author?: string;
+  @Field()
+  name: string;
+
+  @Field(() => Author, { nullable: true, defaultValue: '' })
+  author?: Author;
 
   @Field({ nullable: true })
   createdAt?: number;
@@ -43,11 +65,17 @@ export class Experiment {
   @Field(() => [String])
   variables: string[];
 
-  @Field()
-  algorithm: Algorithm;
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  coVariables?: string[];
+
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  filterVariables?: string[];
+
+  @Field(() => Formula, { nullable: true })
+  formula?: Formula;
 
   @Field()
-  name: string;
+  algorithm: Algorithm;
 }
 
 @ObjectType()

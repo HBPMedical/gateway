@@ -1,7 +1,9 @@
+import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { Category } from 'src/engine/models/category.model';
-import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
+import { Dataset } from 'src/engine/models/dataset.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
+import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
@@ -9,14 +11,19 @@ import {
   GroupResult,
   GroupsResult,
 } from 'src/engine/models/result/groups-result.model';
+import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
+import { LineChartResult } from 'src/engine/models/result/line-chart-result.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
+import { ResultChartExperiment } from './interfaces/experiment/result-chart-experiment.interface';
 import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import {
+  dataROCToLineResult,
+  dataToHeatmap,
   descriptiveModelToTables,
   descriptiveSingleToTables,
   transformToAlgorithms,
@@ -43,6 +50,14 @@ export const dataToCategory = (data: Entity): Category => {
   };
 };
 
+export const dataToDataset = (data: Entity): Dataset => {
+  return {
+    id: data.code,
+    label: data.label,
+    isLongitudinal: !!data.code.toLowerCase().includes('longitudinal'),
+  };
+};
+
 export const dataToVariable = (data: VariableEntity): Variable => {
   return {
     id: data.code,
@@ -56,11 +71,11 @@ export const dataToVariable = (data: VariableEntity): Variable => {
   };
 };
 
-const algoParamInputToData = (param: AlgorithmParameter) => {
+const algoParamInputToData = (param: AlgorithmParamInput) => {
   return {
-    name: param.name,
-    label: param.name,
-    value: param.value.join(','),
+    name: param.id,
+    label: param.id,
+    value: param.value,
   };
 };
 
@@ -69,7 +84,7 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
       single:
         data.transformations?.map((t) => ({
-          var_name: t.name,
+          var_name: t.id,
           unary_operation: t.operation,
         })) || [],
       interactions:
@@ -79,7 +94,7 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     }) ||
     null;
 
-  return {
+  const params = {
     algorithm: {
       parameters: [
         {
@@ -97,11 +112,6 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
           label: 'pathology',
           value: data.domain,
         },
-        {
-          name: 'y',
-          label: 'y',
-          value: data.variables.join(','),
-        },
         ...(formula
           ? [
               {
@@ -112,10 +122,59 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
           : []),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
-      name: data.algorithm.name,
+      name: data.algorithm.id,
     },
     name: data.name,
   };
+
+  if (data.coVariables && data.coVariables.length) {
+    let separator = ',';
+
+    const design = params.algorithm.parameters.find((p) => p.name === 'design');
+    const excludes = [
+      'Multiple Histograms',
+      'CART',
+      'ID3',
+      'Naive Bayes Training',
+    ];
+
+    if (design && !excludes.includes(data.algorithm.id)) {
+      separator = design.value === 'additive' ? '+' : '*';
+    }
+
+    params.algorithm.parameters.push({
+      name: 'x',
+      label: 'x',
+      value: data.coVariables.join(separator),
+    });
+  }
+
+  if (data.variables) {
+    let variables = data.variables.join(',');
+
+    if (data.algorithm.id === 'TTEST_PAIRED') {
+      const varCount = data.variables.length;
+      variables = data.variables
+        ?.reduce(
+          (vectors: string, v, i) =>
+            (i + 1) % 2 === 0
+              ? `${vectors}${v},`
+              : varCount === i + 1
+              ? `${vectors}${v}-${data.variables[0]}`
+              : `${vectors}${v}-`,
+          '',
+        )
+        .replace(/,$/, '');
+    }
+
+    params.algorithm.parameters.push({
+      name: 'y',
+      label: 'y',
+      value: variables,
+    });
+  }
+
+  return params;
 };
 
 export const descriptiveDataToTableResult = (
@@ -143,31 +202,56 @@ export const descriptiveDataToTableResult = (
   return [result];
 };
 
-export const dataToExperiment = (data: ExperimentData): Experiment => {
-  const expTransform = transformToExperiment.evaluate(data);
+export const dataToExperiment = (
+  data: ExperimentData,
+): Experiment | undefined => {
+  try {
+    const expTransform = transformToExperiment.evaluate(data);
 
-  const exp: Experiment = {
-    ...expTransform,
-    results: [],
-  };
+    const exp: Experiment = {
+      ...expTransform,
+      results: [],
+    };
 
-  exp.results = data.result
-    ? data.result
-        .map((result) => dataToResult(result, exp.algorithm.name))
-        .flat()
-    : [];
+    exp.results = data.result
+      ? data.result
+          .map((result) => dataToResult(result, exp.algorithm.id))
+          .flat()
+      : [];
 
-  return exp;
+    return exp;
+  } catch (e) {
+    return {
+      id: data.uuid,
+      name: data.name,
+      status: 'error',
+      variables: [],
+      domain: data['domain'] ?? '',
+      datasets: [],
+      algorithm: {
+        id: 'unknown',
+      },
+    };
+  }
 };
 
 export const dataToAlgorithms = (data: string): Algorithm[] => {
   return transformToAlgorithms.evaluate(data);
 };
 
-export const dataToRaw = (result: ResultExperiment): RawResult[] => {
+export const dataToRaw = (
+  algo: string,
+  result: ResultExperiment,
+): RawResult[] => {
+  let data = result;
+
+  if (algo === 'CART') {
+    data = { ...data, type: MIME_TYPES.JSONBTREE };
+  }
+
   return [
     {
-      rawdata: result.data,
+      rawdata: data,
     },
   ];
 };
@@ -179,8 +263,10 @@ export const dataToResult = (
   switch (result.type.toLowerCase()) {
     case 'application/json':
       return dataJSONtoResult(result, algo);
+    case 'application/vnd.highcharts+json':
+      return dataHighchartToResult(result as ResultChartExperiment, algo);
     default:
-      return dataToRaw(result);
+      return dataToRaw(algo, result);
   }
 };
 
@@ -192,6 +278,20 @@ export const dataJSONtoResult = (
     case 'descriptive_stats':
       return descriptiveDataToTableResult(result);
     default:
-      return [];
+      return dataToRaw(algo, result);
+  }
+};
+
+export const dataHighchartToResult = (
+  result: ResultChartExperiment,
+  algo: string,
+): Array<typeof ResultUnion> => {
+  switch (result.data.chart.type) {
+    case 'heatmap':
+      return [dataToHeatmap.evaluate(result) as HeatMapResult];
+    case 'area':
+      return [dataROCToLineResult.evaluate(result) as LineChartResult];
+    default:
+      return dataToRaw(algo, result);
   }
 };

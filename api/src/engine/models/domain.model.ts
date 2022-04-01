@@ -1,11 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Category } from './category.model';
-import { Entity } from './entity.model';
+import { Dataset } from './dataset.model';
+import { BaseModel } from './entity.model';
 import { Group } from './group.model';
 import { Variable } from './variable.model';
 
 @ObjectType()
-export class Domain extends Entity {
+export class Domain extends BaseModel {
   @Field({ nullable: true })
   description?: string;
 
@@ -15,8 +15,8 @@ export class Domain extends Entity {
   @Field(() => [Variable])
   variables: Variable[];
 
-  @Field(() => [Category])
-  datasets: Category[];
+  @Field(() => [Dataset])
+  datasets: Dataset[];
 
   @Field(() => Group)
   rootGroup: Group;

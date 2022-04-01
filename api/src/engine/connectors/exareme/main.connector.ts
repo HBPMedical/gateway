@@ -6,11 +6,15 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
+import { AxiosRequestConfig } from 'axios';
 import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
-import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
+import {
+  IConfiguration,
+  IEngineOptions,
+  IEngineService,
+} from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
@@ -22,9 +26,11 @@ import { ExperimentEditInput } from 'src/engine/models/experiment/input/experime
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
+import { User } from 'src/users/models/user.model';
+import { transformToUser } from '../datashield/transformations';
 import {
   dataToAlgorithms,
-  dataToCategory,
+  dataToDataset,
   dataToExperiment,
   dataToGroup,
   dataToVariable,
@@ -35,23 +41,33 @@ import { ExperimentsData } from './interfaces/experiment/experiments.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
 
+type Headers = Record<string, string>;
+
 @Injectable()
 export default class ExaremeService implements IEngineService {
+  headers = {};
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
-    @Inject(REQUEST) private readonly req: Request,
   ) {}
 
-  async logout() {
+  getConfiguration(): IConfiguration {
+    return {
+      contactLink: 'https://ebrains.eu/support/',
+      hasGalaxy: true,
+    };
+  }
+
+  async logout(request: Request) {
     const path = `${this.options.baseurl}logout`;
 
-    await firstValueFrom(this.httpService.get(path));
+    await firstValueFrom(this.get(request, path));
   }
 
   async createExperiment(
     data: ExperimentCreateInput,
     isTransient = false,
+    request: Request,
   ): Promise<Experiment> {
     const form = experimentInputToData(data);
 
@@ -59,75 +75,93 @@ export default class ExaremeService implements IEngineService {
       this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
 
     const resultAPI = await firstValueFrom(
-      this.httpService.post<ExperimentData>(path, form),
+      this.post<ExperimentData>(request, path, form, {
+        headers: this.headers,
+      }),
     );
 
     return dataToExperiment(resultAPI.data);
   }
 
-  async listExperiments(page: number, name: string): Promise<ListExperiments> {
+  async listExperiments(
+    page: number,
+    name: string,
+    request: Request,
+  ): Promise<ListExperiments> {
     const path = this.options.baseurl + 'experiments';
 
     const resultAPI = await firstValueFrom(
-      this.httpService.get<ExperimentsData>(path, { params: { page, name } }),
+      this.get<ExperimentsData>(request, path, {
+        params: { page, name },
+      }),
     );
 
     return {
       ...resultAPI.data,
-      experiments: resultAPI.data.experiments.map(dataToExperiment),
+      experiments: resultAPI.data.experiments?.map(dataToExperiment) ?? [],
     };
   }
 
-  async getAlgorithms(): Promise<Algorithm[]> {
+  async getAlgorithms(request: Request): Promise<Algorithm[]> {
     const path = this.options.baseurl + 'algorithms';
 
-    const resultAPI = await firstValueFrom(this.httpService.get<string>(path));
+    const resultAPI = await firstValueFrom(this.get<string>(request, path));
 
     return dataToAlgorithms(resultAPI.data);
   }
 
-  async getExperiment(uuid: string): Promise<Experiment> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+  async getExperiment(id: string, request: Request): Promise<Experiment> {
+    const path = this.options.baseurl + `experiments/${id}`;
 
     const resultAPI = await firstValueFrom(
-      this.httpService.get<ExperimentData>(path),
+      this.get<ExperimentData>(request, path),
     );
 
     return dataToExperiment(resultAPI.data);
   }
 
   async editExperient(
-    uuid: string,
+    id: string,
     expriment: ExperimentEditInput,
+    request: Request,
   ): Promise<Experiment> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+    const path = this.options.baseurl + `experiments/${id}`;
 
     const resultAPI = await firstValueFrom(
-      this.httpService.patch<ExperimentData>(path, expriment),
+      this.patch<ExperimentData>(request, path, expriment),
     );
 
     return dataToExperiment(resultAPI.data);
   }
 
-  async removeExperiment(uuid: string): Promise<PartialExperiment> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
+  async removeExperiment(
+    id: string,
+    request: Request,
+  ): Promise<PartialExperiment> {
+    const path = this.options.baseurl + `experiments/${id}`;
 
     try {
-      await firstValueFrom(this.httpService.delete(path));
+      await firstValueFrom(
+        this.delete(request, path, {
+          headers: this.headers,
+        }),
+      );
       return {
-        uuid: uuid,
+        id: id,
       };
     } catch (error) {
-      throw new BadRequestException(`${uuid} does not exists`);
+      throw new BadRequestException(`${id} does not exists`);
     }
   }
 
-  async getDomains(ids: string[]): Promise<Domain[]> {
+  async getDomains(ids: string[], request: Request): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
 
     try {
       const data = await firstValueFrom(
-        this.httpService.get<Pathology[]>(path),
+        this.get<Pathology[]>(request, path, {
+          headers: this.headers,
+        }),
       );
 
       return (
@@ -141,7 +175,7 @@ export default class ExaremeService implements IEngineService {
               label: data.label,
               groups: groups,
               rootGroup: dataToGroup(data.metadataHierarchy),
-              datasets: data.datasets ? data.datasets.map(dataToCategory) : [],
+              datasets: data.datasets ? data.datasets.map(dataToDataset) : [],
               variables: data.metadataHierarchy
                 ? this.flattenVariables(data.metadataHierarchy, groups)
                 : [],
@@ -156,82 +190,41 @@ export default class ExaremeService implements IEngineService {
     }
   }
 
-  getActiveUser(): Observable<string> {
+  async getActiveUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser';
 
-    return this.httpService
-      .get<string>(path)
-      .pipe(map((response) => response.data));
+    const response = await firstValueFrom(this.get<string>(request, path));
+
+    return transformToUser.evaluate(response.data);
   }
 
-  editActiveUser(): Observable<string> {
+  async updateUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
 
-    return this.httpService
-      .post<string>(path, this.req.body)
-      .pipe(map((response) => response.data));
+    this.post<string>(request, path, request.body).pipe(
+      map((response) => response.data),
+    );
+
+    return this.getActiveUser(request);
   }
 
-  getExperimentREST(uuid: string): Observable<string> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
-
-    return this.httpService
-      .get<string>(path)
-      .pipe(map((response) => response.data));
-  }
-
-  deleteExperiment(uuid: string): Observable<string> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
-
-    return this.httpService.delete(path).pipe(map((response) => response.data));
-  }
-
-  editExperimentREST(uuid: string): Observable<string> {
-    const path = this.options.baseurl + `experiments/${uuid}`;
-
-    return this.httpService
-      .patch(path, this.req.body)
-      .pipe(map((response) => response.data));
-  }
-
-  startExperimentTransient(): Observable<string> {
-    const path = this.options.baseurl + 'experiments/transient';
-
-    return this.httpService
-      .post(path, this.req.body)
-      .pipe(map((response) => response.data));
-  }
-
-  startExperiment(): Observable<string> {
-    const path = this.options.baseurl + 'experiments';
-
-    return this.httpService
-      .post(path, this.req.body)
-      .pipe(map((response) => response.data));
-  }
-
-  getExperiments(): Observable<string> {
-    const path = this.options.baseurl + 'experiments';
-
-    return this.httpService
-      .get<string>(path, { params: this.req.query })
-      .pipe(map((response) => response.data));
-  }
-
-  getAlgorithmsREST(): Observable<string> {
+  getAlgorithmsREST(request: Request): Observable<string> {
     const path = this.options.baseurl + 'algorithms';
 
-    return this.httpService
-      .get<string>(path, { params: this.req.query })
-      .pipe(map((response) => response.data));
+    return this.get<string>(request, path, { params: request.query }).pipe(
+      map((response) => response.data),
+    );
   }
 
-  getPassthrough(suffix: string): string | Observable<string> {
+  getPassthrough(
+    suffix: string,
+    request: Request,
+  ): string | Observable<string> {
     const path = this.options.baseurl + suffix;
 
-    return this.httpService
-      .get<string>(path, { params: this.req.query })
-      .pipe(map((response) => response.data));
+    return this.get<string>(request, path, { params: request.query }).pipe(
+      map((response) => response.data),
+    );
   }
 
   // UTILITIES
@@ -261,4 +254,61 @@ export default class ExaremeService implements IEngineService {
 
     return variables;
   };
+
+  private getHeadersFromRequest(request: Request): Headers {
+    if (!request || request.headers) return {};
+
+    return request.headers as Headers;
+  }
+
+  private mergeHeaders(
+    request: Request,
+    config: AxiosRequestConfig,
+  ): AxiosRequestConfig {
+    return {
+      ...config,
+      headers: {
+        ...this.getHeadersFromRequest(request),
+        ...(config.headers ?? {}),
+      },
+    };
+  }
+
+  private get<T = any>(
+    request: Request,
+    path: string,
+    config: AxiosRequestConfig = {},
+  ) {
+    const conf = this.mergeHeaders(request, config);
+    return this.httpService.get<T>(path, conf);
+  }
+
+  private post<T = any>(
+    request: Request,
+    path: string,
+    data?: any,
+    config: AxiosRequestConfig = {},
+  ) {
+    const conf = this.mergeHeaders(request, config);
+    return this.httpService.post<T>(path, data, conf);
+  }
+
+  private patch<T = any>(
+    request: Request,
+    path: string,
+    data?: any,
+    config: AxiosRequestConfig = {},
+  ) {
+    const conf = this.mergeHeaders(request, config);
+    return this.httpService.patch<T>(path, data, conf);
+  }
+
+  private delete<T = any>(
+    request: Request,
+    path: string,
+    config: AxiosRequestConfig = {},
+  ) {
+    const conf = this.mergeHeaders(request, config);
+    return this.httpService.delete<T>(path, conf);
+  }
 }

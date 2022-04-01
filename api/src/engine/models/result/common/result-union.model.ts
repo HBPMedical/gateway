@@ -1,4 +1,5 @@
 import { createUnionType } from '@nestjs/graphql';
+import { BarChartResult } from '../bar-chart-result.model';
 import { GroupsResult } from '../groups-result.model';
 import { HeatMapResult } from '../heat-map-result.model';
 import { LineChartResult } from '../line-chart-result.model';
@@ -13,14 +14,11 @@ export const ResultUnion = createUnionType({
     GroupsResult,
     HeatMapResult,
     LineChartResult,
+    BarChartResult,
   ],
   resolveType(value) {
     if (value.headers) {
       return TableResult;
-    }
-
-    if (value.rawdata) {
-      return RawResult;
     }
 
     if (value.groups) {
@@ -31,10 +29,14 @@ export const ResultUnion = createUnionType({
       return HeatMapResult;
     }
 
-    if (value.x) {
+    if (value.lines) {
       return LineChartResult;
     }
 
-    return null;
+    if (value.barValues) {
+      return BarChartResult;
+    }
+
+    return RawResult;
   },
 });

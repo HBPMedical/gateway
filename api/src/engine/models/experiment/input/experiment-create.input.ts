@@ -4,7 +4,7 @@ import { AlgorithmInput } from './algorithm.input';
 @InputType()
 export class FormulaTransformation {
   @Field()
-  name: string;
+  id: string;
 
   @Field()
   operation: string;
@@ -24,6 +24,9 @@ export class ExperimentCreateInput {
   @Field(() => [String])
   variables: string[];
 
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  coVariables?: string[];
+
   @Field()
   algorithm: AlgorithmInput;
 
@@ -31,8 +34,8 @@ export class ExperimentCreateInput {
   name: string;
 
   @Field(() => [FormulaTransformation], { nullable: true })
-  transformations: FormulaTransformation[];
+  transformations?: FormulaTransformation[];
 
   @Field(() => [[String]], { nullable: true })
-  interactions: string[][];
+  interactions?: string[][];
 }
