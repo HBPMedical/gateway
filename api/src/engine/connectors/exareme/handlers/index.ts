@@ -1,4 +1,5 @@
 import { Experiment } from '../../../../engine/models/experiment/experiment.model';
+import AnovaOneWayHandler from './algorithms/anova-one-way.handler';
 import AreaHandler from './algorithms/area.handler';
 import DescriptiveHandler from './algorithms/descriptive.handler';
 import HeatMapHandler from './algorithms/heat-map.handler';
@@ -12,6 +13,7 @@ start
   .setNext(new AreaHandler())
   .setNext(new DescriptiveHandler())
   .setNext(new HeatMapHandler())
+  .setNext(new AnovaOneWayHandler())
   .setNext(new PCAHandler())
   .setNext(new RawHandler()); // should be last handler as it works as a fallback (if other handlers could not process the results)
 

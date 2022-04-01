@@ -1,4 +1,4 @@
-import jsonata from 'jsonata';
+import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 import { MeanChartResult } from 'src/engine/models/result/means-chart-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import {
@@ -55,7 +55,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
     if (!tableData) return undefined;
 
     const tableResult: TableResult = {
-      tableData,
+      ...tableData,
       tableStyle: TableStyle.NORMAL,
     } as unknown as TableResult;
 
@@ -93,6 +93,10 @@ export default class AnovaOneWayHandler extends BaseHandler {
     return tableSummary;
   }
 
+  getMeanPlot(data: unknown): MeanChartResult {
+    return AnovaOneWayHandler.meanPlotTransform.evaluate(data);
+  }
+
   handle(exp: Experiment, data: unknown): void {
     if (!this.canHandle(exp.algorithm.id)) return super.handle(exp, data);
 
@@ -102,8 +106,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
     const tuckeyTable = this.getTuckeyTable(data);
     if (tuckeyTable) exp.results.push(tuckeyTable);
 
-    const meanPlot: MeanChartResult =
-      AnovaOneWayHandler.meanPlotTransform.evaluate(data);
+    const meanPlot = this.getMeanPlot(data);
     if (meanPlot && meanPlot.pointCIs) exp.results.push(meanPlot);
 
     super.handle(exp, data); // continue request

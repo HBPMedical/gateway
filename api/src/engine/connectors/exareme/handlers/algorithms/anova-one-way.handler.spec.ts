@@ -1,4 +1,6 @@
+import handlers from '..';
 import { Experiment } from '../../../../models/experiment/experiment.model';
+import AnovaOneWayHandler from './anova-one-way.handler';
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
@@ -14,6 +16,7 @@ const createExperiment = (): Experiment => ({
 });
 
 describe('Anova oneway result handler', () => {
+  const anovaHandler = new AnovaOneWayHandler();
   const data = {
     df_residual: 1424.0,
     df_explained: 3.0,
@@ -129,19 +132,23 @@ describe('Anova oneway result handler', () => {
     },
   };
 
-  it('Test normal', () => {
-    //TBD
-  });
+  it('Test anova 1 way handler', () => {
+    const exp = createExperiment();
+    const table1 = anovaHandler.getSummaryTable(data, exp.coVariables[0]);
+    const table2 = anovaHandler.getTuckeyTable(data);
+    const meanPlot = anovaHandler.getMeanPlot(data);
 
-  it('Test failing mean plot', () => {
-    //TBD
-  });
+    handlers(exp, data);
 
-  it('Test failing table summary', () => {
-    //TBD
-  });
+    expect(exp.results.length).toBeGreaterThanOrEqual(3);
+    expect(exp.results).toContainEqual(table1);
+    expect(exp.results).toContainEqual(table2);
+    expect(exp.results).toContainEqual(meanPlot);
 
-  it('Test failing table tuckey', () => {
-    //TBD
+    expect(table1.data[0].length).toEqual(6);
+    expect(table2.headers.length).toEqual(8);
+    expect(table2.data).toBeTruthy();
+
+    expect(meanPlot.pointCIs.length).toBeGreaterThan(1);
   });
 });
