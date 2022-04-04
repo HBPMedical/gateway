@@ -27,7 +27,7 @@ import { ListExperiments } from 'src/engine/models/experiment/list-experiments.m
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import {
   TableResult,
-  ThemeType,
+  TableStyle,
 } from 'src/engine/models/result/table-result.model';
 import { User } from 'src/users/models/user.model';
 import {
@@ -141,7 +141,7 @@ export default class DataShieldService implements IEngineService {
     const table = transformToTable.evaluate(data);
     return {
       ...table,
-      theme: ThemeType.NORMAL,
+      tableStyle: TableStyle.NORMAL,
     };
   }
 

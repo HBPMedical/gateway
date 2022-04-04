@@ -2,13 +2,13 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Header } from './common/header.model';
 import { Result } from './common/result.model';
 
-export enum ThemeType {
+export enum TableStyle {
   DEFAULT,
   NORMAL,
 }
 
-registerEnumType(ThemeType, {
-  name: 'ThemeType',
+registerEnumType(TableStyle, {
+  name: 'TableStyle',
 });
 
 @ObjectType()
@@ -22,6 +22,6 @@ export class TableResult extends Result {
   @Field(() => [Header])
   headers: Header[];
 
-  @Field(() => ThemeType, { defaultValue: ThemeType.DEFAULT, nullable: true })
-  theme?: ThemeType;
+  @Field(() => TableStyle, { defaultValue: TableStyle.DEFAULT, nullable: true })
+  tableStyle?: TableStyle;
 }

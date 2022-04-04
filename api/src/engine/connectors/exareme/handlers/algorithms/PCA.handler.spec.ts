@@ -1,7 +1,7 @@
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import handlers from '..';
-import { BarChartResult } from 'src/engine/models/result/bar-chart-result.model';
+import { BarChartResult } from '../../../../models/result/bar-chart-result.model';
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
