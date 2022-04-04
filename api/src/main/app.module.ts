@@ -53,7 +53,6 @@ import { AppService } from './app.service';
         migrations: ['dist/migrations/*{.ts,.js}'],
         migrationsRun: process.env.NODE_ENV !== 'dev',
         synchronize: process.env.NODE_ENV === 'dev',
-        loggerLevel: 'debug',
         autoLoadEntities: true,
       }),
     }),
