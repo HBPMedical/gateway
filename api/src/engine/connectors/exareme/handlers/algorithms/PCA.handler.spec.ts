@@ -84,7 +84,10 @@ describe('PCA result handler', () => {
     exp.results.forEach((it) => {
       if (it['matrix']) {
         const heatmap = it as HeatMapResult;
-        expect(heatmap.matrix).toEqual(data.eigen_vecs);
+        const matrix = data.eigen_vecs[0].map(
+          (_, i) => data.eigen_vecs.map((row) => row[i]), // reverse matrix as we want row-major order
+        );
+        expect(heatmap.matrix).toEqual(matrix);
         expect(heatmap.yAxis.categories).toEqual(exp.variables);
       }
     });
