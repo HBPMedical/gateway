@@ -75,10 +75,7 @@ export interface IEngineService {
    * @param password
    * @returns User object or empty if user not found
    */
-  login?(
-    username: string,
-    password: string,
-  ): Promise<User | undefined> | User | undefined;
+  login?(username: string, password: string): Promise<User | undefined>;
 
   getPassthrough?(suffix: string, req?: Request): Observable<string> | string;
 }
