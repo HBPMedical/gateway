@@ -26,23 +26,23 @@ export default class AnovaOneWayHandler extends BaseHandler {
   `);
 
   private static readonly meanPlotTransform = jsonata(`
-    (
-      $cats:= $keys(ci_info.means);
-      {
-      "name": "Mean Plot: TBD",
-      "xAxis": {
-          "label": "TBD",
-          "categories": $cats
-      },
-      "yAxis": {
-          "label": '95% CI: TBD'
-      },
-      "pointCIs": $cats.[{
-          "min": $lookup($$.ci_info.'m-s', $),
-          "mean": $lookup($$.ci_info.means, $),
-          "max": $lookup($$.ci_info.'m+s', $)
-      }]
-    })
+  (
+    $cats:= $keys(ci_info.means);
+    {
+    "name": "Mean Plot: " & y_label & ' ~ ' & x_label,
+    "xAxis": {
+        "label": x_label,
+        "categories": $cats
+    },
+    "yAxis": {
+        "label": '95% CI: ' & y_label
+    },
+    "pointCIs": $cats.[{
+        "min": $lookup($$.ci_info.'m-s', $),
+        "mean": $lookup($$.ci_info.means, $),
+        "max": $lookup($$.ci_info.'m+s', $)
+    }]
+  })
   `);
 
   canHandle(algorithm: string): boolean {

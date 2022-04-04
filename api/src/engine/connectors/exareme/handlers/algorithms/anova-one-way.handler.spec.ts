@@ -18,6 +18,8 @@ const createExperiment = (): Experiment => ({
 describe('Anova oneway result handler', () => {
   const anovaHandler = new AnovaOneWayHandler();
   const data = {
+    x_label: 'Variable X',
+    y_label: 'Variable Y',
     df_residual: 1424.0,
     df_explained: 3.0,
     ss_residual: 1941.1517872154072,
@@ -150,5 +152,8 @@ describe('Anova oneway result handler', () => {
     expect(table2.data).toBeTruthy();
 
     expect(meanPlot.pointCIs.length).toBeGreaterThan(1);
+    expect(meanPlot.name).toEqual(
+      `Mean Plot: ${data.y_label} ~ ${data.x_label}`,
+    );
   });
 });
