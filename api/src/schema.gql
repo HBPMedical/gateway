@@ -38,6 +38,9 @@ type Group {
 
   """List of variable's ids"""
   variables: [String!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
 }
 
 type Category {
@@ -52,6 +55,9 @@ type Variable {
   description: String
   enumerations: [Category!]
   groups: [Group!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
 }
 
 type Domain {

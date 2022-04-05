@@ -16,4 +16,10 @@ export class Variable extends BaseModel {
 
   @Field(() => [Group], { nullable: true, defaultValue: [] })
   groups?: Group[];
+
+  @Field(() => [String], {
+    description: 'List of datasets avalaible, set null if all datasets allowed',
+    nullable: true,
+  })
+  datasets?: string[];
 }
