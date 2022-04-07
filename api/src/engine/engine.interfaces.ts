@@ -38,7 +38,7 @@ export interface IEngineService {
     req?: Request,
   ): Promise<Experiment>;
 
-  listExperiments(
+  listExperiments?(
     page: number,
     name: string,
     req?: Request,
@@ -46,9 +46,9 @@ export interface IEngineService {
 
   getExperiment(id: string, req?: Request): Promise<Experiment>;
 
-  removeExperiment(id: string, req?: Request): Promise<PartialExperiment>;
+  removeExperiment?(id: string, req?: Request): Promise<PartialExperiment>;
 
-  editExperient(
+  editExperient?(
     id: string,
     expriment: ExperimentEditInput,
     req?: Request,

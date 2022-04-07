@@ -17,13 +17,10 @@ import {
 } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import {
-  Experiment,
-  PartialExperiment,
-} from 'src/engine/models/experiment/experiment.model';
+import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
-import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
+import { Group } from 'src/engine/models/group.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import {
   TableResult,
@@ -31,7 +28,9 @@ import {
 } from 'src/engine/models/result/table-result.model';
 import { User } from 'src/users/models/user.model';
 import {
-  transformToDomains,
+  dataToGroups,
+  dsGroup,
+  transformToDomain,
   transformToHisto,
   transformToTable,
 } from './transformations';
@@ -188,7 +187,7 @@ export default class DataShieldService implements IEngineService {
     return expResult;
   }
 
-  async listExperiments(page: number, name: string): Promise<ListExperiments> {
+  async listExperiments(): Promise<ListExperiments> {
     return {
       totalExperiments: 0,
       experiments: [],
@@ -197,18 +196,7 @@ export default class DataShieldService implements IEngineService {
     };
   }
 
-  async getExperiment(id: string): Promise<Experiment> {
-    throw new NotImplementedException();
-  }
-
-  async removeExperiment(id: string): Promise<PartialExperiment> {
-    throw new NotImplementedException();
-  }
-
-  async editExperient(
-    id: string,
-    expriment: ExperimentEditInput,
-  ): Promise<Experiment> {
+  async getExperiment(): Promise<Experiment> {
     throw new NotImplementedException();
   }
 
@@ -232,7 +220,14 @@ export default class DataShieldService implements IEngineService {
       }),
     );
 
-    return [transformToDomains.evaluate(response.data)];
+    const dsDomain = transformToDomain.evaluate(response.data);
+    const groups = response.data['groups'] as dsGroup[];
+
+    dataToGroups(dsDomain, groups);
+
+    console.log(dsDomain.groups);
+
+    return [dsDomain];
   }
 
   async getActiveUser(req: Request): Promise<User> {
