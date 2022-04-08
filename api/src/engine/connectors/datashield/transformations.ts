@@ -116,7 +116,7 @@ export const dataToGroups = (dsDomain: Domain, groups: dsGroup[]) => {
         id,
         variables: val,
         groups: g['groups'] ? g['groups'].map((g) => `${g}-${key}`) : undefined,
-        label: g.label[0],
+        label: `${g.label[0]} (${key})`,
       };
       dsDomain.groups.push(group);
     });

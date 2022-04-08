@@ -220,6 +220,80 @@ export default class DataShieldService implements IEngineService {
       }),
     );
 
+    // TODO DELETE
+    // const response = {
+    //   data: {
+    //     datasets: [
+    //       {
+    //         id: ['omop_test.db'],
+    //         label: ['omop_test.db'],
+    //       },
+    //       {
+    //         id: ['test.db'],
+    //         label: ['test.db'],
+    //       },
+    //       {
+    //         id: ['sophia.db'],
+    //         label: ['sophia.db'],
+    //       },
+    //     ],
+    //     rootGroup: {
+    //       id: ['sophia'],
+    //       label: ['Sophia'],
+    //       groups: ['person', 'measurement', 'observation'],
+    //     },
+    //     groups: [
+    //       {
+    //         id: ['measurement'],
+    //         label: ['measurement'],
+    //         variables: {
+    //           'omop_test.db': [
+    //             'Ma.Measurement.Var1',
+    //             'Ma.Measurement.Var2',
+    //             'Ma.Measurement.Var.omop.test.db',
+    //           ],
+    //           'test.db': [
+    //             'Ma.Measurement.Var1',
+    //             'Ma.Measurement.Var2',
+    //             'Ma.Measurement.Var.test.db',
+    //           ],
+    //           'sophia.db': [
+    //             'Ma.Measurement.Var1',
+    //             'Ma.Measurement.Var2',
+    //             'Ma.Measurement.Var.Sophia.db',
+    //           ],
+    //         },
+    //       },
+    //       {
+    //         id: ['observation'],
+    //         label: ['observation'],
+    //         variables: {
+    //           'omop_test.db': [
+    //             'Ma.Observation.Var1',
+    //             'Ma.Observation.Var2',
+    //             'Ma.Observation.Var.omop.test.db',
+    //           ],
+    //           'test.db': [
+    //             'Ma.Observation.Var1',
+    //             'Ma.Observation.Var2',
+    //             'Ma.Observation.Var.test.db',
+    //           ],
+    //           'sophia.db': [
+    //             'Ma.Observation.Var1',
+    //             'Ma.Observation.Var2',
+    //             'Ma.Observation.Var.Sophia.db',
+    //           ],
+    //         },
+    //       },
+    //       {
+    //         id: ['demographics'],
+    //         label: ['demographics'],
+    //         variables: ['date_of_birth', 'gender', 'race', 'ethnicity'],
+    //       },
+    //     ],
+    //   },
+    // };
+
     const dsDomain = transformToDomain.evaluate(response.data);
     const groups = response.data['groups'] as dsGroup[];
 
