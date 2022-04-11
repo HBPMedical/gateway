@@ -6,7 +6,7 @@ description: Introduction for developers
 
 The MIP is mainly composed by 3 components
 
-![](../.gitbook/assets/components.drawio.png)
+![](<../.gitbook/assets/components.drawio (1).png>)
 
 * **Frontend** : user interface (React.js)
 * **Gateway** : middleware used to abstract calls from an engine (Nest.js and GraphQL)
@@ -34,7 +34,7 @@ GraphQL is used to provide some useful features :
 
 ### Connectors
 
-In order to be able to communicate with an engine, the gateway need connectors. A connector is a concrete implementation of the interface `IEngineService`.
+In order to be able to communicate with an engine, the gateway need a connector. A connector is a concrete implementation of the interface `IEngineService`.
 
 ```typescript
 export default class DatashieldService implements IEngineService {
@@ -51,7 +51,7 @@ The code above is an example of a connector.
 
 ### Visualizations
 
-![](../.gitbook/assets/visualizations.png)
+![](<../.gitbook/assets/visualizations (1).png>)
 
 With the Frontend we will introduce a new way to deal with visualizations. Previously the visualizations were completely manage by the engine. As a part of abstraction from a specific engine we want to be able to delegate this task to the visualization components.
 
