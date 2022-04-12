@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { Response, Request } from 'express';
-import { GQLRequest } from 'src/common/decorators/gql-request.decoractor';
+import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { GQLResponse } from '../common/decorators/gql-response.decoractor';
 import { parseToBoolean } from '../common/utilities';
 import {
