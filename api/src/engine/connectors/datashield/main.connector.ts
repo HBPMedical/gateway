@@ -205,6 +205,21 @@ export default class DataShieldService implements IEngineService {
     throw new NotImplementedException();
   }
 
+  async logout(request: Request): Promise<void> {
+    const user = request.user as User;
+    const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
+      ';',
+    );
+
+    const path = new URL('/logout', this.options.baseurl).href;
+
+    this.httpService.get(path, {
+      headers: {
+        cookie,
+      },
+    });
+  }
+
   async editExperient(
     id: string,
     expriment: ExperimentEditInput,

@@ -6,11 +6,15 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { GQLRequest } from 'src/common/decorators/gql-request.decoractor';
 import { GQLResponse } from '../common/decorators/gql-response.decoractor';
 import { parseToBoolean } from '../common/utilities';
-import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
+import {
+  ENGINE_MODULE_OPTIONS,
+  ENGINE_SERVICE,
+} from '../engine/engine.constants';
+import { IEngineOptions, IEngineService } from '../engine/engine.interfaces';
 import { User } from '../users/models/user.model';
 import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
@@ -29,6 +33,8 @@ export class AuthResolver {
 
   constructor(
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_MODULE_OPTIONS)
+    private readonly engineOptions: IEngineOptions,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {}
@@ -68,11 +74,23 @@ export class AuthResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
-  logout(@GQLResponse() res: Response, @CurrentUser() user: User): boolean {
-    if (user) this.logger.verbose(`${user.username} logged out`);
+  logout(
+    @GQLRequest() req: Request,
+    @GQLResponse() res: Response,
+    @CurrentUser() user: User,
+  ): boolean {
+    if (user) {
+      this.logger.verbose(`${user.username} logged out`);
+      try {
+        this.engineService.logout?.(req);
+      } catch (e) {
+        this.logger.debug(
+          `Service ${this.engineOptions.type} produce an error when logging out ${user.username}`,
+        );
+      }
+    }
 
     res.clearCookie(authConstants.cookie.name);
-    this.engineService.logout?.();
 
     return true;
   }
