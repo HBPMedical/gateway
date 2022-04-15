@@ -14,6 +14,12 @@ type AuthenticationOutput {
   accessToken: String!
 }
 
+type Matomo {
+  enabled: Boolean
+  siteId: String
+  urlBase: String
+}
+
 type Configuration {
   connectorId: String!
   hasGalaxy: Boolean
@@ -22,6 +28,7 @@ type Configuration {
   skipAuth: Boolean
   skipTos: Boolean
   enableSSO: Boolean
+  matomo: Matomo
 }
 
 type Dataset {

@@ -7,6 +7,7 @@ import { GraphQLError } from 'graphql';
 import { join } from 'path';
 import { AuthModule } from 'src/auth/auth.module';
 import dbConfig from 'src/config/db.config';
+import matomoConfig from 'src/config/matomo.config';
 import { EngineModule } from 'src/engine/engine.module';
 import { FilesModule } from 'src/files/files.module';
 import { UsersModule } from 'src/users/users.module';
@@ -18,7 +19,7 @@ import { AppService } from './app.service';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env', '.env.defaults'],
-      load: [dbConfig],
+      load: [dbConfig, matomoConfig],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
