@@ -76,7 +76,11 @@ export class UsersResolver {
     @CurrentUser() user?: User,
   ) {
     if (this.engineService.updateUser)
-      return this.engineService.updateUser(request, user?.id, updateUserInput);
+      return await this.engineService.updateUser(
+        request,
+        user?.id,
+        updateUserInput,
+      );
 
     await this.usersService.update(user.id, updateUserInput);
 
