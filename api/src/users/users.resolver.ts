@@ -75,14 +75,17 @@ export class UsersResolver {
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
     @CurrentUser() user?: User,
   ) {
-    if (this.engineService.updateUser)
-      return await this.engineService.updateUser(
+    let updateData: UpdateUserInput | undefined = updateUserInput;
+    if (this.engineService.updateUser) {
+      updateData = await this.engineService.updateUser(
         request,
         user?.id,
-        updateUserInput,
+        updateData,
       );
+    }
 
-    await this.usersService.update(user.id, updateUserInput);
+    if (updateData && Object.keys(updateData).length > 0)
+      await this.usersService.update(user.id, updateData);
 
     return await this.getUser(request, user);
   }

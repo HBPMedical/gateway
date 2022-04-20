@@ -27,6 +27,7 @@ import { ExperimentEditInput } from 'src/engine/models/experiment/input/experime
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
+import { UpdateUserInput } from 'src/users/inputs/update-user.input';
 import { User } from 'src/users/models/user.model';
 import { transformToUser } from '../datashield/transformations';
 import {
@@ -191,21 +192,15 @@ export default class ExaremeService implements IEngineService {
     }
   }
 
-  async updateUser(request: Request): Promise<User> {
+  async updateUser(request: Request): Promise<UpdateUserInput | undefined> {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
-    const response = await firstValueFrom(
+    await firstValueFrom(
       this.post<string>(request, path, {
         agreeNDA: true,
       }),
     );
 
-    try {
-      return transformToUser.evaluate(response.data);
-    } catch (e) {
-      throw new InternalServerErrorException(
-        'Error when trying to parse user data from the engine',
-      );
-    }
+    return undefined; //we don't want to manage data locally
   }
 
   getAlgorithmsREST(request: Request): Observable<string> {
