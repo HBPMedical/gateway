@@ -28,6 +28,7 @@ description: >-
 | AUTH\_JWT\_TOKEN\_EXPIRES\_IN | string  | '2d'     | <p>JWT token time to live.</p><p>Expressed in seconds or a string describing a time span <a href="https://github.com/vercel/ms">vercel/ms</a></p> |
 | AUTH\_COOKIE\_SAME\_SITE      | string  | 'strict' | Specify the cookie same site option. Value can be  `lax`, `strict` or `none`                                                                      |
 | AUTH\_COOKIE\_SECURE          | boolean | true     | Specify the cookie secure option. Should be set to true if same site is not set to `strict`.                                                      |
+| AUTH\_ENABLE\_SSO             | boolean | false    | Enable SSO login process, this variable will be provided to the frontend in order to perform the login.                                           |
 
 #### Database
 
@@ -39,11 +40,21 @@ description: >-
 | DB\_PASSWORD | string | pass123   | Password                        |
 | DB\_NAME     | string | postgres  | Name of the database's instance |
 
-### Overwrite
+#### Matomo
+
+Matomo is an open source alternative to Google Analytics. The gateway provide this configuration in order to be used by any frontend. The real implementation is left to the frontend.
+
+| name             | type                | default   | description                                                                                         |
+| ---------------- | ------------------- | --------- | --------------------------------------------------------------------------------------------------- |
+| MATOMO\_ENABLED  | boolean             | false     | Enable or disable Matomo                                                                            |
+| MATOMO\_URL      | string \| undefined | undefined | Base url for matomo scripts and data reporting. This parameter is `required` if Matomo is `enabled` |
+| MATOMO\_SITE\_ID | string \| undefined | undefined | Matomo Website ID. This parameter is required if `Matomo` is `enabled`.                             |
+
+### Overwrite parameters
 
 These parameters can be overwrite by either
 
-* setting a variable in `.env` file (you can create it if it does not exist) along with the file .env.defaults in the root folder
+* setting a variable in `.env` file (you can create it if it does not exist) along with the file `.env.defaults` in the root folder
 * or setting an environment variable on your system
 
-Default variables are stored in the `.env.defaults` file and under the `db.config.ts` file for the database configuration.
+Default variables are stored in the `.env.defaults` file, under the `db.config.ts` file for the database configuration and `matomo.config.ts` for Matomo configuration.
