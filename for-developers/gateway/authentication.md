@@ -1,14 +1,14 @@
-# Authentication
+# 🔑 Authentication
 
 The authentication implementation is based on [passport.js](https://www.passportjs.org) it allows a flexible way to implement different strategies inside the gateway.&#x20;
 
-For now the authentication system is quite simple and only use JWT. The real implementation of  authorization and authentication is left to the connector.&#x20;
+For now the authentication system is quite simple and only use JWT. The real implementation of  authorization and authentication is left to the connector/engine.&#x20;
 
 #### How it works ?
 
 The communication between the frontend and the gateway is handled by JWT token who contains user information such as his username.
 
-![](<../.gitbook/assets/image (2).png>)
+![](<../../.gitbook/assets/image (2).png>)
 
 The gateway will handle the authentication process with the frontend in a unique fashion always using a JWT token. This token can contains information specific to some connector. For that purpose the user model contains a field `extraFields` which basically a dictionary.&#x20;
 
