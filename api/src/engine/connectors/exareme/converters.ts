@@ -227,6 +227,14 @@ export const dataToExperiment = (
       status: 'error',
       variables: [],
       domain: data['domain'] ?? '',
+      results: [
+        {
+          rawdata: {
+            type: 'text/plain+error',
+            data: 'Error when parsing experiment data from the Engine',
+          },
+        },
+      ],
       datasets: [],
       algorithm: {
         id: 'unknown',
