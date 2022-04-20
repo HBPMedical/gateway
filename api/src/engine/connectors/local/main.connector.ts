@@ -11,7 +11,7 @@ import { ListExperiments } from 'src/engine/models/experiment/list-experiments.m
 import { User } from 'src/users/models/user.model';
 
 export default class LocalService implements IEngineService {
-  login(): User | Promise<User> {
+  async login(): Promise<User> {
     return {
       id: '1',
       username: 'LocalServiceUser',

@@ -41,18 +41,20 @@ export class EngineResolver {
   @Public()
   configuration(): Configuration {
     const config = this.engineService.getConfiguration?.();
+    const matomo = this.configSerivce.get('matomo');
 
     const data = {
       ...(config ?? {}),
-      skipAuth: parseToBoolean(
-        this.configSerivce.get(authConstants.skipAuth),
-        true,
-      ),
+      connectorId: this.engineOptions.type,
       skipTos: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
       enableSSO: parseToBoolean(
         this.configSerivce.get(authConstants.enableSSO),
       ),
-      connectorId: this.engineOptions.type,
+      skipAuth: parseToBoolean(
+        this.configSerivce.get(authConstants.skipAuth),
+        true,
+      ),
+      matomo,
     };
 
     const version = Md5.hashStr(JSON.stringify(data));

@@ -20,9 +20,10 @@ export class FilesController {
     @Res() response: Response,
     @Param('name') filename: string,
   ) {
+    const proto = request.headers['x-forwarded-proto'] ?? request.protocol;
     if (filename.endsWith('.md')) {
       const baseurl =
-        request.protocol +
+        proto +
         '://' +
         join(request.get('host'), process.env.BASE_URL_CONTEXT ?? '', 'assets'); // not full url, should consider "/services"
       const text = this.filesService.getMarkdown(filename, baseurl);

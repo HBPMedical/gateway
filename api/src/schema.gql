@@ -14,6 +14,12 @@ type AuthenticationOutput {
   accessToken: String!
 }
 
+type Matomo {
+  enabled: Boolean
+  siteId: String
+  urlBase: String
+}
+
 type Configuration {
   connectorId: String!
   hasGalaxy: Boolean
@@ -22,6 +28,7 @@ type Configuration {
   skipAuth: Boolean
   skipTos: Boolean
   enableSSO: Boolean
+  matomo: Matomo
 }
 
 type Dataset {
@@ -85,30 +92,22 @@ type Algorithm {
   description: String
 }
 
-type ChartAxis {
-  """label of the Axis"""
-  label: String
-
-  """label of each element on this Axis"""
-  categories: [String!]
-}
-
 type GroupResult {
   name: String!
   description: String
   results: [ResultUnion!]!
 }
 
-union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult
+union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult | MeanChartResult
 
 type TableResult {
   name: String!
   data: [[String!]!]!
   headers: [Header!]!
-  theme: ThemeType
+  tableStyle: TableStyle
 }
 
-enum ThemeType {
+enum TableStyle {
   DEFAULT
   NORMAL
 }
@@ -157,6 +156,23 @@ type BarChartResult {
   hasConnectedBars: Boolean
 }
 
+type MeanChartResult {
+  name: String!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
+
+  """List of points with confidence information: min, mean, max"""
+  pointCIs: [PointCI!]!
+}
+
+type ChartAxis {
+  """label of the Axis"""
+  label: String
+
+  """label of each element on this Axis"""
+  categories: [String!]
+}
+
 type ExtraLineInfo {
   label: String!
   values: [String!]!
@@ -178,6 +194,12 @@ enum LineType {
 type Header {
   name: String!
   type: String!
+}
+
+type PointCI {
+  min: Float
+  mean: Float!
+  max: Float
 }
 
 type Author {

@@ -42,7 +42,13 @@ export default class PCAHandler extends BaseHandler {
       },
     };
 
-    if (matrix) exp.results.push(heatMapChart);
+    if (matrix && matrix.length > 0) {
+      heatMapChart.matrix = matrix[0].map(
+        (_, i) => matrix.map((row) => row[i]), // reverse matrix as we want row-major order
+      );
+    }
+
+    if (heatMapChart.matrix) exp.results.push(heatMapChart);
 
     this.next?.handle(exp, data);
   }

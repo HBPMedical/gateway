@@ -2,11 +2,14 @@ import { getMockRes } from '@jest-mock/express';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
 import LocalService from '../engine/connectors/local/main.connector';
-import { ENGINE_SERVICE } from '../engine/engine.constants';
+import {
+  ENGINE_MODULE_OPTIONS,
+  ENGINE_SERVICE,
+} from '../engine/engine.constants';
+import { User } from '../users/models/user.model';
 import { authConstants } from './auth-constants';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { User } from '../users/models/user.model';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -40,6 +43,12 @@ describe('AuthResolver', () => {
           provide: ENGINE_SERVICE,
           useClass: LocalService,
         },
+        {
+          provide: ENGINE_MODULE_OPTIONS,
+          useValue: {
+            type: 'DummyConnector',
+          },
+        },
         AuthResolver,
       ],
     })
@@ -71,7 +80,8 @@ describe('AuthResolver', () => {
   });
 
   it('logout', () => {
-    resolver.logout(res, user);
+    const request: any = jest.fn();
+    resolver.logout(request, res, user);
 
     expect(mockClearCookie.mock.calls[0][0]).toBe(authConstants.cookie.name);
   });

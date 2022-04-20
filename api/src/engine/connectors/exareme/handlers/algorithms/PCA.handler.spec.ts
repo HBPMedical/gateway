@@ -1,7 +1,7 @@
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import handlers from '..';
-import { BarChartResult } from 'src/engine/models/result/bar-chart-result.model';
+import { BarChartResult } from '../../../../models/result/bar-chart-result.model';
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
@@ -84,7 +84,10 @@ describe('PCA result handler', () => {
     exp.results.forEach((it) => {
       if (it['matrix']) {
         const heatmap = it as HeatMapResult;
-        expect(heatmap.matrix).toEqual(data.eigen_vecs);
+        const matrix = data.eigen_vecs[0].map(
+          (_, i) => data.eigen_vecs.map((row) => row[i]), // reverse matrix as we want row-major order
+        );
+        expect(heatmap.matrix).toEqual(matrix);
         expect(heatmap.yAxis.categories).toEqual(exp.variables);
       }
     });
