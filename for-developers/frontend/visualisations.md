@@ -1,4 +1,4 @@
-# Visualisations
+# 📊 Visualisations
 
 To see the different possible visualisations in the frontend we have integrated [storybook.js](https://storybook.js.org) directly in the frontend.
 
@@ -10,5 +10,5 @@ yarn storybook
 
 This command will give you access to the a website with all the visualisation that are currently implemented.
 
-![Example of the storybook](<../../.gitbook/assets/image (3).png>)
+![Storybook's example](<../../.gitbook/assets/image (3).png>)
 
