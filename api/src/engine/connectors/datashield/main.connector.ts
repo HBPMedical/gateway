@@ -139,7 +139,7 @@ export default class DataShieldService implements IEngineService {
     const table = transformToTable.evaluate(data);
     return {
       ...table,
-      tableStyle: TableStyle.NORMAL,
+      tableStyle: TableStyle.DEFAULT,
     };
   }
 
