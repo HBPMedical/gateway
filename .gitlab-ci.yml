@@ -22,6 +22,7 @@ test:
     - /^(([0-9]+)\.)?([0-9]+)\.x/
     # This matches pre-releases
     - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+  before_script: []
   script: 
     - npm ci --development
     - npm run test
