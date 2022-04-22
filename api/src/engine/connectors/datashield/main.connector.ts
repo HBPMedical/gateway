@@ -199,10 +199,6 @@ export default class DataShieldService implements IEngineService {
     throw new NotImplementedException();
   }
 
-  async removeExperiment(id: string): Promise<PartialExperiment> {
-    throw new NotImplementedException();
-  }
-
   async logout(request: Request): Promise<void> {
     const user = request.user as User;
     const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
@@ -216,13 +212,6 @@ export default class DataShieldService implements IEngineService {
         cookie,
       },
     });
-  }
-
-  async editExperient(
-    id: string,
-    expriment: ExperimentEditInput,
-  ): Promise<Experiment> {
-    throw new NotImplementedException();
   }
 
   async getDomains(ids: string[], request: Request): Promise<Domain[]> {
