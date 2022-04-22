@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { AxiosRequestConfig } from 'axios';
 import { Request } from 'express';
@@ -26,6 +27,7 @@ import { ExperimentEditInput } from 'src/engine/models/experiment/input/experime
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
+import { UpdateUserInput } from 'src/users/inputs/update-user.input';
 import { User } from 'src/users/models/user.model';
 import { transformToUser } from '../datashield/transformations';
 import {
@@ -45,7 +47,6 @@ type Headers = Record<string, string>;
 
 @Injectable()
 export default class ExaremeService implements IEngineService {
-  headers = {};
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
@@ -75,9 +76,7 @@ export default class ExaremeService implements IEngineService {
       this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
 
     const resultAPI = await firstValueFrom(
-      this.post<ExperimentData>(request, path, form, {
-        headers: this.headers,
-      }),
+      this.post<ExperimentData>(request, path, form),
     );
 
     return dataToExperiment(resultAPI.data);
@@ -141,11 +140,7 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + `experiments/${id}`;
 
     try {
-      await firstValueFrom(
-        this.delete(request, path, {
-          headers: this.headers,
-        }),
-      );
+      await firstValueFrom(this.delete(request, path));
       return {
         id: id,
       };
@@ -158,11 +153,7 @@ export default class ExaremeService implements IEngineService {
     const path = this.options.baseurl + 'pathologies';
 
     try {
-      const data = await firstValueFrom(
-        this.get<Pathology[]>(request, path, {
-          headers: this.headers,
-        }),
-      );
+      const data = await firstValueFrom(this.get<Pathology[]>(request, path));
 
       return (
         data?.data
@@ -192,20 +183,24 @@ export default class ExaremeService implements IEngineService {
 
   async getActiveUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser';
-
     const response = await firstValueFrom(this.get<string>(request, path));
 
-    return transformToUser.evaluate(response.data);
+    try {
+      return transformToUser.evaluate(response.data);
+    } catch (e) {
+      new InternalServerErrorException('Cannot parse user data from Engine', e);
+    }
   }
 
-  async updateUser(request: Request): Promise<User> {
+  async updateUser(request: Request): Promise<UpdateUserInput | undefined> {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
-
-    this.post<string>(request, path, request.body).pipe(
-      map((response) => response.data),
+    await firstValueFrom(
+      this.post<string>(request, path, {
+        agreeNDA: true,
+      }),
     );
 
-    return this.getActiveUser(request);
+    return undefined; //we don't want to manage data locally
   }
 
   getAlgorithmsREST(request: Request): Observable<string> {
@@ -256,7 +251,7 @@ export default class ExaremeService implements IEngineService {
   };
 
   private getHeadersFromRequest(request: Request): Headers {
-    if (!request || request.headers) return {};
+    if (!request || !request.headers) return {};
 
     return request.headers as Headers;
   }

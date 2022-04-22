@@ -195,7 +195,33 @@ export default class DataShieldService implements IEngineService {
     };
   }
 
-  async getExperiment(): Promise<Experiment> {
+  async getExperiment(id: string): Promise<Experiment> {
+    throw new NotImplementedException();
+  }
+
+  async removeExperiment(id: string): Promise<PartialExperiment> {
+    throw new NotImplementedException();
+  }
+
+  async logout(request: Request): Promise<void> {
+    const user = request.user as User;
+    const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
+      ';',
+    );
+
+    const path = new URL('/logout', this.options.baseurl).href;
+
+    this.httpService.get(path, {
+      headers: {
+        cookie,
+      },
+    });
+  }
+
+  async editExperient(
+    id: string,
+    expriment: ExperimentEditInput,
+  ): Promise<Experiment> {
     throw new NotImplementedException();
   }
 

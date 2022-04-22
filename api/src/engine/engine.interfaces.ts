@@ -65,7 +65,7 @@ export interface IEngineService {
     req?: Request,
     userId?: string,
     data?: UpdateUserInput,
-  ): Promise<User>;
+  ): Promise<UpdateUserInput | undefined>;
 
   logout?(req?: Request): Promise<void>;
 

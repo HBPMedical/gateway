@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Matomo } from './configuration/matomo.model';
 @ObjectType()
 export class Configuration {
   @Field()
@@ -21,4 +22,7 @@ export class Configuration {
 
   @Field({ nullable: true, defaultValue: true })
   enableSSO?: boolean;
+
+  @Field(() => Matomo, { nullable: true })
+  matomo?: Matomo;
 }
