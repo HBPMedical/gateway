@@ -1,4 +1,5 @@
 stages:
+  - test
   - build
   - release
 
@@ -7,6 +8,23 @@ services:
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+test:
+  image: node:16.14-alpine
+  stage: test
+  only:
+    refs:
+    - main
+    - rc
+    - beta
+    - develop
+    # This matches maintenance branches
+    - /^(([0-9]+)\.)?([0-9]+)\.x/
+    # This matches pre-releases
+    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+  script: 
+    - npm ci --development
+    - npm run test
 
 build:
   image: docker:dind
