@@ -15,4 +15,10 @@ export class Group extends BaseModel {
     nullable: true,
   })
   variables?: string[];
+
+  @Field(() => [String], {
+    description: 'List of datasets avalaible, set null if all datasets allowed',
+    nullable: true,
+  })
+  datasets?: string[];
 }

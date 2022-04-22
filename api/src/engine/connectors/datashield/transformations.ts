@@ -2,29 +2,31 @@
 // see : https://docs.jsonata.org/
 
 import * as jsonata from 'jsonata';
+import { Domain } from 'src/engine/models/domain.model';
+import { Group } from 'src/engine/models/group.model';
 
-export const transformToDomains = jsonata(`
+export const transformToDomain = jsonata(`
 {
   "id": "sophia",
+  "label": "Sophia",
   "datasets": datasets.{
       "id": $.id[0],
       "label": $.label[0]
   },
   "rootGroup": {
-      "id": rootGroup.id[0],
-      "label": rootGroup.label[0],
-      "groups": rootGroup.groups
+      "id": "root",
+      "label": "Sophia",
+      "groups": $append(rootGroup.groups, $keys($.groups.variables))
   },
-  "groups": groups.{
+  "groups": datasets.{
       "id": $.id[0],
       "label": $.label[0],
-      "variables": $.variables,
-      "groups": $.groups
-  },
-  "variables": $distinct(groups.variables).{
+      "groups": [],
+      "datasets": $.id[0][]
+    }[],
+  "variables": $distinct(groups.variables.($type($) = 'object' ? $.* : $)).{
       "id": $,
-      "label": $trim($replace($ & '', '.', ' ')),
-      "type": "Number"
+      "label": $trim($replace($ & '', '.', ' '))
   }
 }
 `);
@@ -82,3 +84,41 @@ export const transformToTable = jsonata(`
 export const transformToUser = jsonata(`
 $ ~> |$|{'id': subjectId}, ['subjectId']|
 `);
+
+export type dsGroup = {
+  id: string[];
+  label: string[];
+  variables: Record<string, string[]> | string[];
+  groups?: string[];
+};
+
+export const dataToGroups = (dsDomain: Domain, groups: dsGroup[]) => {
+  groups.forEach((g) => {
+    if (Array.isArray(g.variables)) {
+      dsDomain.groups.push({
+        id: g.id[0],
+        label: g.label[0],
+        variables: g.variables,
+      });
+      return;
+    }
+
+    if (dsDomain.rootGroup.groups.includes(g.id[0])) {
+      dsDomain.rootGroup.groups = dsDomain.rootGroup.groups.filter(
+        (gId) => gId !== g.id[0],
+      );
+    }
+
+    return Object.entries(g.variables).map(([key, val]) => {
+      const id = `${g.id}-${key}`;
+      dsDomain.groups.find((g) => g.id === key).groups.push(id);
+      const group: Group = {
+        id,
+        variables: val,
+        groups: g['groups'] ? g['groups'].map((g) => `${g}-${key}`) : undefined,
+        label: `${g.label[0]} (${key})`,
+      };
+      dsDomain.groups.push(group);
+    });
+  });
+};
