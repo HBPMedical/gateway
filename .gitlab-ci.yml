@@ -24,6 +24,7 @@ test:
     - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
   before_script: []
   script: 
+    - cd ./api
     - npm ci --development
     - npm run test
 
