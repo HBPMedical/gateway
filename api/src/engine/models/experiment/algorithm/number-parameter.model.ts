@@ -7,4 +7,7 @@ export class NumberParameter extends BaseParameter {
 
   @Field({ nullable: true })
   max?: number;
+
+  @Field({ nullable: true, defaultValue: false })
+  isReal?: boolean;
 }

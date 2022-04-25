@@ -13,8 +13,5 @@ export class Algorithm {
   label?: string;
 
   @Field({ nullable: true })
-  type?: string;
-
-  @Field({ nullable: true })
   description?: string;
 }

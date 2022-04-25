@@ -18,7 +18,7 @@ export class BaseParameter {
   isRequired?: boolean;
 
   @Field({ nullable: true, defaultValue: false })
-  isMultiple?: boolean;
+  hasMultiple?: boolean;
 
   @Field({ nullable: true })
   defaultValue?: string;

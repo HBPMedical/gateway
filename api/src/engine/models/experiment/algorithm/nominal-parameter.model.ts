@@ -3,7 +3,7 @@ import { BaseParameter } from './base-parameter.model';
 
 enum AllowedLink {
   VARIABLE,
-  COVARIABLE,
+  COVARIATE,
 }
 
 registerEnumType(AllowedLink, {

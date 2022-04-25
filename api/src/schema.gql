@@ -94,7 +94,6 @@ type Algorithm {
   id: String!
   parameters: [AlgorithmParameter!]
   label: String
-  type: String
   description: String
 }
 
