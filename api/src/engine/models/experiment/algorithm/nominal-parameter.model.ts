@@ -1,9 +1,9 @@
-import { Field, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BaseParameter } from './base-parameter.model';
 
 enum AllowedLink {
   VARIABLE,
-  COVARIATE,
+  COVARIABLE,
 }
 
 registerEnumType(AllowedLink, {
@@ -11,9 +11,17 @@ registerEnumType(AllowedLink, {
   description: 'The supported links.',
 });
 
-export class LinkedParameter extends BaseParameter {
-  @Field({ description: 'Id of the parameter' })
-  linkedTo: string;
+@ObjectType({ implements: () => [BaseParameter] })
+export class NominalParameter implements BaseParameter {
+  id: string;
+  label?: string;
+  hint?: string;
+  isRequired?: boolean;
+  hasMultiple?: boolean;
+  defaultValue?: string;
+
+  @Field({ nullable: true, description: 'Id of the parameter' })
+  linkedTo?: string;
 
   @Field(() => [String], { defaultValue: [], nullable: true })
   allowedValues?: string[];

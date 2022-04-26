@@ -1,7 +1,14 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseParameter } from './base-parameter.model';
+@ObjectType({ implements: () => [BaseParameter] })
+export class NumberParameter implements BaseParameter {
+  id: string;
+  label?: string;
+  hint?: string;
+  isRequired?: boolean;
+  hasMultiple?: boolean;
+  defaultValue?: string;
 
-export class NumberParameter extends BaseParameter {
   @Field({ nullable: true })
   min?: number;
 

@@ -81,40 +81,6 @@ export const transformToTable = jsonata(`
 })
 `);
 
-export const transformAlgorithms = jsonata(`
-(
-  $dict:={
-      'integer': 'NumberParameter',
-      'real': 'NumberParameter'
-  };
-  $checkVal:= function($val) { $val ? $val : undefined};
-  $includes:= ['ANOVA_ONEWAY','ANOVA','LINEAR_REGRESSION',
-  'LOGISTIC_REGRESSION','TTEST_INDEPENDENT','TTEST_PAIRED',
-  'PEARSON_CORRELATION','ID3','KMEANS','NAIVE_BAYES',
-  'TTEST_ONESAMPLE','PCA','CALIBRATION_BELT','CART',
-  'KAPLAN_MEIER','THREE_C'];
-  $linkedVars:= ['positive_level', 'negative_level', 'outcome_neg', 'outcome_pos'];
-
- $[name in $includes].{
-     "id": $.name,
-     "label": $checkVal($.label),
-     "description": $checkVal($.desc),
-     "parameters": $.parameters[type='other'].{
-         "__typename": $lookup($dict, $.valueType),
-         "id": $.name,
-         "label": $.label,
-         "hint":  $checkVal($.desc),
-         "isRequired": $.valueNotBlank,
-         "hasMultiple": $.valueMultiple,
-         "min": $checkVal($.valueMin),
-         "max": $checkVal($.valueMax),
-         "allowedValues":  $checkVal($.valueEnumerations),
-         "linkedTo": ($.name in $linkedVars) ? 'VARIABLE' : undefined
-     }
- }
-)
-`);
-
 export const transformToUser = jsonata(`
 $ ~> |$|{'id': subjectId}, ['subjectId']|
 `);

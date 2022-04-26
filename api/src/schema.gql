@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+interface BaseParameter {
+  id: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+}
+
 type User {
   id: String!
   username: String!
@@ -77,22 +88,58 @@ type Domain {
   rootGroup: Group!
 }
 
-type AlgorithmParameter {
+type NominalParameter implements BaseParameter {
   id: String!
-  value: String
   label: String
-  description: String
-  defaultValue: String
-  isMultiple: Boolean
+
+  """Small hint (description) for the end user"""
+  hint: String
   isRequired: Boolean
-  min: String
-  max: String
-  type: String
+  hasMultiple: Boolean
+  defaultValue: String
+
+  """Id of the parameter"""
+  linkedTo: String
+  allowedValues: [String!]
+}
+
+type NumberParameter implements BaseParameter {
+  id: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+  min: Float
+  max: Float
+  isReal: Boolean
+}
+
+type StringParameter implements BaseParameter {
+  id: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+}
+
+type VariableParameter {
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  allowedTypes: [String!]
 }
 
 type Algorithm {
   id: String!
-  parameters: [AlgorithmParameter!]
+  parameters: [BaseParameter!]
+  variable: VariableParameter!
+  coVariable: VariableParameter!
   label: String
   description: String
 }

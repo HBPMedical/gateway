@@ -1,12 +1,34 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InterfaceType } from '@nestjs/graphql';
+import { NominalParameter } from './nominal-parameter.model';
+import { NumberParameter } from './number-parameter.model';
+import { StringParameter } from './string-parameter.model';
 
-@ObjectType()
-export class BaseParameter {
+@InterfaceType({
+  resolveType(param) {
+    if (
+      param.min ||
+      param.max ||
+      param.isReal ||
+      param.__typename === 'NumberParameter'
+    )
+      return NumberParameter;
+
+    if (
+      param.allowedValues ||
+      param.linkedTo ||
+      param.__typename === 'NominalParameter'
+    )
+      return NominalParameter;
+
+    return StringParameter;
+  },
+})
+export abstract class BaseParameter {
   @Field()
   id: string;
 
-  @Field()
-  label: string;
+  @Field({ nullable: true })
+  label?: string;
 
   @Field({
     nullable: true,

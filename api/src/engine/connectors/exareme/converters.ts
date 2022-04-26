@@ -26,7 +26,6 @@ import {
   dataToHeatmap,
   descriptiveModelToTables,
   descriptiveSingleToTables,
-  transformToAlgorithms,
   transformToExperiment,
 } from './transformations';
 
@@ -241,10 +240,6 @@ export const dataToExperiment = (
       },
     };
   }
-};
-
-export const dataToAlgorithms = (data: string): Algorithm[] => {
-  return transformToAlgorithms.evaluate(data);
 };
 
 export const dataToRaw = (

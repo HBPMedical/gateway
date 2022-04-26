@@ -31,7 +31,6 @@ import { UpdateUserInput } from 'src/users/inputs/update-user.input';
 import { User } from 'src/users/models/user.model';
 import { transformToUser } from '../datashield/transformations';
 import {
-  dataToAlgorithms,
   dataToDataset,
   dataToExperiment,
   dataToGroup,
@@ -42,6 +41,7 @@ import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { ExperimentsData } from './interfaces/experiment/experiments.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
+import transformToAlgorithms from './transformations/algorithms';
 
 type Headers = Record<string, string>;
 
@@ -106,9 +106,8 @@ export default class ExaremeService implements IEngineService {
 
     const resultAPI = await firstValueFrom(this.get<string>(request, path));
 
-    return dataToAlgorithms(resultAPI.data);
+    return transformToAlgorithms.evaluate(resultAPI.data);
   }
-
   async getExperiment(id: string, request: Request): Promise<Experiment> {
     const path = this.options.baseurl + `experiments/${id}`;
 

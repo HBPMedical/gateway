@@ -1,13 +1,20 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { AlgorithmParameter } from './algorithm-parameter.model';
+import { BaseParameter } from './algorithm/base-parameter.model';
+import { VariableParameter } from './algorithm/variable-parameter.model';
 
 @ObjectType()
 export class Algorithm {
   @Field()
   id: string;
 
-  @Field(() => [AlgorithmParameter], { nullable: true, defaultValue: [] })
-  parameters?: AlgorithmParameter[];
+  @Field(() => [BaseParameter], { nullable: true, defaultValue: [] })
+  parameters?: BaseParameter[];
+
+  @Field(() => VariableParameter)
+  variable?: VariableParameter;
+
+  @Field(() => VariableParameter)
+  coVariable?: VariableParameter;
 
   @Field({ nullable: true })
   label?: string;

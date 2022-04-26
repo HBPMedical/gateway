@@ -12,11 +12,6 @@ export class EngineController {
     @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
   ) {}
 
-  @Get('/algorithms')
-  getAlgorithms(@Req() request: Request): Observable<string> | string {
-    return this.engineService.getAlgorithmsREST(request);
-  }
-
   @Get('galaxy')
   galaxy(@Req() request: Request): Observable<string> | string {
     return this.engineService.getPassthrough?.('galaxy', request);
