@@ -88,6 +88,11 @@ type Domain {
   rootGroup: Group!
 }
 
+type OptionValue {
+  id: String!
+  label: String!
+}
+
 type NominalParameter implements BaseParameter {
   id: String!
   label: String
@@ -99,8 +104,14 @@ type NominalParameter implements BaseParameter {
   defaultValue: String
 
   """Id of the parameter"""
-  linkedTo: String
-  allowedValues: [String!]
+  linkedTo: AllowedLink
+  allowedValues: [OptionValue!]
+}
+
+"""The supported links."""
+enum AllowedLink {
+  VARIABLE
+  COVARIABLE
 }
 
 type NumberParameter implements BaseParameter {

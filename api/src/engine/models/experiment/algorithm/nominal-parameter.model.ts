@@ -11,6 +11,15 @@ registerEnumType(AllowedLink, {
   description: 'The supported links.',
 });
 
+@ObjectType()
+export class OptionValue {
+  @Field()
+  id: string;
+
+  @Field()
+  label: string;
+}
+
 @ObjectType({ implements: () => [BaseParameter] })
 export class NominalParameter implements BaseParameter {
   id: string;
@@ -20,9 +29,12 @@ export class NominalParameter implements BaseParameter {
   hasMultiple?: boolean;
   defaultValue?: string;
 
-  @Field({ nullable: true, description: 'Id of the parameter' })
-  linkedTo?: string;
+  @Field(() => AllowedLink, {
+    nullable: true,
+    description: 'Id of the parameter',
+  })
+  linkedTo?: AllowedLink;
 
-  @Field(() => [String], { defaultValue: [], nullable: true })
-  allowedValues?: string[];
+  @Field(() => [OptionValue], { defaultValue: [], nullable: true })
+  allowedValues?: OptionValue[];
 }
