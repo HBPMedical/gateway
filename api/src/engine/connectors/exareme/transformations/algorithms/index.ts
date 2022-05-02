@@ -42,7 +42,7 @@ const transformToAlgorithms = jsonata(`
            "hasMultiple": $boolean(valueMultiple),
            "min": $checkVal(valueMin),
            "max": $checkVal(valueMax),
-           "allowedValues":  $checkVal(valueEnumerations),
+           "allowedValues":  $checkVal(valueEnumerations).{'id':$, 'label': $}[],
            "linkedTo": (name in $linkedVars) ? "VARIABLE" : ((name in $linkedCoVars) ? "COVARIABLE" : undefined)
        }[]
    }[]

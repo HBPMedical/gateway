@@ -1,4 +1,5 @@
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
+import { NominalParameter } from 'src/engine/models/experiment/algorithm/nominal-parameter.model';
 import transformToAlgorithms from '.';
 
 describe('Algorithms', () => {
@@ -123,6 +124,22 @@ describe('Algorithms', () => {
             valueEnumerations: null,
           },
           {
+            name: 'test',
+            desc: '',
+            label: 'Total duration of experiment in days',
+            type: 'other',
+            columnValuesSQLType: null,
+            columnValuesIsCategorical: null,
+            value: '1100',
+            defaultValue: null,
+            valueType: 'real',
+            valueNotBlank: 'true',
+            valueMultiple: 'false',
+            valueMin: null,
+            valueMax: null,
+            valueEnumerations: ['test', 'test2'],
+          },
+          {
             name: 'total_duration',
             desc: '',
             label: 'Total duration of experiment in days',
@@ -170,8 +187,27 @@ describe('Algorithms', () => {
       ]);
     });
 
-    it('should have 3 parameters', () => {
-      expect(kaplan.parameters.length).toBe(3);
+    it('should have 4 parameters', () => {
+      expect(kaplan.parameters.length).toBe(4);
+    });
+
+    it('nominal parameters should have values allowed', () => {
+      const nominalParam = kaplan.parameters.find(
+        (p) => p.id === 'test',
+      ) as NominalParameter;
+
+      expect(JSON.stringify(nominalParam.allowedValues)).toEqual(
+        JSON.stringify([
+          {
+            id: 'test',
+            label: 'test',
+          },
+          {
+            id: 'test2',
+            label: 'test2',
+          },
+        ]),
+      );
     });
 
     it('should have at least one linkedTo parameter', () => {

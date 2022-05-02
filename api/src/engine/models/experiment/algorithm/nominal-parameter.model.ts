@@ -2,8 +2,8 @@ import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BaseParameter } from './base-parameter.model';
 
 enum AllowedLink {
-  VARIABLE,
-  COVARIABLE,
+  VARIABLE = 'VARIABLE',
+  COVARIABLE = 'COVARIABLE',
 }
 
 registerEnumType(AllowedLink, {
