@@ -38,7 +38,6 @@ export default class CSVService implements IEngineService {
       datasets: [],
       algorithm: {
         id: '',
-        description: '',
       },
       name: 'test',
       variables: [],

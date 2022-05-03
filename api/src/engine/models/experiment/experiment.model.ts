@@ -1,6 +1,5 @@
 import { Field, ObjectType, PartialType } from '@nestjs/graphql';
 import { ResultUnion } from '../result/common/result-union.model';
-import { Algorithm } from './algorithm.model';
 import { Author } from './author.model';
 
 @ObjectType()
@@ -19,6 +18,23 @@ export class Formula {
 
   @Field(() => [[String]], { nullable: true, defaultValue: [] })
   interactions: string[][];
+}
+
+@ObjectType()
+export class ParamValue {
+  @Field()
+  id: string;
+
+  @Field()
+  value: string;
+}
+@ObjectType()
+export class AlgorithmResult {
+  @Field()
+  id: string;
+
+  @Field(() => [ParamValue], { nullable: true, defaultValue: [] })
+  parameters?: ParamValue[];
 }
 
 @ObjectType()
@@ -75,7 +91,7 @@ export class Experiment {
   formula?: Formula;
 
   @Field()
-  algorithm: Algorithm;
+  algorithm: AlgorithmResult;
 }
 
 @ObjectType()

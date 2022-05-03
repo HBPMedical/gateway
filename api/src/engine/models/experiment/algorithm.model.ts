@@ -13,7 +13,7 @@ export class Algorithm {
   @Field(() => VariableParameter)
   variable?: VariableParameter;
 
-  @Field(() => VariableParameter)
+  @Field(() => VariableParameter, { nullable: true })
   coVariable?: VariableParameter;
 
   @Field({ nullable: true })
