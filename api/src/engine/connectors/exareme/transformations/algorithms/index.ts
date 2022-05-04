@@ -19,20 +19,21 @@ const transformToAlgorithms = jsonata(`
         $v='true' ? true : ($v='false'? false : undefined)
     )};
     $extract:= function($v) {
+        $v?
         {
            "hint": $v.desc,
            "isRequired": $boolean($checkVal($v.valueNotBlank)),
-           "hasMultiple": $boolean($checkVal($v.valueMutiple)),
+           "hasMultiple": $boolean($checkVal($v.valueMultiple)),
            "allowedTypes": $append([], $truthy($v.columnValuesIsCategorical) ? 'nominal' : $map(($checkVal($v.columnValuesSQLType) ~> $split(',')), $trim))
-       }
+       } : undefined
     };
 
    $[name in $includes].{
        "id": name,
        "label": $checkVal(label),
        "description": $checkVal(desc),
-       "variable": parameters[type='column' and name='y'] ~> $extract,
-       "coVariable": parameters[type='column' and name='x'] ~> $extract,
+       "variable": parameters[(type='column' or type='formula') and name='y'] ~> $extract,
+       "coVariable": parameters[(type='column' or type='formula') and name='x'] ~> $extract,
        "parameters": parameters[type='other'].{
            "__typename": $lookup($dict, valueType),
            "id": name,
