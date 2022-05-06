@@ -31,9 +31,11 @@ const transformToAlgorithms = jsonata(`
    $[name in $includes].{
        "id": name,
        "label": $checkVal(label),
+       "type": type,
        "description": $checkVal(desc),
        "variable": parameters[(type='column' or type='formula') and name='y'] ~> $extract,
        "coVariable": parameters[(type='column' or type='formula') and name='x'] ~> $extract,
+       "hasFormula": $boolean(parameters[(type='formula_description')]),
        "parameters": parameters[type='other'].{
            "__typename": $lookup($dict, valueType),
            "id": name,

@@ -151,6 +151,8 @@ type Algorithm {
   parameters: [BaseParameter!]
   variable: VariableParameter!
   coVariable: VariableParameter
+  hasFormula: Boolean
+  type: String
   label: String
   description: String
 }
@@ -375,18 +377,12 @@ input ExperimentCreateInput {
 input AlgorithmInput {
   id: String!
   parameters: [AlgorithmParamInput!] = []
-  type: String!
+  type: String
 }
 
 input AlgorithmParamInput {
   id: String!
-  type: ParamType = STRING
   value: String!
-}
-
-enum ParamType {
-  STRING
-  NUMBER
 }
 
 input FormulaTransformation {

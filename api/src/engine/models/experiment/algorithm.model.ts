@@ -16,6 +16,12 @@ export class Algorithm {
   @Field(() => VariableParameter, { nullable: true })
   coVariable?: VariableParameter;
 
+  @Field({ nullable: true, defaultValue: false })
+  hasFormula?: boolean;
+
+  @Field({ nullable: true })
+  type?: string;
+
   @Field({ nullable: true })
   label?: string;
 
