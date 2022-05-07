@@ -7,6 +7,7 @@ const transformToAlgorithms = jsonata(`
         'real': 'NumberParameter'
     };
     $checkVal:= function($val) { $val ? $val : undefined};
+    $excludedParams:= ['centers', 'formula'];
     $includes:= ['ANOVA_ONEWAY','ANOVA','LINEAR_REGRESSION',
     'LOGISTIC_REGRESSION','TTEST_INDEPENDENT','TTEST_PAIRED',
     'PEARSON_CORRELATION','ID3','KMEANS','NAIVE_BAYES',
@@ -24,7 +25,7 @@ const transformToAlgorithms = jsonata(`
            "hint": $v.desc,
            "isRequired": $boolean($checkVal($v.valueNotBlank)),
            "hasMultiple": $boolean($checkVal($v.valueMultiple)),
-           "allowedTypes": $append([], $truthy($v.columnValuesIsCategorical) ? 'nominal' : $map(($checkVal($v.columnValuesSQLType) ~> $split(',')), $trim))
+           "allowedTypes": $append($v.columnValuesIsCategorical = '' ? ['nominal'] : [], $truthy($v.columnValuesIsCategorical) ? 'nominal' : $map(($checkVal($v.columnValuesSQLType) ~> $split(',')), $trim))
        } : undefined
     };
 
@@ -36,13 +37,15 @@ const transformToAlgorithms = jsonata(`
        "variable": parameters[(type='column' or type='formula') and name='y'] ~> $extract,
        "coVariable": parameters[(type='column' or type='formula') and name='x'] ~> $extract,
        "hasFormula": $boolean(parameters[(type='formula_description')]),
-       "parameters": parameters[type='other'].{
+       "parameters": parameters[type='other' and $not(name in $excludedParams)].{
            "__typename": $lookup($dict, valueType),
            "id": name,
            "label": label,
            "hint":  $checkVal(desc),
+           "defaultValue": defaultValue ? defaultValue : value,
            "isRequired": $boolean(valueNotBlank),
            "hasMultiple": $boolean(valueMultiple),
+           "isReal": valueType = 'real' ? true : undefined,
            "min": $checkVal(valueMin),
            "max": $checkVal(valueMax),
            "allowedValues":  $checkVal(valueEnumerations).{'id':$, 'label': $}[],
