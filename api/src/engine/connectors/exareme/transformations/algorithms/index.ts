@@ -23,8 +23,8 @@ const transformToAlgorithms = jsonata(`
         $v?
         {
            "hint": $v.desc,
-           "isRequired": $boolean($checkVal($v.valueNotBlank)),
-           "hasMultiple": $boolean($checkVal($v.valueMultiple)),
+           "isRequired": $truthy($checkVal($v.valueNotBlank)),
+           "hasMultiple": $truthy($checkVal($v.valueMultiple)),
            "allowedTypes": $append($v.columnValuesIsCategorical = '' ? ['nominal'] : [], $truthy($v.columnValuesIsCategorical) ? 'nominal' : $map(($checkVal($v.columnValuesSQLType) ~> $split(',')), $trim))
        } : undefined
     };
@@ -43,8 +43,8 @@ const transformToAlgorithms = jsonata(`
            "label": label,
            "hint":  $checkVal(desc),
            "defaultValue": defaultValue ? defaultValue : value,
-           "isRequired": $boolean(valueNotBlank),
-           "hasMultiple": $boolean(valueMultiple),
+           "isRequired": $truthy(valueNotBlank),
+           "hasMultiple": $truthy(valueMultiple),
            "isReal": valueType = 'real' ? true : undefined,
            "min": $checkVal(valueMin),
            "max": $checkVal(valueMax),
