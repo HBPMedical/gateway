@@ -11,6 +11,6 @@ export class VariableParameter {
   @Field({ nullable: true, defaultValue: false })
   hasMultiple: boolean;
 
-  @Field(() => [String], { nullable: true, defaultValue: [] })
+  @Field(() => [String], { nullable: true })
   allowedTypes: string[];
 }
