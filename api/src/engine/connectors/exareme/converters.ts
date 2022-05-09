@@ -215,6 +215,7 @@ export const dataToExperiment = (
     exp.results = data.result
       ? data.result
           .map((result) => dataToResult(result, exp.algorithm.id))
+          .filter((r) => r.length > 0)
           .flat()
       : [];
 
@@ -279,9 +280,11 @@ export const dataJSONtoResult = (
 ): Array<typeof ResultUnion> => {
   switch (algo.toLowerCase()) {
     case 'descriptive_stats':
+    case 'cart':
+    case 'id3':
       return descriptiveDataToTableResult(result);
     default:
-      return dataToRaw(algo, result);
+      return [];
   }
 };
 
