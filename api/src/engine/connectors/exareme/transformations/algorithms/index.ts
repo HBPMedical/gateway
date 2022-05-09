@@ -42,7 +42,7 @@ const transformToAlgorithms = jsonata(`
            "id": name,
            "label": label,
            "hint":  $checkVal(desc),
-           "defaultValue": defaultValue ? defaultValue : value,
+           "defaultValue": (name in $linkedCoVars) ? "[]" : (defaultValue ? defaultValue : value),
            "isRequired": $truthy(valueNotBlank),
            "hasMultiple": $truthy(valueMultiple),
            "isReal": valueType = 'real' ? true : undefined,
