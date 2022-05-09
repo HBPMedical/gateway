@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 interface BaseParameter {
-  id: String!
+  name: String!
   label: String
 
   """Small hint (description) for the end user"""
@@ -62,7 +62,7 @@ type Group {
 }
 
 type Category {
-  id: String!
+  value: String!
   label: String
 }
 
@@ -89,12 +89,12 @@ type Domain {
 }
 
 type OptionValue {
-  id: String!
+  value: String!
   label: String!
 }
 
 type NominalParameter implements BaseParameter {
-  id: String!
+  name: String!
   label: String
 
   """Small hint (description) for the end user"""
@@ -115,7 +115,7 @@ enum AllowedLink {
 }
 
 type NumberParameter implements BaseParameter {
-  id: String!
+  name: String!
   label: String
 
   """Small hint (description) for the end user"""
@@ -129,7 +129,7 @@ type NumberParameter implements BaseParameter {
 }
 
 type StringParameter implements BaseParameter {
-  id: String!
+  name: String!
   label: String
 
   """Small hint (description) for the end user"""
@@ -286,12 +286,12 @@ type Formula {
 }
 
 type ParamValue {
-  id: String!
+  name: String!
   value: String!
 }
 
 type AlgorithmResult {
-  id: String!
+  name: String!
   parameters: [ParamValue!]
 }
 

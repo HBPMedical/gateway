@@ -23,7 +23,7 @@ export class Formula {
 @ObjectType()
 export class ParamValue {
   @Field()
-  id: string;
+  name: string;
 
   @Field()
   value: string;
@@ -31,7 +31,7 @@ export class ParamValue {
 @ObjectType()
 export class AlgorithmResult {
   @Field()
-  id: string;
+  name: string;
 
   @Field(() => [ParamValue], { nullable: true, defaultValue: [] })
   parameters?: ParamValue[];

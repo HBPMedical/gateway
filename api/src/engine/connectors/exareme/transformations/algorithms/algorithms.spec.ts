@@ -193,17 +193,17 @@ describe('Algorithms', () => {
 
     it('nominal parameters should have values allowed', () => {
       const nominalParam = kaplan.parameters.find(
-        (p) => p.id === 'test',
+        (p) => p.name === 'test',
       ) as NominalParameter;
 
       expect(JSON.stringify(nominalParam.allowedValues)).toEqual(
         JSON.stringify([
           {
-            id: 'test',
+            value: 'test',
             label: 'test',
           },
           {
-            id: 'test2',
+            value: 'test2',
             label: 'test2',
           },
         ]),

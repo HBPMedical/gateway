@@ -25,7 +25,9 @@ const transformToAlgorithms = jsonata(`
            "hint": $v.desc,
            "isRequired": $truthy($checkVal($v.valueNotBlank)),
            "hasMultiple": $truthy($checkVal($v.valueMultiple)),
-           "allowedTypes": $append($v.columnValuesIsCategorical = '' ? ['nominal'] : [], $truthy($v.columnValuesIsCategorical) ? 'nominal' : $map(($checkVal($v.columnValuesSQLType) ~> $split(',')), $trim))
+           "allowedTypes": $v.columnValuesIsCategorical = '' and $v.columnValuesSQLType = '' ?
+           undefined : $append($v.columnValuesIsCategorical = '' ?
+           ['nominal'] : [], $truthy($v.columnValuesIsCategorical) ? 'nominal' : $map(($checkVal($v.columnValuesSQLType) ~> $split(',')), $trim))
        } : undefined
     };
 
@@ -39,7 +41,7 @@ const transformToAlgorithms = jsonata(`
        "hasFormula": $boolean(parameters[(type='formula_description')]),
        "parameters": parameters[type='other' and $not(name in $excludedParams)].{
            "__typename": $lookup($dict, valueType),
-           "id": name,
+           "name": name,
            "label": label,
            "hint":  $checkVal(desc),
            "defaultValue": (name in $linkedCoVars) ? "[]" : (defaultValue ? defaultValue : value),
@@ -48,7 +50,7 @@ const transformToAlgorithms = jsonata(`
            "isReal": valueType = 'real' ? true : undefined,
            "min": $checkVal(valueMin),
            "max": $checkVal(valueMax),
-           "allowedValues":  $checkVal(valueEnumerations).{'id':$, 'label': $}[],
+           "allowedValues":  $checkVal(valueEnumerations).{'value':$, 'label': $}[],
            "linkedTo": (name in $linkedVars) ? "VARIABLE" : ((name in $linkedCoVars) ? "COVARIABLE" : undefined)
        }[]
    }[]

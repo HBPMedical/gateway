@@ -3,7 +3,7 @@ import { BaseParameter } from './base-parameter.model';
 
 @ObjectType({ implements: () => [BaseParameter] })
 export class StringParameter implements BaseParameter {
-  id: string;
+  name: string;
   label?: string;
   hint?: string;
   isRequired?: boolean;

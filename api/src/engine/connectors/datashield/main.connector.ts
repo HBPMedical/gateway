@@ -159,7 +159,7 @@ export default class DataShieldService implements IEngineService {
       domain: data.domain,
       datasets: data.datasets,
       algorithm: {
-        id: data.algorithm.id,
+        name: data.algorithm.id,
       },
     };
 

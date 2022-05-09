@@ -25,7 +25,7 @@ import { StringParameter } from './string-parameter.model';
 })
 export abstract class BaseParameter {
   @Field()
-  id: string;
+  name: string;
 
   @Field({ nullable: true })
   label?: string;

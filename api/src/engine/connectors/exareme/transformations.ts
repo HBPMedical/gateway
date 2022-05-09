@@ -36,10 +36,10 @@ export const transformToExperiment = jsonata(`
             "interactions" : $formula.interactions.[var1, var2][]
         },
         "algorithm": {
-            "id": algorithm.name,
+            "name": algorithm.name,
             "parameters" : $toArray(
                     algorithm.parameters[$not(name in $params)].({
-                        "id": name,
+                        "name": name,
                         "label": label,
                         "value": value
                     })

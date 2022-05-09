@@ -14,7 +14,7 @@ registerEnumType(AllowedLink, {
 @ObjectType()
 export class OptionValue {
   @Field()
-  id: string;
+  value: string;
 
   @Field()
   label: string;
@@ -22,7 +22,7 @@ export class OptionValue {
 
 @ObjectType({ implements: () => [BaseParameter] })
 export class NominalParameter implements BaseParameter {
-  id: string;
+  name: string;
   label?: string;
   hint?: string;
   isRequired?: boolean;
