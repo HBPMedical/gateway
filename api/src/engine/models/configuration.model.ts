@@ -25,4 +25,7 @@ export class Configuration {
 
   @Field(() => Matomo, { nullable: true })
   matomo?: Matomo;
+
+  @Field({ nullable: true })
+  ontologyUrl?: string;
 }

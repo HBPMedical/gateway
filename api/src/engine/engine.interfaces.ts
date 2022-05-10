@@ -21,8 +21,6 @@ export interface IEngineOptions {
 export type IConfiguration = Pick<Configuration, 'contactLink' | 'hasGalaxy'>;
 
 export interface IEngineService {
-  //GraphQL
-
   /**
    * Allow specific configuration for the engine
    *
@@ -55,9 +53,6 @@ export interface IEngineService {
   ): Promise<Experiment>;
 
   getAlgorithms(req?: Request): Promise<Algorithm[]>;
-
-  // Standard REST API call
-  getAlgorithmsREST(req?: Request): Observable<string> | string;
 
   getActiveUser?(req?: Request): Promise<User>;
 

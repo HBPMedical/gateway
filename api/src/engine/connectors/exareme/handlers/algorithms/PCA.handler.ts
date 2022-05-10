@@ -9,7 +9,8 @@ export default class PCAHandler extends BaseHandler {
   }
 
   handle(exp: Experiment, data: unknown): void {
-    if (!this.canHandle(exp.algorithm.id)) return this.next?.handle(exp, data);
+    if (!this.canHandle(exp.algorithm.name))
+      return this.next?.handle(exp, data);
 
     const barChar: BarChartResult = {
       name: 'Eigen values',

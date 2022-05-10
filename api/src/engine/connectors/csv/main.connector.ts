@@ -37,8 +37,7 @@ export default class CSVService implements IEngineService {
       domain: '',
       datasets: [],
       algorithm: {
-        id: '',
-        description: '',
+        name: '',
       },
       name: 'test',
       variables: [],
