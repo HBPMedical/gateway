@@ -1,7 +1,6 @@
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { Category } from 'src/engine/models/category.model';
 import { Dataset } from 'src/engine/models/dataset.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
 import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
@@ -26,7 +25,6 @@ import {
   dataToHeatmap,
   descriptiveModelToTables,
   descriptiveSingleToTables,
-  transformToAlgorithms,
   transformToExperiment,
 } from './transformations';
 
@@ -45,7 +43,7 @@ export const dataToGroup = (data: Hierarchy): Group => {
 
 export const dataToCategory = (data: Entity): Category => {
   return {
-    id: data.code,
+    value: data.code,
     label: data.label,
   };
 };
@@ -215,7 +213,8 @@ export const dataToExperiment = (
 
     exp.results = data.result
       ? data.result
-          .map((result) => dataToResult(result, exp.algorithm.id))
+          .map((result) => dataToResult(result, exp.algorithm.name))
+          .filter((r) => r.length > 0)
           .flat()
       : [];
 
@@ -237,14 +236,10 @@ export const dataToExperiment = (
       ],
       datasets: [],
       algorithm: {
-        id: 'unknown',
+        name: 'unknown',
       },
     };
   }
-};
-
-export const dataToAlgorithms = (data: string): Algorithm[] => {
-  return transformToAlgorithms.evaluate(data);
 };
 
 export const dataToRaw = (
@@ -284,9 +279,11 @@ export const dataJSONtoResult = (
 ): Array<typeof ResultUnion> => {
   switch (algo.toLowerCase()) {
     case 'descriptive_stats':
+    case 'cart':
+    case 'id3':
       return descriptiveDataToTableResult(result);
     default:
-      return dataToRaw(algo, result);
+      return [];
   }
 };
 

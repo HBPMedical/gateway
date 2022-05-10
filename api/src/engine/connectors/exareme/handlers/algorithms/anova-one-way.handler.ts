@@ -98,7 +98,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
   }
 
   handle(exp: Experiment, data: unknown): void {
-    if (!this.canHandle(exp.algorithm.id)) return super.handle(exp, data);
+    if (!this.canHandle(exp.algorithm.name)) return super.handle(exp, data);
 
     const summaryTable = this.getSummaryTable(data, exp.coVariables[0]);
     if (summaryTable) exp.results.push(summaryTable);

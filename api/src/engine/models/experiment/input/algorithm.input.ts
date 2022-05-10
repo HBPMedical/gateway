@@ -9,6 +9,6 @@ export class AlgorithmInput {
   @Field(() => [AlgorithmParamInput], { nullable: true, defaultValue: [] })
   parameters: AlgorithmParamInput[];
 
-  @Field()
-  type: string;
+  @Field({ nullable: true })
+  type?: string;
 }

@@ -6,6 +6,7 @@ import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { Md5 } from 'ts-md5';
 import {
   ENGINE_MODULE_OPTIONS,
+  ENGINE_ONTOLOGY_URL,
   ENGINE_SERVICE,
   ENGINE_SKIP_TOS,
 } from './engine.constants';
@@ -55,6 +56,7 @@ export class EngineResolver {
         true,
       ),
       matomo,
+      ontologyUrl: this.configSerivce.get(ENGINE_ONTOLOGY_URL),
     };
 
     const version = Md5.hashStr(JSON.stringify(data));

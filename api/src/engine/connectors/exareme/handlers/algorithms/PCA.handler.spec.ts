@@ -7,7 +7,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    id: 'PCA',
+    name: 'PCA',
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
