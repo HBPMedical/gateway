@@ -40,6 +40,7 @@ type Configuration {
   skipTos: Boolean
   enableSSO: Boolean
   matomo: Matomo
+  ontologyUrl: String
 }
 
 type Dataset {

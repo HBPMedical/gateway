@@ -18,6 +18,7 @@ description: >-
 | GATEWAY\_PORT      | number  | 8081                            | Indicate the port that should be used by the gateway                                        |
 | NODE\_ENV          | string  | dev                             | Value can be `prod` or `dev`                                                                |
 | BASE\_URL\_CONTEXT | string  | null                            | Define context of the gateway. E.g. `api` if the api is under `http://127.0.0.1/api/`       |
+| ONTOLOGY\_URL      | string  | null                            | Define ontology's url                                                                       |
 
 #### Authentication
 
