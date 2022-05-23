@@ -278,9 +278,10 @@ export const dataJSONtoResult = (
   algo: string,
 ): Array<typeof ResultUnion> => {
   switch (algo.toLowerCase()) {
-    case 'descriptive_stats':
     case 'cart':
     case 'id3':
+      return dataToRaw(algo, result);
+    case 'descriptive_stats':
       return descriptiveDataToTableResult(result);
     default:
       return [];
