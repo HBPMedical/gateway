@@ -144,7 +144,8 @@ export const dataROCToLineResult = jsonata(`
             "y": data.series.data.$[1],
             "type": 0
         }
-    ]
+    ],
+    "hasBisector": true
 })
 `);
 
