@@ -22,12 +22,12 @@ export const transformToExperiment = jsonata(`
         "finishedAt": $convDate(finished),
         "shared": shared,
         "updateAt": $convDate(updated),
-        "domain": algorithm.parameters[name = "pathology"].value,
-        "datasets": $split(algorithm.parameters[name = "dataset"].value, ','),
-        "variables": $split($rp(algorithm.parameters[name = "y"].value), ','),
-        "coVariables": $toArray($split($rp(algorithm.parameters[name = "x"].value), ',')),
-        "filterVariables": (algorithm.parameters[name = "filter"].value ~> $strSafe() ~> $match(/\\"id\\":\\"(\w*)\\"/)).groups,
-        "filter": algorithm.parameters[name = "filter"].value,
+        "domain": algorithm.parameters[name = "pathology"][0].value,
+        "datasets": $split(algorithm.parameters[name = "dataset"][0].value, ','),
+        "variables": $split($rp(algorithm.parameters[name = "y"][0].value), ','),
+        "coVariables": $toArray($split($rp(algorithm.parameters[name = "x"][0].value), ',')),
+        "filterVariables": (algorithm.parameters[name = "filter"][0].value ~> $strSafe() ~> $match(/\\"id\\":\\"(\w*)\\"/)).groups,
+        "filter": algorithm.parameters[name = "filter"][0].value,
         "formula": {
             "transformations": $formula.single.{
                 "id": var_name,
