@@ -9,8 +9,8 @@ import {
   Experiment,
   PartialExperiment,
 } from './models/experiment/experiment.model';
-import { ExperimentCreateInput } from './models/experiment/input/experiment-create.input';
-import { ExperimentEditInput } from './models/experiment/input/experiment-edit.input';
+import { ExperimentCreateInput } from '../experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from '../experiments/models/input/experiment-edit.input';
 import { ListExperiments } from './models/experiment/list-experiments.model';
 
 export interface IEngineOptions {
@@ -42,7 +42,7 @@ export interface IEngineService {
     req?: Request,
   ): Promise<ListExperiments>;
 
-  getExperiment(id: string, req?: Request): Promise<Experiment>;
+  getExperiment?(id: string, req?: Request): Promise<Experiment>;
 
   removeExperiment?(id: string, req?: Request): Promise<PartialExperiment>;
 

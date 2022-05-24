@@ -7,13 +7,13 @@ import {
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
-import { CurrentUser } from '../auth/decorators/user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 import { UsersService } from './users.service';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { Request } from 'express';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Resolver()

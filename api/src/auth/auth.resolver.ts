@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { Response, Request } from 'express';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { GQLResponse } from '../common/decorators/gql-response.decoractor';
 import { parseToBoolean } from '../common/utilities';
@@ -18,7 +19,6 @@ import { IEngineOptions, IEngineService } from '../engine/engine.interfaces';
 import { User } from '../users/models/user.model';
 import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './decorators/user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
