@@ -18,7 +18,7 @@ import {
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import {

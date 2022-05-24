@@ -1,13 +1,13 @@
 import { firstValueFrom } from 'rxjs';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import {
   Experiment,
   PartialExperiment,
 } from 'src/engine/models/experiment/experiment.model';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
-import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
+import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { HttpService } from '@nestjs/axios';
 import { Group } from 'src/engine/models/group.model';

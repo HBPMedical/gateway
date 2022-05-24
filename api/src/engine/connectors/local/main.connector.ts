@@ -5,8 +5,8 @@ import {
   Experiment,
   PartialExperiment,
 } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
-import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { User } from 'src/users/models/user.model';
 

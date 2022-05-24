@@ -1,9 +1,12 @@
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { Category } from 'src/engine/models/category.model';
 import { Dataset } from 'src/engine/models/dataset.model';
-import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
+import {
+  Experiment,
+  ExperimentStatus,
+} from 'src/engine/models/experiment/experiment.model';
+import { AlgorithmParamInput } from 'src/experiments/models/input/algorithm-parameter.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
 import {
@@ -223,7 +226,7 @@ export const dataToExperiment = (
     return {
       id: data.uuid,
       name: data.name,
-      status: 'error',
+      status: ExperimentStatus.ERROR,
       variables: [],
       domain: data['domain'] ?? '',
       results: [
