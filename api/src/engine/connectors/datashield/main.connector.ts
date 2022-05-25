@@ -7,7 +7,10 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
-import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
+import {
+  ExperimentResult,
+  MIME_TYPES,
+} from 'src/common/interfaces/utilities.interface';
 import { errorAxiosHandler } from 'src/common/utilities';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import {
@@ -18,13 +21,12 @@ import {
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
-import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import {
   TableResult,
   TableStyle,
 } from 'src/engine/models/result/table-result.model';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import { User } from 'src/users/models/user.model';
 import {
   dataToGroups,
@@ -65,7 +67,7 @@ export default class DataShieldService implements IEngineService {
         .pipe(catchError((e) => errorAxiosHandler(e))),
     );
 
-    const cookies = (loginData.headers['set-cookie'] as string[]) ?? [];
+    const cookies = loginData.headers['set-cookie'] ?? [];
     if (loginData.headers && loginData.headers['set-cookie']) {
       cookies.forEach((cookie) => {
         const [key, value] = cookie.split(/={1}/);
@@ -143,11 +145,10 @@ export default class DataShieldService implements IEngineService {
     };
   }
 
-  async createExperiment(
+  async runExperiment(
     data: ExperimentCreateInput,
-    isTransient: boolean,
     request: Request,
-  ): Promise<Experiment> {
+  ): Promise<ExperimentResult[]> {
     const user = request.user as User;
     const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
       ';',
@@ -166,37 +167,21 @@ export default class DataShieldService implements IEngineService {
     switch (data.algorithm.id) {
       case 'MULTIPLE_HISTOGRAMS': {
         expResult.results = await Promise.all<RawResult>(
-          data.variables.map(
-            async (variable) => await this.getHistogram(variable, cookie),
-          ),
+          data.variables.map((variable) => this.getHistogram(variable, cookie)),
         );
         break;
       }
       case 'DESCRIPTIVE_STATS': {
         expResult.results = await Promise.all<TableResult>(
-          [...data.variables, ...data.coVariables].map(
-            async (variable) =>
-              await this.getDescriptiveStats(variable, cookie),
+          [...data.variables, ...data.coVariables].map((variable) =>
+            this.getDescriptiveStats(variable, cookie),
           ),
         );
         break;
       }
     }
 
-    return expResult;
-  }
-
-  async listExperiments(): Promise<ListExperiments> {
-    return {
-      totalExperiments: 0,
-      experiments: [],
-      totalPages: 0,
-      currentPage: 0,
-    };
-  }
-
-  async getExperiment(id: string): Promise<Experiment> {
-    throw new NotImplementedException();
+    return expResult.results;
   }
 
   async logout(request: Request): Promise<void> {
@@ -214,7 +199,7 @@ export default class DataShieldService implements IEngineService {
     });
   }
 
-  async getDomains(ids: string[], request: Request): Promise<Domain[]> {
+  async getDomains(_ids: string[], request: Request): Promise<Domain[]> {
     const user = request.user as User;
     const sid = user && user.extraFields && user.extraFields['sid'];
 

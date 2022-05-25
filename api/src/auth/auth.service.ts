@@ -14,7 +14,7 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<User> {
     if (!this.engineService.login) throw new NotImplementedException();
-    return await this.engineService.login?.(username, password);
+    return this.engineService.login?.(username, password);
   }
 
   /**

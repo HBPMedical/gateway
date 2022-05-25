@@ -7,7 +7,7 @@ import { User } from '../../users/models/user.model';
  * @returns instance of User or undefined
  */
 export const CurrentUser = createParamDecorator(
-  (data: unknown, context: ExecutionContext): User | undefined => {
+  (_data: unknown, context: ExecutionContext): User | undefined => {
     const ctx = GqlExecutionContext.create(context);
     return ctx.getContext().req.user;
   },

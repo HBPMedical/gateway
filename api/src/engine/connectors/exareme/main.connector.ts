@@ -156,18 +156,18 @@ export default class ExaremeService implements IEngineService {
 
       return (
         data?.data
-          .filter((data) => !ids || ids.length == 0 || ids.includes(data.code))
-          .map((data): Domain => {
-            const groups = this.flattenGroups(data.metadataHierarchy);
+          .filter((d) => !ids || ids.length == 0 || ids.includes(d.code))
+          .map((d): Domain => {
+            const groups = this.flattenGroups(d.metadataHierarchy);
 
             return {
-              id: data.code,
-              label: data.label,
+              id: d.code,
+              label: d.label,
               groups: groups,
-              rootGroup: dataToGroup(data.metadataHierarchy),
-              datasets: data.datasets ? data.datasets.map(dataToDataset) : [],
-              variables: data.metadataHierarchy
-                ? this.flattenVariables(data.metadataHierarchy, groups)
+              rootGroup: dataToGroup(d.metadataHierarchy),
+              datasets: d.datasets ? d.datasets.map(dataToDataset) : [],
+              variables: d.metadataHierarchy
+                ? this.flattenVariables(d.metadataHierarchy, groups)
                 : [],
             };
           }) ?? []
@@ -228,7 +228,7 @@ export default class ExaremeService implements IEngineService {
   };
 
   private flattenVariables = (data: Hierarchy, groups: Group[]): Variable[] => {
-    const group = groups.find((group) => group.id == data.code);
+    const group = groups.find((g) => g.id == data.code);
     let variables = data.variables ? data.variables.map(dataToVariable) : [];
 
     variables.forEach((variable) => (variable.groups = group ? [group] : []));

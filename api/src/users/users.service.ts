@@ -38,6 +38,6 @@ export class UsersService {
       ...data,
     };
 
-    return await this.userRepository.save(updateData);
+    return this.userRepository.save(updateData);
   }
 }

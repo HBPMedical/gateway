@@ -30,7 +30,7 @@ const createExperiment = async (
   input: ExperimentCreateInput,
   service: IEngineService,
 ): Promise<Experiment | undefined> => {
-  return await service.createExperiment(input, false);
+  return service.createExperiment(input, false);
 };
 
 const waitForResult = (

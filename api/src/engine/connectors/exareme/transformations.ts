@@ -171,12 +171,10 @@ dataToHeatmap.registerFunction(
   (a) => {
     const matrix = [];
 
-    a.forEach(
-      (elem: { y: number | number; x: number | number; value: number }) => {
-        matrix[elem.y] = matrix[elem.y] ?? [];
-        matrix[elem.y][elem.x] = elem.value;
-      },
-    );
+    a.forEach((elem: { y: number; x: number; value: number }) => {
+      matrix[elem.y] = matrix[elem.y] ?? [];
+      matrix[elem.y][elem.x] = elem.value;
+    });
 
     return matrix;
   },
