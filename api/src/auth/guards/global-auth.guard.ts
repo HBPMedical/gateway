@@ -8,7 +8,11 @@ import { parseToBoolean } from '../../common/utilities';
 import { authConstants } from '../auth-constants';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard(['jwt-cookies', 'jwt-bearer']) {
+export class GlobalAuthGuard extends AuthGuard([
+  'engine',
+  'jwt-cookies',
+  'jwt-bearer',
+]) {
   constructor(
     private readonly configService: ConfigService,
     private readonly reflector: Reflector,
@@ -35,7 +39,7 @@ export class JwtAuthGuard extends AuthGuard(['jwt-cookies', 'jwt-bearer']) {
       this.configService.get(authConstants.skipAuth, 'false'),
     );
 
-    if (skipAuth || isPublic) {
+    if (isPublic) {
       return true;
     }
 

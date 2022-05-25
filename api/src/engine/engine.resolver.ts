@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { GlobalAuthGuard } from 'src/auth/guards/global-auth.guard';
 import { Md5 } from 'ts-md5';
 import { authConstants } from '../auth/auth-constants';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { parseToBoolean } from '../common/utilities';
 import {
@@ -21,7 +21,7 @@ import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 
 @UseInterceptors(ErrorsInterceptor)
-@UseGuards(JwtAuthGuard)
+@UseGuards(GlobalAuthGuard)
 @Resolver()
 export class EngineResolver {
   constructor(

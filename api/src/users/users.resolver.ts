@@ -7,15 +7,15 @@ import {
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 import { UsersService } from './users.service';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { Request } from 'express';
-import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(GlobalAuthGuard)
 @Resolver()
 export class UsersResolver {
   private readonly logger = new Logger(UsersResolver.name);
@@ -87,6 +87,6 @@ export class UsersResolver {
     if (updateData && Object.keys(updateData).length > 0)
       await this.usersService.update(user.id, updateData);
 
-    return await this.getUser(request, user);
+    return this.getUser(request, user);
   }
 }

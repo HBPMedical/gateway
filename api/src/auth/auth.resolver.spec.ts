@@ -79,9 +79,9 @@ describe('AuthResolver', () => {
     expect(data.accessToken).toBe(authData.accessToken);
   });
 
-  it('logout', () => {
+  it('logout', async () => {
     const request: any = jest.fn();
-    resolver.logout(request, res, user);
+    await resolver.logout(request, res, user);
 
     expect(mockClearCookie.mock.calls[0][0]).toBe(authConstants.cookie.name);
   });
