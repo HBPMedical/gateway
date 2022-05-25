@@ -301,9 +301,9 @@ type Experiment {
   id: String!
   name: String!
   author: Author
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
   status: ExperimentStatus
   shared: Boolean!
@@ -330,9 +330,9 @@ type PartialExperiment {
   id: String
   name: String
   author: Author
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
   status: ExperimentStatus
   shared: Boolean
@@ -351,7 +351,7 @@ type ListExperiments {
   currentPage: Float
   totalPages: Float
   totalExperiments: Float
-  experiments: [Experiment!]!
+  experiments: [Experiment!]
 }
 
 type Query {

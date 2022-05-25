@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   Experiment,
   ExperimentStatus,
-} from 'src/engine/models/experiment/experiment.model';
+} from '../engine/models/experiment/experiment.model';
 import { User } from 'src/users/models/user.model';
 import { FindManyOptions, Like, Repository } from 'typeorm';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
@@ -27,16 +27,19 @@ export class ExperimentsService {
    * @param {string} name - The name of the experiment to search for.
    * @returns An array of experiments
    */
-  findAll(pagination: PaginationArgsInput, name: string) {
+  async findAll(pagination: PaginationArgsInput, name: string) {
     const options: FindManyOptions<Experiment> = {};
 
     if (name && name != '') {
       options.where = { name: Like(`%${name}%`) };
     }
+    options.order = {
+      createdAt: 'DESC',
+    };
     options.skip = pagination.offset ?? 0;
     options.take = pagination.limit ?? 10;
 
-    return this.experimentRepository.find(options);
+    return this.experimentRepository.findAndCount(options);
   }
 
   /**
@@ -45,6 +48,7 @@ export class ExperimentsService {
    * @returns The experiment object
    */
   async findOne(id: string): Promise<Experiment>;
+
   /**
    * It finds an experiment by its id, and if the user is not the author of the experiment, it throws a
    * ForbiddenException
@@ -54,7 +58,7 @@ export class ExperimentsService {
    */
   async findOne(id: string, user: User): Promise<Experiment>;
   async findOne(id: string, user?: User): Promise<Experiment> {
-    const experiment = await this.experimentRepository.findOne();
+    const experiment = await this.experimentRepository.findOne(id);
 
     if (!experiment) throw new NotFoundException(`Experiment #${id} not found`);
 
@@ -66,21 +70,43 @@ export class ExperimentsService {
     return experiment;
   }
 
+  dataToExperiment(
+    data: ExperimentCreateInput,
+    user: User,
+    status?: ExperimentStatus,
+  ): Partial<Experiment> {
+    return {
+      ...data,
+      status,
+      author: {
+        username: user.username,
+        fullname: user.fullname,
+      },
+      createdAt: new Date().toISOString(),
+      algorithm: {
+        name: data.algorithm.id,
+        parameters: data.algorithm.parameters.map((p) => ({
+          name: p.id,
+          value: p.value,
+        })),
+      },
+    };
+  }
+
   /**
    * It creates a new experiment and saves it to the database
    * @param {ExperimentCreateInput} data - ExperimentCreateInput
    * @param {User} user - User - This is the user that is currently logged in.
    * @returns The experiment that was created.
    */
-  create(data: ExperimentCreateInput, user: User): Promise<Experiment> {
-    const experiment = this.experimentRepository.create({
-      ...data,
-      status: ExperimentStatus.INIT,
-      author: {
-        username: user.username,
-        fullname: user.fullname,
-      },
-    });
+  create(
+    data: ExperimentCreateInput,
+    user: User,
+    status = ExperimentStatus.INIT,
+  ): Promise<Experiment> {
+    const experiment = this.experimentRepository.create(
+      this.dataToExperiment(data, user, status),
+    );
 
     return this.experimentRepository.save(experiment);
   }
@@ -99,6 +125,7 @@ export class ExperimentsService {
       ...experiment,
       ...data,
       id,
+      updateAt: new Date().toISOString(),
     });
   }
 

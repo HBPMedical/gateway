@@ -163,8 +163,4 @@ export default class CSVService implements IEngineService {
     };
     return dummyUser;
   }
-
-  getAlgorithmsREST(): string {
-    return '[]';
-  }
 }

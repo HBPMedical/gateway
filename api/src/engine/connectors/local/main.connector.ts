@@ -68,17 +68,12 @@ export default class LocalService implements IEngineService {
   }
 
   async getActiveUser(): Promise<User> {
-    const dummyUser = {
+    return {
       username: 'anonymous',
       id: 'anonymousId',
       fullname: 'anonymous',
       email: 'anonymous@anonymous.com',
       agreeNDA: true,
     };
-    return dummyUser;
-  }
-
-  getAlgorithmsREST(): string {
-    return '[]';
   }
 }

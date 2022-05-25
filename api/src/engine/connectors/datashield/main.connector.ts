@@ -249,8 +249,4 @@ export default class DataShieldService implements IEngineService {
       fullname: user.id,
     };
   }
-
-  getAlgorithmsREST(): string {
-    return '[]';
-  }
 }

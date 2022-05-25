@@ -70,17 +70,17 @@ export class Experiment {
   @Field(() => Author, { nullable: true, defaultValue: '' })
   author?: Author;
 
-  @Column({ nullable: true })
+  @Column()
   @Field({ nullable: true })
-  createdAt?: number;
+  createdAt?: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  updateAt?: number;
+  updateAt?: string;
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  finishedAt?: number;
+  finishedAt?: string;
 
   @Column({ nullable: true, default: false })
   @Field({ nullable: true, defaultValue: false })

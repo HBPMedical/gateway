@@ -1,24 +1,25 @@
 import { Inject, Logger, UseGuards } from '@nestjs/common';
 import { Args, Resolver, Query, Mutation } from '@nestjs/graphql';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { GQLRequest } from 'src/common/decorators/gql-request.decoractor';
-import { ENGINE_SERVICE } from 'src/engine/engine.constants';
-import { IEngineService } from 'src/engine/engine.interfaces';
+import { GQLRequest } from '../common/decorators/gql-request.decoractor';
+import { ENGINE_SERVICE } from '../engine/engine.constants';
+import { IEngineService } from '../engine/engine.interfaces';
 import {
   Experiment,
+  ExperimentStatus,
   PartialExperiment,
-} from 'src/engine/models/experiment/experiment.model';
-import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
+} from '../engine/models/experiment/experiment.model';
+import { ListExperiments } from '../engine/models/experiment/list-experiments.model';
 import { Request } from 'express';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
-import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
+import { ExperimentCreateInput } from './models/input/experiment-create.input';
+import { ExperimentEditInput } from './models/input/experiment-edit.input';
 import { ExperimentsService } from './experiments.service';
-import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { User } from 'src/users/models/user.model';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import { User } from '../users/models/user.model';
+import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 
 const LIMIT_EXP_BY_PAGE = 10; // TODO Consider refactoring to allow offset and limit in API call
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(GlobalAuthGuard)
 @Resolver()
 export class ExperimentsResolver {
   private readonly logger = new Logger(ExperimentsResolver.name);
@@ -33,17 +34,23 @@ export class ExperimentsResolver {
     @Args('page', { nullable: true, defaultValue: 0 }) page: number,
     @Args('name', { nullable: true, defaultValue: '' }) name: string,
     @GQLRequest() req: Request,
-  ) {
+  ): Promise<ListExperiments> {
     if (this.engineService.listExperiments)
       return this.engineService.listExperiments(page, name, req);
 
-    return this.experimentService.findAll(
+    const [results, total] = await this.experimentService.findAll(
       {
         limit: LIMIT_EXP_BY_PAGE,
         offset: LIMIT_EXP_BY_PAGE * page,
       },
       name,
     );
+    return {
+      experiments: results,
+      currentPage: page,
+      totalExperiments: total,
+      totalPages: Math.ceil(total / LIMIT_EXP_BY_PAGE),
+    };
   }
 
   @Query(() => Experiment)
@@ -62,36 +69,37 @@ export class ExperimentsResolver {
   async createExperiment(
     @GQLRequest() req: Request,
     @CurrentUser() user: User,
-    @Args('data') experimentCreateInput: ExperimentCreateInput,
+    @Args('data') data: ExperimentCreateInput,
     @Args('isTransient', { nullable: true, defaultValue: false })
     isTransient: boolean,
   ) {
-    if (this.engineService.getExperiment) {
-      return this.engineService.createExperiment(
-        experimentCreateInput,
-        isTransient,
-        req,
-      );
+    if (this.engineService.createExperiment) {
+      return this.engineService.createExperiment(data, isTransient, req);
+    }
+
+    if (isTransient) {
+      const results = await this.engineService.runExperiment(data, req);
+      const expTransient = this.experimentService.dataToExperiment(data, user);
+      return { ...expTransient, results, status: ExperimentStatus.SUCCESS };
     }
 
     const experiment = await this.experimentService.create(
-      experimentCreateInput,
+      data,
       user,
+      ExperimentStatus.PENDING,
     );
 
-    //todo : run experiment method ? --> for those who doesnt provide full exp details
-
-    this.engineService
-      .createExperiment(experimentCreateInput, isTransient, req)
-      .then((exp) => {
-        this.experimentService.update(
-          experiment.id,
-          {
-            results: exp.results,
-          },
-          user,
-        );
-      });
+    this.engineService.runExperiment(data, req).then((results) => {
+      this.experimentService.update(
+        experiment.id,
+        {
+          results,
+          finishedAt: new Date().toISOString(),
+          status: ExperimentStatus.SUCCESS,
+        },
+        user,
+      );
+    });
 
     return experiment;
   }

@@ -7,7 +7,7 @@ export const transformToExperiment = jsonata(`
 ( 
     $params := ["y", "pathology", "dataset", "filter", "x", "formula"];
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
-    $convDate := function($v) { $type($v) = 'string' ? $toMillis($v) : $v };
+    $convDate := function($v) { $type($v) = 'string' ? $v : $fromMillis($v) };
     $rp := function($v) {$replace($v, /(\\+|\\*|-)/, ',')};
     $strSafe := function($v) { $type($v) = 'string' ? $v : "" };
     $formula := $eval(algorithm.parameters[name = "formula"].value);
