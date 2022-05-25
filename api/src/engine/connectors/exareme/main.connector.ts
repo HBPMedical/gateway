@@ -187,7 +187,10 @@ export default class ExaremeService implements IEngineService {
     try {
       return transformToUser.evaluate(response.data);
     } catch (e) {
-      new InternalServerErrorException('Cannot parse user data from Engine', e);
+      throw new InternalServerErrorException(
+        'Cannot parse user data from Engine',
+        e,
+      );
     }
   }
 
@@ -200,14 +203,6 @@ export default class ExaremeService implements IEngineService {
     );
 
     return undefined; //we don't want to manage data locally
-  }
-
-  getAlgorithmsREST(request: Request): Observable<string> {
-    const path = this.options.baseurl + 'algorithms';
-
-    return this.get<string>(request, path, { params: request.query }).pipe(
-      map((response) => response.data),
-    );
   }
 
   getPassthrough(
