@@ -22,12 +22,13 @@ export class ExperimentsService {
   ) {}
 
   /**
-   * It takes a pagination object and a name, and returns a list of experiments
-   * @param {PaginationArgsInput} pagination - PaginationArgsInput
-   * @param {string} name - The name of the experiment to search for.
-   * @returns An array of experiments
+   * It takes in a pagination object and a name, and returns a promise that resolves to an array of
+   * experiments and the total number of experiments
+   * @param {PaginationArgsInput} pagination - PaginationArgsInput = {}
+   * @param [name] - The name of the experiment.
+   * @returns An array of experiments and the total count of experiments.
    */
-  async findAll(pagination: PaginationArgsInput, name: string) {
+  async findAll(pagination: PaginationArgsInput = {}, name = '') {
     const options: FindManyOptions<Experiment> = {};
 
     if (name && name != '') {
@@ -80,7 +81,7 @@ export class ExperimentsService {
       status,
       author: {
         username: user.username,
-        fullname: user.fullname,
+        fullname: user.fullname ?? user.username,
       },
       createdAt: new Date().toISOString(),
       algorithm: {

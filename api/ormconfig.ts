@@ -7,7 +7,7 @@ ConfigModule.forRoot({
   load: [dbConfiguration],
 });
 
-const config = {
+const ormconfig = {
   ...dbConfiguration(),
   entities: ['dist/**/*.entity.js', 'dist/**/*.model.js'],
   migrations: ['dist/migrations/*{.ts,.js}'],
@@ -17,4 +17,4 @@ const config = {
   },
 };
 
-export default config;
+export default ormconfig;
