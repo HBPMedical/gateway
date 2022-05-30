@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { Experiment } from '../engine/models/experiment/experiment.model';
 import { ExperimentsService } from './experiments.service';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
-import { ExperimentUpdateDto } from './dto/experiment-update.dto';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 const createMockRepository = <T = any>(): MockRepository<T> => ({
@@ -57,7 +56,7 @@ describe('ExperimentsService', () => {
         const experimentId = '1';
         const expectedExperiment = {
           author: {
-            username: 'tset',
+            username: 'differentUsername',
           },
         };
         const user: User = {

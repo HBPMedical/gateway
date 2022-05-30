@@ -1,6 +1,9 @@
 import { Inject, Logger, UseGuards } from '@nestjs/common';
-import { Args, Resolver, Query, Mutation } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Request } from 'express';
+import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
+import { CurrentUser } from '../common/decorators/user.decorator';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
 import {
@@ -9,13 +12,10 @@ import {
   PartialExperiment,
 } from '../engine/models/experiment/experiment.model';
 import { ListExperiments } from '../engine/models/experiment/list-experiments.model';
-import { Request } from 'express';
+import { User } from '../users/models/user.model';
+import { ExperimentsService } from './experiments.service';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
 import { ExperimentEditInput } from './models/input/experiment-edit.input';
-import { ExperimentsService } from './experiments.service';
-import { CurrentUser } from '../common/decorators/user.decorator';
-import { User } from '../users/models/user.model';
-import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 
 const LIMIT_EXP_BY_PAGE = 10; // TODO Consider refactoring to allow offset and limit in API call
 
