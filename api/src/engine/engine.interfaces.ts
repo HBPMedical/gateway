@@ -92,7 +92,7 @@ export interface IEngineService {
    * @param data - this is the data object containing the updated fields
    * @param req - this is the request object from the user HTTP request
    */
-  editExperient?(
+  editExperiment?(
     id: string,
     data: ExperimentEditInput,
     req?: Request,

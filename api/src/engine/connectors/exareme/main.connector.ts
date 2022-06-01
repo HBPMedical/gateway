@@ -118,7 +118,7 @@ export default class ExaremeService implements IEngineService {
     return dataToExperiment(resultAPI.data);
   }
 
-  async editExperient(
+  async editExperiment(
     id: string,
     expriment: ExperimentEditInput,
     request: Request,

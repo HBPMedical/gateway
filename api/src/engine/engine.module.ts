@@ -63,7 +63,7 @@ export class EngineModule {
       (!instance.getExperiment ||
         !instance.listExperiments ||
         !instance.removeExperiment ||
-        !instance.editExperient)
+        !instance.editExperiment)
     )
       throw new InternalServerErrorException(
         `Connector ${opt.type} has 'createExperiment' implemented it implies that getExperiment, listExperiments, removeExperiment and editExperiment methods must also be implemented.`,
