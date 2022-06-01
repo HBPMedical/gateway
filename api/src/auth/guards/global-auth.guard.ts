@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class GlobalAuthGuard extends AuthGuard([
-  'engine',
   'jwt-cookies',
   'jwt-bearer',
+  'engine',
 ]) {
   constructor(
     private readonly configService: ConfigService,
