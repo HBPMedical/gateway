@@ -35,8 +35,9 @@ export class ExperimentsResolver {
     @Args('name', { nullable: true, defaultValue: '' }) name: string,
     @GQLRequest() req: Request,
   ): Promise<ListExperiments> {
-    if (this.engineService.listExperiments)
+    if (this.engineService.listExperiments) {
       return this.engineService.listExperiments(page, name, req);
+    }
 
     const [results, total] = await this.experimentService.findAll(
       {
@@ -77,18 +78,21 @@ export class ExperimentsResolver {
       return this.engineService.createExperiment(data, isTransient, req);
     }
 
+    //if the experiment is transient we wait a response before returning a response
     if (isTransient) {
       const results = await this.engineService.runExperiment(data, req);
       const expTransient = this.experimentService.dataToExperiment(data, user);
       return { ...expTransient, results, status: ExperimentStatus.SUCCESS };
     }
 
+    //if not we will create an experiment in local db
     const experiment = await this.experimentService.create(
       data,
       user,
       ExperimentStatus.PENDING,
     );
 
+    //create an async query that will update the result when it's done
     this.engineService.runExperiment(data, req).then((results) => {
       this.experimentService.update(
         experiment.id,
@@ -101,6 +105,7 @@ export class ExperimentsResolver {
       );
     });
 
+    //we return the experiment before finishing the runExperiment
     return experiment;
   }
 
@@ -111,8 +116,9 @@ export class ExperimentsResolver {
     @Args('data') experiment: ExperimentEditInput,
     @CurrentUser() user: User,
   ) {
-    if (this.engineService.editExperient)
-      return this.engineService.editExperient(id, experiment, req);
+    console.log(this.engineService.editExperiment);
+    if (this.engineService.editExperiment)
+      return this.engineService.editExperiment(id, experiment, req);
 
     return this.experimentService.update(id, experiment, user);
   }
