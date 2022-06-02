@@ -166,6 +166,10 @@ export const dataToHeatmap = jsonata(`
 )
 `);
 
+export const dataToUser = jsonata(`
+$ ~> |$|{'id': subjectId}, ['subjectId']|
+`);
+
 dataToHeatmap.registerFunction(
   'toMat',
   (a) => {

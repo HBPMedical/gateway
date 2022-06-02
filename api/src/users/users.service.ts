@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateUserInput } from './inputs/update-user.input';
@@ -12,6 +12,8 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<InternalUser>,
   ) {}
+
+  private readonly logger = new Logger(UsersService.name);
 
   /**
    * Get a user by id
@@ -39,5 +41,27 @@ export class UsersService {
     };
 
     return this.userRepository.save(updateData);
+  }
+
+  /**
+   * It takes a user object, checks if it has an id, and if it does, it tries to find the user in the
+   * database and then merges the database user with the user object
+   * @param {User} user - User - The user object that is being extended.
+   */
+  async extendedUser(user: User) {
+    if (!user || !user.id) {
+      return;
+    }
+
+    try {
+      const dbUser = await this.findOne(user.id);
+
+      Object.assign(user, dbUser);
+    } catch (err) {
+      if (err instanceof NotFoundException)
+        this.logger.debug(
+          `Extension of ${user.id} aborted, no user found in database`,
+        );
+    }
   }
 }
