@@ -120,7 +120,7 @@ export interface IEngineService {
     req?: Request,
     userId?: string,
     data?: UpdateUserInput,
-  ): Promise<UpdateUserInput | undefined>;
+  ): Promise<User | undefined>;
 
   /**
    * Perform a logout on the current logged in user

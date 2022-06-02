@@ -22,12 +22,11 @@ import {
   Experiment,
   PartialExperiment,
 } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
-import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
-import { UpdateUserInput } from 'src/users/inputs/update-user.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
 import { User } from 'src/users/models/user.model';
 import { transformToUser } from '../datashield/transformations';
 import {
@@ -41,6 +40,7 @@ import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { ExperimentsData } from './interfaces/experiment/experiments.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
+import { dataToUser } from './transformations';
 import transformToAlgorithms from './transformations/algorithms';
 
 type Headers = Record<string, string>;
@@ -194,15 +194,16 @@ export default class ExaremeService implements IEngineService {
     }
   }
 
-  async updateUser(request: Request): Promise<UpdateUserInput | undefined> {
+  async updateUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
-    await firstValueFrom(
+
+    const result = await firstValueFrom(
       this.post<string>(request, path, {
         agreeNDA: true,
       }),
     );
 
-    return undefined; //we don't want to manage data locally
+    return dataToUser.evaluate(result);
   }
 
   getPassthrough(
