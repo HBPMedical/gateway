@@ -1,17 +1,14 @@
+import { HttpService } from '@nestjs/axios';
+import { NotImplementedException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
+import {
+  Dictionary,
+  ExperimentResult,
+} from 'src/common/interfaces/utilities.interface';
 import { IEngineOptions, IEngineService } from 'src/engine/engine.interfaces';
 import { Domain } from 'src/engine/models/domain.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
-import {
-  Experiment,
-  PartialExperiment,
-} from 'src/engine/models/experiment/experiment.model';
-import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
-import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { HttpService } from '@nestjs/axios';
 import { Group } from 'src/engine/models/group.model';
-import { Dictionary } from 'src/common/interfaces/utilities.interface';
 import { User } from 'src/users/models/user.model';
 
 export default class CSVService implements IEngineService {
@@ -21,51 +18,15 @@ export default class CSVService implements IEngineService {
   ) {}
 
   async logout() {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
   async getAlgorithms(): Promise<Algorithm[]> {
-    throw new Error('Method not implemented.');
+    throw new NotImplementedException();
   }
 
-  async createExperiment(
-    data: ExperimentCreateInput,
-    isTransient: boolean,
-  ): Promise<Experiment> {
-    return {
-      id: '',
-      domain: '',
-      datasets: [],
-      algorithm: {
-        name: '',
-      },
-      name: 'test',
-      variables: [],
-    };
-  }
-
-  async listExperiments(page: number, name: string): Promise<ListExperiments> {
-    return {
-      experiments: [],
-      currentPage: 0,
-      totalExperiments: 0,
-      totalPages: 0,
-    };
-  }
-
-  async getExperiment(id: string): Promise<Experiment> {
-    throw new Error('Method not implemented.');
-  }
-
-  async removeExperiment(id: string): Promise<PartialExperiment> {
-    throw new Error('Method not implemented.');
-  }
-
-  async editExperient(
-    id: string,
-    expriment: ExperimentEditInput,
-  ): Promise<Experiment> {
-    throw new Error('Method not implemented.');
+  async runExperiment(): Promise<ExperimentResult[]> {
+    throw new NotImplementedException();
   }
 
   async getDomains(): Promise<Domain[]> {
@@ -154,17 +115,12 @@ export default class CSVService implements IEngineService {
   }
 
   async getActiveUser(): Promise<User> {
-    const dummyUser = {
+    return {
       username: 'anonymous',
       id: 'anonymousId',
       fullname: 'anonymous',
       email: 'anonymous@anonymous.com',
       agreeNDA: true,
     };
-    return dummyUser;
-  }
-
-  getAlgorithmsREST(): string {
-    return '[]';
   }
 }

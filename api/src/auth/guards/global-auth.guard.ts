@@ -4,11 +4,13 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
-import { parseToBoolean } from '../../common/utilities';
-import { authConstants } from '../auth-constants';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard(['jwt-cookies', 'jwt-bearer']) {
+export class GlobalAuthGuard extends AuthGuard([
+  'jwt-cookies',
+  'jwt-bearer',
+  'engine',
+]) {
   constructor(
     private readonly configService: ConfigService,
     private readonly reflector: Reflector,
@@ -31,11 +33,7 @@ export class JwtAuthGuard extends AuthGuard(['jwt-cookies', 'jwt-bearer']) {
       context.getHandler(),
     );
 
-    const skipAuth = parseToBoolean(
-      this.configService.get(authConstants.skipAuth, 'false'),
-    );
-
-    if (skipAuth || isPublic) {
+    if (isPublic) {
       return true;
     }
 

@@ -9,9 +9,10 @@ import {
   Experiment,
   PartialExperiment,
 } from './models/experiment/experiment.model';
-import { ExperimentCreateInput } from './models/experiment/input/experiment-create.input';
-import { ExperimentEditInput } from './models/experiment/input/experiment-edit.input';
+import { ExperimentCreateInput } from '../experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from '../experiments/models/input/experiment-edit.input';
 import { ListExperiments } from './models/experiment/list-experiments.model';
+import { ResultUnion } from './models/result/common/result-union.model';
 
 export interface IEngineOptions {
   type: string;
@@ -23,45 +24,108 @@ export type IConfiguration = Pick<Configuration, 'contactLink' | 'hasGalaxy'>;
 export interface IEngineService {
   /**
    * Allow specific configuration for the engine
-   *
-   * `connectorId` is always overwrite by the engine module
    */
   getConfiguration?(): IConfiguration;
 
+  /**
+   * Get the list of domains along with a list of variables
+   * @param ids - Ids to filter the domain needed
+   * @param req - Request - this is the request object from the HTTP request.
+   */
   getDomains(ids: string[], req?: Request): Domain[] | Promise<Domain[]>;
 
-  createExperiment(
+  /**
+   * Create and return a full detailed experiment
+   * @param {ExperimentCreateInput} data - ExperimentCreateInput - this is the data that you want to
+   * send to the API.
+   * @param [isTransient=false] - If true, the experiment will be created as a transient experiment.
+   * @param {Request} req - Request - this is the request object from the HTTP request.
+   * @returns An experiment object
+   */
+  createExperiment?(
     data: ExperimentCreateInput,
     isTransient: boolean,
     req?: Request,
   ): Promise<Experiment>;
 
+  /**
+   * Run an experiment and return results (Transient only)
+   * @param {ExperimentCreateInput} data - ExperimentCreateInput - Data context for the experiment.
+   * @param {Request} req - Request - this is the request object from the HTTP request.
+   * @returns ResultUnion
+   */
+  runExperiment?(
+    data: ExperimentCreateInput,
+    req?: Request,
+  ): Promise<Array<typeof ResultUnion>>;
+
+  /**
+   * Get a list of experiment (limited to 10 per page)
+   * @param page - the page number
+   * @param name - the name of the experiment you are looking for
+   * @param req - Request - this is the request object from the HTTP request.
+   */
   listExperiments?(
     page: number,
     name: string,
     req?: Request,
   ): Promise<ListExperiments>;
 
-  getExperiment(id: string, req?: Request): Promise<Experiment>;
+  /**
+   * It takes an experiment id and a request object, and returns a promise of an experiment
+   * @param {string} id - the id of the experiment you want to get
+   * @param {Request} req - Request - this is the request object from the HTTP request.
+   * @returns An experiment object
+   */
+  getExperiment?(id: string, req?: Request): Promise<Experiment>;
 
+  /**
+   * Remove an experiment
+   * @param id - the id of the experiment you want to remove
+   * @param req - this is the request object from the user HTTP request
+   */
   removeExperiment?(id: string, req?: Request): Promise<PartialExperiment>;
 
-  editExperient?(
+  /**
+   * Update an experiment
+   * @param id - the id of the experiment you want to remove
+   * @param data - this is the data object containing the updated fields
+   * @param req - this is the request object from the user HTTP request
+   */
+  editExperiment?(
     id: string,
-    expriment: ExperimentEditInput,
+    data: ExperimentEditInput,
     req?: Request,
   ): Promise<Experiment>;
 
+  /**
+   * Retrieve the list of available algorithms
+   * @param req - Request - this is the request object from the HTTP request.
+   */
   getAlgorithms(req?: Request): Promise<Algorithm[]>;
 
+  /**
+   * Get the current user logged in
+   * @param req - Request - this is the request object from the HTTP request.
+   */
   getActiveUser?(req?: Request): Promise<User>;
 
+  /**
+   * Update the current logged in user
+   * @param req - Request - this is the request object from the HTTP request.
+   * @param userId - the id to update
+   * @param data - Data object with the updated fields
+   */
   updateUser?(
     req?: Request,
     userId?: string,
     data?: UpdateUserInput,
   ): Promise<UpdateUserInput | undefined>;
 
+  /**
+   * Perform a logout on the current logged in user
+   * @param req - Request - this is the request object from the HTTP request.
+   */
   logout?(req?: Request): Promise<void>;
 
   /**

@@ -9,6 +9,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import dbConfig from 'src/config/db.config';
 import matomoConfig from 'src/config/matomo.config';
 import { EngineModule } from 'src/engine/engine.module';
+import { ExperimentsModule } from 'src/experiments/experiments.module';
 import { FilesModule } from 'src/files/files.module';
 import { UsersModule } from 'src/users/users.module';
 import { AppController } from './app.controller';
@@ -59,6 +60,7 @@ import { AppService } from './app.service';
     }),
     AuthModule,
     UsersModule,
+    ExperimentsModule,
     FilesModule,
   ],
   controllers: [AppController],

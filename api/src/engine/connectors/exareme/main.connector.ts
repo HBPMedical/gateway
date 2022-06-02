@@ -22,8 +22,8 @@ import {
   Experiment,
   PartialExperiment,
 } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
-import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
@@ -118,7 +118,7 @@ export default class ExaremeService implements IEngineService {
     return dataToExperiment(resultAPI.data);
   }
 
-  async editExperient(
+  async editExperiment(
     id: string,
     expriment: ExperimentEditInput,
     request: Request,
@@ -156,18 +156,18 @@ export default class ExaremeService implements IEngineService {
 
       return (
         data?.data
-          .filter((data) => !ids || ids.length == 0 || ids.includes(data.code))
-          .map((data): Domain => {
-            const groups = this.flattenGroups(data.metadataHierarchy);
+          .filter((d) => !ids || ids.length == 0 || ids.includes(d.code))
+          .map((d): Domain => {
+            const groups = this.flattenGroups(d.metadataHierarchy);
 
             return {
-              id: data.code,
-              label: data.label,
+              id: d.code,
+              label: d.label,
               groups: groups,
-              rootGroup: dataToGroup(data.metadataHierarchy),
-              datasets: data.datasets ? data.datasets.map(dataToDataset) : [],
-              variables: data.metadataHierarchy
-                ? this.flattenVariables(data.metadataHierarchy, groups)
+              rootGroup: dataToGroup(d.metadataHierarchy),
+              datasets: d.datasets ? d.datasets.map(dataToDataset) : [],
+              variables: d.metadataHierarchy
+                ? this.flattenVariables(d.metadataHierarchy, groups)
                 : [],
             };
           }) ?? []
@@ -187,7 +187,10 @@ export default class ExaremeService implements IEngineService {
     try {
       return transformToUser.evaluate(response.data);
     } catch (e) {
-      new InternalServerErrorException('Cannot parse user data from Engine', e);
+      throw new InternalServerErrorException(
+        'Cannot parse user data from Engine',
+        e,
+      );
     }
   }
 
@@ -200,14 +203,6 @@ export default class ExaremeService implements IEngineService {
     );
 
     return undefined; //we don't want to manage data locally
-  }
-
-  getAlgorithmsREST(request: Request): Observable<string> {
-    const path = this.options.baseurl + 'algorithms';
-
-    return this.get<string>(request, path, { params: request.query }).pipe(
-      map((response) => response.data),
-    );
   }
 
   getPassthrough(
@@ -233,7 +228,7 @@ export default class ExaremeService implements IEngineService {
   };
 
   private flattenVariables = (data: Hierarchy, groups: Group[]): Variable[] => {
-    const group = groups.find((group) => group.id == data.code);
+    const group = groups.find((g) => g.id == data.code);
     let variables = data.variables ? data.variables.map(dataToVariable) : [];
 
     variables.forEach((variable) => (variable.groups = group ? [group] : []));

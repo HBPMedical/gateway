@@ -301,11 +301,11 @@ type Experiment {
   id: String!
   name: String!
   author: Author
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
-  status: String
+  status: ExperimentStatus
   shared: Boolean!
   results: [ResultUnion!]
   datasets: [String!]!
@@ -318,15 +318,23 @@ type Experiment {
   algorithm: AlgorithmResult!
 }
 
+enum ExperimentStatus {
+  INIT
+  PENDING
+  SUCCESS
+  WARN
+  ERROR
+}
+
 type PartialExperiment {
   id: String
   name: String
   author: Author
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
-  status: String
+  status: ExperimentStatus
   shared: Boolean
   results: [ResultUnion!]
   datasets: [String!]
@@ -343,25 +351,34 @@ type ListExperiments {
   currentPage: Float
   totalPages: Float
   totalExperiments: Float
-  experiments: [Experiment!]!
+  experiments: [Experiment!]
 }
 
 type Query {
   configuration: Configuration!
   domains(ids: [String!] = []): [Domain!]!
-  experimentList(page: Float = 0, name: String = ""): ListExperiments!
-  experiment(id: String!): Experiment!
   algorithms: [Algorithm!]!
   user: User!
+  experimentList(page: Float = 0, name: String = ""): ListExperiments!
+  experiment(id: String!): Experiment!
 }
 
 type Mutation {
-  createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
-  editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
-  removeExperiment(id: String!): PartialExperiment!
   login(variables: AuthenticationInput!): AuthenticationOutput!
   logout: Boolean!
   updateUser(updateUserInput: UpdateUserInput!): User!
+  createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
+  editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
+  removeExperiment(id: String!): PartialExperiment!
+}
+
+input AuthenticationInput {
+  username: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  agreeNDA: Boolean!
 }
 
 input ExperimentCreateInput {
@@ -396,13 +413,4 @@ input ExperimentEditInput {
   name: String
   shared: Boolean
   viewed: Boolean
-}
-
-input AuthenticationInput {
-  username: String!
-  password: String!
-}
-
-input UpdateUserInput {
-  agreeNDA: Boolean!
 }

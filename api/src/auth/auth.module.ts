@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { authConstants } from './auth-constants';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
+import { EngineStrategy } from './strategies/engine.strategy';
 import { JwtBearerStrategy } from './strategies/jwt-bearer.strategy';
 import { JwtCookiesStrategy } from './strategies/jwt-cookies.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -30,6 +31,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     LocalStrategy,
     JwtBearerStrategy,
     JwtCookiesStrategy,
+    EngineStrategy,
     AuthResolver,
   ],
   exports: [AuthService],

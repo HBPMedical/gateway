@@ -7,7 +7,7 @@ export const transformToExperiment = jsonata(`
 ( 
     $params := ["y", "pathology", "dataset", "filter", "x", "formula"];
     $toArray := function($x) { $type($x) = 'array' ? $x : [$x]};
-    $convDate := function($v) { $type($v) = 'string' ? $toMillis($v) : $v };
+    $convDate := function($v) { $type($v) = 'string' ? $v : $fromMillis($v) };
     $rp := function($v) {$replace($v, /(\\+|\\*|-)/, ',')};
     $strSafe := function($v) { $type($v) = 'string' ? $v : "" };
     $formula := $eval(algorithm.parameters[name = "formula"].value);
@@ -171,12 +171,10 @@ dataToHeatmap.registerFunction(
   (a) => {
     const matrix = [];
 
-    a.forEach(
-      (elem: { y: number | number; x: number | number; value: number }) => {
-        matrix[elem.y] = matrix[elem.y] ?? [];
-        matrix[elem.y][elem.x] = elem.value;
-      },
-    );
+    a.forEach((elem: { y: number; x: number; value: number }) => {
+      matrix[elem.y] = matrix[elem.y] ?? [];
+      matrix[elem.y][elem.x] = elem.value;
+    });
 
     return matrix;
   },

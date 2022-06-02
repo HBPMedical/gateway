@@ -1,6 +1,6 @@
 import { IEngineService } from 'src/engine/engine.interfaces';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 
 const TIMEOUT_DURATION_SECONDS = 60 * 10;
 
@@ -30,7 +30,7 @@ const createExperiment = async (
   input: ExperimentCreateInput,
   service: IEngineService,
 ): Promise<Experiment | undefined> => {
-  return await service.createExperiment(input, false);
+  return service.createExperiment(input, false);
 };
 
 const waitForResult = (
