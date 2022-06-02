@@ -116,7 +116,6 @@ export class ExperimentsResolver {
     @Args('data') experiment: ExperimentEditInput,
     @CurrentUser() user: User,
   ) {
-    console.log(this.engineService.editExperiment);
     if (this.engineService.editExperiment)
       return this.engineService.editExperiment(id, experiment, req);
 
