@@ -43,6 +43,7 @@
     "graphql-type-json": "^0.3.2",
     "jsonata": "^1.8.5",
     "passport": "^0.5.2",
+    "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.7.3",
@@ -98,12 +99,12 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s", 
-      "!**/*e2e-spec.ts", 
-      "!**/*.module.ts", 
+      "**/*.(t|j)s",
+      "!**/*e2e-spec.ts",
+      "!**/*.module.ts",
       "!**/*.decorator.ts",
-      "!**/*.model.ts", 
-      "!**/*.input.ts", 
+      "!**/*.model.ts",
+      "!**/*.input.ts",
       "!**/jest.config.ts",
       "!**/main.ts"
     ],

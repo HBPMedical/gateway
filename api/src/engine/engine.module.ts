@@ -1,5 +1,11 @@
 import { HttpModule, HttpService } from '@nestjs/axios';
-import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
+import {
+  DynamicModule,
+  Global,
+  InternalServerErrorException,
+  Logger,
+  Module,
+} from '@nestjs/common';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
 import { IEngineOptions, IEngineService } from './engine.interfaces';
@@ -23,7 +29,7 @@ export class EngineModule {
     const engineProvider = {
       provide: ENGINE_SERVICE,
       useFactory: async (httpService: HttpService) => {
-        return await this.createEngineConnection(
+        return this.createEngineConnection(
           optionsProvider.useValue,
           httpService,
         );
@@ -44,14 +50,24 @@ export class EngineModule {
     opt: IEngineOptions,
     httpService: HttpService,
   ): Promise<IEngineService> {
-    try {
-      const service = await import(`./connectors/${opt.type}/main.connector`);
-      const engine = new service.default(opt, httpService);
+    const service = await import(`./connectors/${opt.type}/main.connector`);
+    const instance: IEngineService = new service.default(opt, httpService);
 
-      return engine;
-    } catch (e) {
-      this.logger.error(`There is a problem with the connector '${opt.type}'`);
-      this.logger.verbose(e);
-    }
+    if (instance.createExperiment && instance.runExperiment)
+      throw new InternalServerErrorException(
+        `Connector ${opt.type} should declare either createExperiment or runExperiment not both`,
+      );
+
+    if (
+      instance.createExperiment &&
+      (!instance.getExperiment ||
+        !instance.listExperiments ||
+        !instance.removeExperiment ||
+        !instance.editExperiment)
+    )
+      throw new InternalServerErrorException(
+        `Connector ${opt.type} has 'createExperiment' implemented it implies that getExperiment, listExperiments, removeExperiment and editExperiment methods must also be implemented.`,
+      );
+    return instance;
   }
 }
