@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from 'src/users/models/user.model';
+import { ExperimentStatus } from '../engine/models/experiment/experiment.model';
+import { User } from '../users/models/user.model';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
 import { IEngineService } from '../engine/engine.interfaces';
 import { ExperimentsResolver } from './experiments.resolver';
@@ -164,11 +165,17 @@ describe('ExperimentsResolver', () => {
         engineService.createExperiment = undefined;
         engineService.runExperiment.mockResolvedValue([]);
         experimentsService.create.mockReturnValue({ id: 'test' });
-        await resolver.createExperiment(request, user, data, true);
+        const result = await resolver.createExperiment(
+          request,
+          user,
+          data,
+          true,
+        );
 
         expect(engineService.runExperiment.mock.calls.length).toBeGreaterThan(
           0,
         );
+        expect(result.status).toBe(ExperimentStatus.SUCCESS);
       });
     });
   });
