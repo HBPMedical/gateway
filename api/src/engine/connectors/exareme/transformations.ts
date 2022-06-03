@@ -180,6 +180,8 @@ dataToHeatmap.registerFunction(
       matrix[elem.y][elem.x] = elem.value;
     });
 
+    matrix.reverse();
+
     return matrix;
   },
   '<a<o>:a<a<n>>',
