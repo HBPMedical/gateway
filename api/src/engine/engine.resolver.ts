@@ -19,6 +19,8 @@ import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
+import { FilterConfiguration } from './models/filter/filter-configuration';
+import { FormulaOperation } from './models/formula/formula-operation.model';
 
 @UseInterceptors(ErrorsInterceptor)
 @UseGuards(GlobalAuthGuard)
@@ -72,5 +74,21 @@ export class EngineResolver {
   @Query(() => [Algorithm])
   async algorithms(@GQLRequest() req: Request) {
     return this.engineService.getAlgorithms(req);
+  }
+
+  @Query(() => [FormulaOperation])
+  async formula() {
+    if (this.engineService.getFormulaConfiguration)
+      return this.engineService.getFormulaConfiguration();
+
+    return [];
+  }
+
+  @Query(() => FilterConfiguration)
+  async filter() {
+    if (this.engineService.getFilterConfiguration)
+      return this.engineService.getFilterConfiguration();
+
+    return [];
   }
 }
