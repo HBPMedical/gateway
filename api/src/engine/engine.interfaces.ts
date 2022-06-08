@@ -13,6 +13,8 @@ import { ExperimentCreateInput } from '../experiments/models/input/experiment-cr
 import { ExperimentEditInput } from '../experiments/models/input/experiment-edit.input';
 import { ListExperiments } from './models/experiment/list-experiments.model';
 import { ResultUnion } from './models/result/common/result-union.model';
+import { FormulaOperation } from './models/formula/formula-operation.model';
+import { FilterConfiguration } from './models/filter/filter-configuration';
 
 export interface IEngineOptions {
   type: string;
@@ -121,6 +123,22 @@ export interface IEngineService {
     userId?: string,
     data?: UpdateUserInput,
   ): Promise<User | undefined>;
+
+  /**
+   * This is a method that is used to get the list of formula operations
+   * that are available in the engine.
+   * @param req - Request - Optional request object from the HTTP request
+   * @returns - Formula configuration
+   */
+  getFormulaConfiguration?(req?: Request): Promise<FormulaOperation[]>;
+
+  /**
+   * This is a method that is used to get the filter configuration
+   * that is available in the engine.
+   * @param req - Request - Optional request object from the HTTP request
+   * @returns Filter configuration
+   */
+  getFilterConfiguration?(req?: Request): Promise<FilterConfiguration[]>;
 
   /**
    * Perform a logout on the current logged in user

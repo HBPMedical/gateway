@@ -221,6 +221,25 @@ export const dataToExperiment = (
           .flat()
       : [];
 
+    const allVariables = exp.filterVariables || [];
+
+    // add filter variables
+    const extractVariablesFromFilter = (filter: any): any =>
+      filter.rules.forEach((r: any) => {
+        if (r.rules) {
+          extractVariablesFromFilter(r);
+        }
+        if (r.id) {
+          allVariables.push(r.id);
+        }
+      });
+
+    if (exp && exp.filter) {
+      extractVariablesFromFilter(JSON.parse(exp.filter));
+    }
+
+    exp.filterVariables = Array.from(new Set(allVariables));
+
     return exp;
   } catch (e) {
     return {
