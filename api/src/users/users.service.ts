@@ -60,7 +60,7 @@ export class UsersService {
     } catch (err) {
       if (err instanceof NotFoundException)
         this.logger.debug(
-          `Extension of ${user.id} aborted, no user found in database`,
+          `Extension of ${user.id} not needed, user not found in database`,
         );
     }
   }
