@@ -158,6 +158,19 @@ type Algorithm {
   description: String
 }
 
+type FilterConfiguration {
+  """List of types that can considered as number"""
+  numberTypes: [String!]
+}
+
+type FormulaOperation {
+  """Type name of the variable"""
+  variableType: String!
+
+  """List of operation available for this type"""
+  operationTypes: [String!]!
+}
+
 type GroupResult {
   name: String!
   description: String
@@ -358,6 +371,8 @@ type Query {
   configuration: Configuration!
   domains(ids: [String!] = []): [Domain!]!
   algorithms: [Algorithm!]!
+  formula: [FormulaOperation!]!
+  filter: FilterConfiguration!
   user: User!
   experimentList(page: Float = 0, name: String = ""): ListExperiments!
   experiment(id: String!): Experiment!

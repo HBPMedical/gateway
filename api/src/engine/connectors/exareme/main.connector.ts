@@ -23,6 +23,7 @@ import {
   PartialExperiment,
 } from 'src/engine/models/experiment/experiment.model';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
+import { FormulaOperation } from 'src/engine/models/formula/formula-operation.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
@@ -51,6 +52,19 @@ export default class ExaremeService implements IEngineService {
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
     private readonly httpService: HttpService,
   ) {}
+
+  async getFormulaConfiguration(): Promise<FormulaOperation[]> {
+    return [
+      {
+        variableType: 'real',
+        operationTypes: ['log', 'exp', 'center', 'standardize'],
+      },
+      {
+        variableType: 'nominal',
+        operationTypes: ['dummy', 'poly', 'contrast', 'additive'],
+      },
+    ];
+  }
 
   getConfiguration(): IConfiguration {
     return {

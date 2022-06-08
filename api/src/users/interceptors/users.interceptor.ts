@@ -20,6 +20,9 @@ export class UsersInterceptor implements NestInterceptor {
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req ?? ctx.switchToHttp().getRequest();
 
+    if (req.userExtended) return next.handle(); // user already extended
+    req.userExtended = true;
+
     const user: User = req.user;
     if (user && user.id) {
       await this.usersService.extendedUser(user);
