@@ -10,24 +10,23 @@ export const transformToDomain = jsonata(`
   "id": "sophia",
   "label": "Sophia",
   "datasets": datasets.{
-      "id": $.id[0],
-      "label": $.label[0]
+    "id": $.id[0],
+    "label": $.label[0]
   },
   "rootGroup": {
-      "id": "root",
-      "label": "Sophia",
-      "groups": $append(rootGroup.groups, $keys($.groups.variables))
+    "id": "root",
+    "label": "Sophia",
+    "groups": $append(rootGroup.groups, $keys($.groups.variables))
   },
   "groups": datasets.{
-      "id": $.id[0],
-      "label": $.label[0],
-      "groups": [],
-      "datasets": $.id[0][]
-    }[],
-  "variables": $distinct(groups.variables.($type($) = 'object' ? $.* : $)).{
-      "id": $,
-      "label": $trim($replace($ & '', '.', ' '))
-  }
+    "id": $.id[0],
+    "label": $.label[0],
+    "groups": [],
+    "datasets": $.id[0][]
+  }[],
+  "variables": variables.(
+    $merge([$, {'label': $.label ? $label : $trim($replace($.id, '.', ' '))}])
+  )
 }
 `);
 
@@ -86,39 +85,50 @@ $ ~> |$|{'id': subjectId}, ['subjectId']|
 `);
 
 export type dsGroup = {
-  id: string[];
-  label: string[];
+  id: string;
+  label: string;
   variables: Record<string, string[]> | string[];
   groups?: string[];
 };
 
 export const dataToGroups = (dsDomain: Domain, groups: dsGroup[]) => {
-  groups.forEach((g) => {
-    if (Array.isArray(g.variables)) {
-      dsDomain.groups.push({
-        id: g.id[0],
-        label: g.label[0],
-        variables: g.variables,
-      });
-      return;
+  groups.forEach((group) => {
+    // Check if variables contains sub db split
+    if (Array.isArray(group.variables)) {
+      // Global group (exist in every cohort)
+      group.variables = dsDomain.datasets.reduce((prev, db) => {
+        prev[db.id] = group.variables;
+        return prev;
+      }, {});
     }
 
-    if (dsDomain.rootGroup.groups.includes(g.id[0])) {
+    let isRootGroup = false;
+
+    // remove group if it's in the root
+    if (dsDomain.rootGroup.groups.includes(group.id)) {
+      isRootGroup = true;
       dsDomain.rootGroup.groups = dsDomain.rootGroup.groups.filter(
-        (gId) => gId !== g.id[0],
+        (gId) => gId !== group.id,
       );
     }
 
-    return Object.entries(g.variables).map(([key, val]) => {
-      const id = `${g.id}-${key}`;
-      dsDomain.groups.find((g) => g.id === key).groups.push(id);
-      const group: Group = {
+    return Object.entries(group.variables).map(([db, variables]) => {
+      const id = `${group.id}-${db}`;
+
+      // push group into root db group
+      if (isRootGroup)
+        dsDomain.groups.find((g2) => g2.id === db).groups.push(id);
+
+      const newGroup: Group = {
         id,
-        variables: val,
-        groups: g['groups'] ? g['groups'].map((g) => `${g}-${key}`) : undefined,
-        label: `${g.label[0]} (${key})`,
+        variables,
+        groups: group['groups']
+          ? group['groups'].map((g2) => `${g2}-${db}`)
+          : undefined,
+        label: `${group.label} (${db})`,
       };
-      dsDomain.groups.push(group);
+
+      dsDomain.groups.push(newGroup);
     });
   });
 };
