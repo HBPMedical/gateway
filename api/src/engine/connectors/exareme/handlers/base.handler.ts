@@ -12,7 +12,7 @@ export default abstract class BaseHandler implements ResultHandler {
     return h;
   }
 
-  handle(partialExperiment: Experiment, data: unknown): void {
-    this.next?.handle(partialExperiment, data);
+  handle(experiment: Experiment, data: unknown): void {
+    this.next?.handle(experiment, data);
   }
 }
