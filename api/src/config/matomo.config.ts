@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { parseToBoolean } from 'src/common/utilities';
+import { parseToBoolean } from 'src/common/utils/shared.utils';
 
 export default registerAs('matomo', () => {
   return {

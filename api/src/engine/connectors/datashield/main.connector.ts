@@ -11,7 +11,7 @@ import {
   ExperimentResult,
   MIME_TYPES,
 } from 'src/common/interfaces/utilities.interface';
-import { errorAxiosHandler } from 'src/common/utilities';
+import { errorAxiosHandler } from 'src/common/utils/shared.utils';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import {
   IConfiguration,

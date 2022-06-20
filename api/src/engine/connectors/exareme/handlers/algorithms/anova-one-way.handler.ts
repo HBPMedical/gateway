@@ -109,6 +109,6 @@ export default class AnovaOneWayHandler extends BaseHandler {
     const meanPlot = this.getMeanPlot(data);
     if (meanPlot && meanPlot.pointCIs) exp.results.push(meanPlot);
 
-    super.handle(exp, data); // continue request
+    return super.handle(exp, data); // continue request
   }
 }
