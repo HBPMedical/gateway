@@ -2,14 +2,27 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import {
-  BadRequestException,
   HttpException,
   InternalServerErrorException,
+  LogLevel,
   NotFoundException,
   RequestTimeoutException,
   UnauthorizedException,
 } from '@nestjs/common';
 import axios from 'axios';
+
+export const LOG_LEVELS = [
+  ['warn', 'error'],
+  ['warn', 'error', 'log'],
+  ['warn', 'error', 'log', 'verbose'],
+  ['warn', 'error', 'log', 'verbose', 'debug'],
+];
+
+export const getLogLevels = (level: number): LogLevel[] => {
+  let internLevel = level - 1;
+  if (internLevel > LOG_LEVELS.length || internLevel < 0) internLevel = 0;
+  return LOG_LEVELS[internLevel] as LogLevel[];
+};
 
 export const errorAxiosHandler = (e: any) => {
   if (!axios.isAxiosError(e)) throw new InternalServerErrorException(e);
