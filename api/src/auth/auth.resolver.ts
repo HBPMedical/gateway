@@ -22,7 +22,7 @@ import { GlobalAuthGuard } from './guards/global-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
 import { AuthenticationOutput } from './outputs/authentication.output';
-import { parseToBoolean } from 'src/common/utils/shared.utils';
+import { parseToBoolean } from '../common/utils/shared.utils';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
