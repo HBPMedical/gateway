@@ -34,6 +34,9 @@ type Matomo {
 type Configuration {
   connectorId: String!
   hasGalaxy: Boolean
+
+  """Indicates if histograms can handle grouping"""
+  hasGrouping: Boolean
   contactLink: String
   version: String!
   skipAuth: Boolean

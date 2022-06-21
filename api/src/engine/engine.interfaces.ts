@@ -21,7 +21,10 @@ export interface IEngineOptions {
   baseurl: string;
 }
 
-export type IConfiguration = Pick<Configuration, 'contactLink' | 'hasGalaxy'>;
+export type IConfiguration = Pick<
+  Configuration,
+  'contactLink' | 'hasGalaxy' | 'hasGrouping'
+>;
 
 export interface IEngineService {
   /**

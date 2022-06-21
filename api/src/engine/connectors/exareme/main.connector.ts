@@ -70,6 +70,7 @@ export default class ExaremeService implements IEngineService {
     return {
       contactLink: 'https://ebrains.eu/support/',
       hasGalaxy: true,
+      hasGrouping: true,
     };
   }
 
