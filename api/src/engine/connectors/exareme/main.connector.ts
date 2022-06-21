@@ -217,7 +217,7 @@ export default class ExaremeService implements IEngineService {
       }),
     );
 
-    return dataToUser.evaluate(result);
+    return dataToUser.evaluate(result.data);
   }
 
   getPassthrough(
