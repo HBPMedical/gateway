@@ -1,11 +1,11 @@
 import { Inject, Logger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
+import EngineService from '../engine/interfaces/engine-service.interface';
 import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
 import {
   Experiment,
   ExperimentStatus,
@@ -25,7 +25,7 @@ export class ExperimentsResolver {
   private readonly logger = new Logger(ExperimentsResolver.name);
 
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
     private readonly experimentService: ExperimentsService,
   ) {}
 

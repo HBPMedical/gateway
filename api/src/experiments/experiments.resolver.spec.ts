@@ -2,13 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExperimentStatus } from '../engine/models/experiment/experiment.model';
 import { User } from '../users/models/user.model';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
 import { ExperimentsResolver } from './experiments.resolver';
 import { ExperimentsService } from './experiments.service';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
 import { ExperimentEditInput } from './models/input/experiment-edit.input';
+import EngineService from '../engine/interfaces/engine-service.interface';
 
-type MockEngineService = Partial<Record<keyof IEngineService, jest.Mock>>;
+type MockEngineService = Partial<Record<keyof EngineService, jest.Mock>>;
 type MockExperimentService = Partial<
   Record<keyof ExperimentsService, jest.Mock>
 >;

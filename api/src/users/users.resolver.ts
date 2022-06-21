@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 import { UsersService } from './users.service';
@@ -14,6 +13,7 @@ import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { Request } from 'express';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
+import EngineService from '../engine/interfaces/engine-service.interface';
 
 @UseGuards(GlobalAuthGuard)
 @Resolver()
@@ -22,7 +22,7 @@ export class UsersResolver {
 
   constructor(
     private readonly usersService: UsersService,
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
   ) {}
 
   @Query(() => User, { name: 'user' })

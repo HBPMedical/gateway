@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { join } from 'path/posix';
+import EngineOptions from '../engine/interfaces/engine-options.interface';
 import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
-import { IEngineOptions } from '../engine/engine.interfaces';
 
 @Injectable()
 export class FilesService {
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS)
-    private readonly engineOptions: IEngineOptions,
+    private readonly engineOptions: EngineOptions,
   ) {}
 
   /**

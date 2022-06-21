@@ -1,14 +1,14 @@
 import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
+import EngineService from '../engine/interfaces/engine-service.interface';
 import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
     private jwtService: JwtService,
   ) {}
 

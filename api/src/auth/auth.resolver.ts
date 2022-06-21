@@ -14,7 +14,6 @@ import {
   ENGINE_MODULE_OPTIONS,
   ENGINE_SERVICE,
 } from '../engine/engine.constants';
-import { IEngineOptions, IEngineService } from '../engine/engine.interfaces';
 import { User } from '../users/models/user.model';
 import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
@@ -23,6 +22,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
 import { AuthenticationOutput } from './outputs/authentication.output';
 import { parseToBoolean } from '../common/utils/shared.utils';
+import EngineService from '../engine/interfaces/engine-service.interface';
+import EngineOptions from '../engine/interfaces/engine-options.interface';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
@@ -32,9 +33,9 @@ export class AuthResolver {
   private readonly logger = new Logger(AuthResolver.name);
 
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
     @Inject(ENGINE_MODULE_OPTIONS)
-    private readonly engineOptions: IEngineOptions,
+    private readonly engineOptions: EngineOptions,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {}

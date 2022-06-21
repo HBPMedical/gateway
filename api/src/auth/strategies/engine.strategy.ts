@@ -1,14 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ENGINE_SERVICE } from 'src/engine/engine.constants';
-import { IEngineService } from 'src/engine/engine.interfaces';
 import { Request } from 'express';
 import { Strategy } from 'passport-custom';
+import EngineService from 'src/engine/interfaces/engine-service.interface';
 
 @Injectable()
 export class EngineStrategy extends PassportStrategy(Strategy, 'engine') {
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
   ) {
     super();
   }

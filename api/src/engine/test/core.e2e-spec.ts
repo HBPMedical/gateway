@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Domain } from 'src/engine/models/domain.model';
+import { Domain } from '../models/domain.model';
 import { AppModule } from '../../main/app.module';
 import { TIMEOUT_DURATION_SECONDS } from '../connectors/exareme/interfaces/test-utilities';
 import { ENGINE_SERVICE } from '../engine.constants';
-import { IEngineService } from '../engine.interfaces';
+import EngineService from '../interfaces/engine-service.interface';
 
 jest.setTimeout(1000 * TIMEOUT_DURATION_SECONDS);
 
 describe('Engine service', () => {
-  let engineService: IEngineService;
+  let engineService: EngineService;
   let domains: Domain[];
 
   beforeAll(async () => {
@@ -16,7 +16,7 @@ describe('Engine service', () => {
       imports: [AppModule],
     }).compile();
 
-    engineService = await moduleRef.resolve<IEngineService>(ENGINE_SERVICE);
+    engineService = await moduleRef.resolve<EngineService>(ENGINE_SERVICE);
 
     domains = await engineService.getDomains([]);
   });

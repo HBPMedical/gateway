@@ -1,7 +1,7 @@
 import { getMockRes } from '@jest-mock/express';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
-import LocalService from '../engine/connectors/local/main.connector';
+import LocalService from '../engine/connectors/local/local.connector';
 import {
   ENGINE_MODULE_OPTIONS,
   ENGINE_SERVICE,

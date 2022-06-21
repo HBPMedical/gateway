@@ -8,19 +8,20 @@ import {
 } from '@nestjs/common';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
 import { EngineController } from './engine.controller';
-import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { EngineResolver } from './engine.resolver';
+import EngineOptions from './interfaces/engine-options.interface';
+import EngineService from './interfaces/engine-service.interface';
 
 @Global()
 @Module({})
 export class EngineModule {
   private static readonly logger = new Logger(EngineModule.name);
 
-  static forRoot(options?: Partial<IEngineOptions>): DynamicModule {
+  static forRoot(options?: Partial<EngineOptions>): DynamicModule {
     const optionsProvider = {
       provide: ENGINE_MODULE_OPTIONS,
       useValue: {
-        type: process.env.ENGINE_TYPE,
+        type: process.env.ENGINE_TYPE.toLowerCase(),
         baseurl: process.env.ENGINE_BASE_URL,
         ...(options ?? {}),
       },
@@ -47,11 +48,13 @@ export class EngineModule {
   }
 
   private static async createEngineConnection(
-    opt: IEngineOptions,
+    opt: EngineOptions,
     httpService: HttpService,
-  ): Promise<IEngineService> {
-    const service = await import(`./connectors/${opt.type}/main.connector`);
-    const instance: IEngineService = new service.default(opt, httpService);
+  ): Promise<EngineService> {
+    const service = await import(
+      `./connectors/${opt.type}/${opt.type}.connector`
+    );
+    const instance: EngineService = new service.default(opt, httpService);
 
     if (instance.createExperiment && instance.runExperiment)
       throw new InternalServerErrorException(

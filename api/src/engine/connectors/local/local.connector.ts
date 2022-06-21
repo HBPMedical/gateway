@@ -1,10 +1,10 @@
-import { IEngineService } from 'src/engine/engine.interfaces';
+import EngineService from 'src/engine/interfaces/engine-service.interface';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
 import { User } from 'src/users/models/user.model';
 
-export default class LocalService implements IEngineService {
+export default class LocalConnector implements EngineService {
   async login(): Promise<User> {
     return {
       id: '1',

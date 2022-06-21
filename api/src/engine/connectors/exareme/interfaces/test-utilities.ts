@@ -1,4 +1,4 @@
-import { IEngineService } from 'src/engine/engine.interfaces';
+import EngineService from 'src/engine/interfaces/engine-service.interface';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
 import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 
@@ -28,14 +28,14 @@ const TEST_PATHOLOGIES = {
 
 const createExperiment = async (
   input: ExperimentCreateInput,
-  service: IEngineService,
+  service: EngineService,
 ): Promise<Experiment | undefined> => {
   return service.createExperiment(input, false);
 };
 
 const waitForResult = (
   id: string,
-  service: IEngineService,
+  service: EngineService,
 ): Promise<Experiment> =>
   new Promise((resolve, reject) => {
     let elapsed = 0;

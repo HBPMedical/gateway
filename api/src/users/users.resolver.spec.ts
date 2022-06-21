@@ -1,14 +1,14 @@
 import { getMockReq } from '@jest-mock/express';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import EngineService from '../engine/interfaces/engine-service.interface';
 import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 import { UsersResolver } from './users.resolver';
 import { UsersService } from './users.service';
 
-type MockEngineService = Partial<Record<keyof IEngineService, jest.Mock>>;
+type MockEngineService = Partial<Record<keyof EngineService, jest.Mock>>;
 type MockUsersService = Partial<Record<keyof UsersService, jest.Mock>>;
 
 const createEngineService = (): MockEngineService => ({

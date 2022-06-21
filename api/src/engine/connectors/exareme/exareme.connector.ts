@@ -11,11 +11,9 @@ import { AxiosRequestConfig } from 'axios';
 import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
-import {
-  IConfiguration,
-  IEngineOptions,
-  IEngineService,
-} from 'src/engine/engine.interfaces';
+import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
+import EngineOptions from 'src/engine/interfaces/engine-options.interface';
+import EngineService from 'src/engine/interfaces/engine-service.interface';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
@@ -47,9 +45,9 @@ import transformToAlgorithms from './transformations/algorithms';
 type Headers = Record<string, string>;
 
 @Injectable()
-export default class ExaremeService implements IEngineService {
+export default class ExaremeConnector implements EngineService {
   constructor(
-    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
+    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
     private readonly httpService: HttpService,
   ) {}
 
@@ -66,7 +64,7 @@ export default class ExaremeService implements IEngineService {
     ];
   }
 
-  getConfiguration(): IConfiguration {
+  getConfiguration(): ConnectorConfiguration {
     return {
       contactLink: 'https://ebrains.eu/support/',
       hasGalaxy: true,

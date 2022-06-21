@@ -14,8 +14,9 @@ import {
   ENGINE_SERVICE,
   ENGINE_SKIP_TOS,
 } from './engine.constants';
-import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
+import EngineOptions from './interfaces/engine-options.interface';
+import EngineService from './interfaces/engine-service.interface';
 import { Configuration } from './models/configuration.model';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
@@ -27,9 +28,9 @@ import { FormulaOperation } from './models/formula/formula-operation.model';
 @Resolver()
 export class EngineResolver {
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
     @Inject(ENGINE_MODULE_OPTIONS)
-    private readonly engineOptions: IEngineOptions,
+    private readonly engineOptions: EngineOptions,
     private readonly configSerivce: ConfigService,
   ) {}
 
