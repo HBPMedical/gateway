@@ -76,7 +76,7 @@ export const transformToTable = jsonata(`
   },
   "data": $.$each(function($v, $k) {
          $not($k in $params) ? $append($k,$v.*) : undefined
-      })
+      })[]
 })
 `);
 

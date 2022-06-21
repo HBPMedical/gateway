@@ -1,10 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import {
-  Inject,
-  InternalServerErrorException,
-  Logger,
-  NotImplementedException,
-} from '@nestjs/common';
+import { Inject, InternalServerErrorException, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
 import {
@@ -45,7 +40,10 @@ export default class DataShieldService implements IEngineService {
   ) {}
 
   getConfiguration(): IConfiguration {
-    return {};
+    return {
+      hasGalaxy: false,
+      hasGrouping: false,
+    };
   }
 
   async login(username: string, password: string): Promise<User> {
@@ -81,12 +79,21 @@ export default class DataShieldService implements IEngineService {
   }
 
   async getAlgorithms(): Promise<Algorithm[]> {
-    throw new NotImplementedException();
+    return [];
   }
 
-  async getHistogram(variable: string, cookie?: string): Promise<RawResult> {
-    const path =
-      this.options.baseurl + `histogram?var=${variable}&type=combine`;
+  async getHistogram(
+    variable: string,
+    datasets: string[],
+    cookie?: string,
+  ): Promise<RawResult> {
+    const url = new URL(this.options.baseurl + `histogram`);
+
+    url.searchParams.append('var', variable);
+    url.searchParams.append('type', 'combine');
+    url.searchParams.append('cohorts', datasets.join(','));
+
+    const path = url.href;
 
     const response = await firstValueFrom(
       this.httpService.get(path, {
@@ -97,7 +104,7 @@ export default class DataShieldService implements IEngineService {
     );
 
     if (response.data['global'] === undefined) {
-      DataShieldService.logger.warn('Inconsistency on histogram result');
+      DataShieldService.logger.warn('Cannot parse histogram result');
       DataShieldService.logger.verbose(path);
       return {
         rawdata: {
@@ -124,9 +131,16 @@ export default class DataShieldService implements IEngineService {
 
   async getDescriptiveStats(
     variable: string,
+    datasets: string[],
     cookie?: string,
   ): Promise<TableResult> {
-    const path = this.options.baseurl + `quantiles?var=${variable}&type=split`;
+    const url = new URL(this.options.baseurl + 'quantiles');
+
+    url.searchParams.append('var', variable);
+    url.searchParams.append('type', 'split');
+    url.searchParams.append('cohorts', datasets.join(','));
+
+    const path = url.href;
 
     const response = await firstValueFrom(
       this.httpService.get(path, {
@@ -167,14 +181,16 @@ export default class DataShieldService implements IEngineService {
     switch (data.algorithm.id) {
       case 'MULTIPLE_HISTOGRAMS': {
         expResult.results = await Promise.all<RawResult>(
-          data.variables.map((variable) => this.getHistogram(variable, cookie)),
+          data.variables.map((variable) =>
+            this.getHistogram(variable, expResult.datasets, cookie),
+          ),
         );
         break;
       }
       case 'DESCRIPTIVE_STATS': {
         expResult.results = await Promise.all<TableResult>(
           [...data.variables, ...data.coVariables].map((variable) =>
-            this.getDescriptiveStats(variable, cookie),
+            this.getDescriptiveStats(variable, expResult.datasets, cookie),
           ),
         );
         break;
@@ -228,6 +244,9 @@ export default class DataShieldService implements IEngineService {
 
   async getActiveUser(req: Request): Promise<User> {
     const user = req.user as User;
+
+    if (!user) throw new InternalServerErrorException('User not found');
+
     return {
       username: user.id,
       id: user.id,
