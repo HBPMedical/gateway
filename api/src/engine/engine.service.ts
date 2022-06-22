@@ -1,13 +1,17 @@
 import { HttpService } from '@nestjs/axios';
 import {
+  CACHE_MANAGER,
   Inject,
   Injectable,
   InternalServerErrorException,
   NotImplementedException,
 } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+import { Cache } from 'cache-manager';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { ExperimentResult } from 'src/common/interfaces/utilities.interface';
+import cacheConfig from 'src/config/cache.config';
 import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
 import { UpdateUserInput } from 'src/users/inputs/update-user.input';
@@ -37,6 +41,8 @@ export default class EngineService implements Connector {
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
     private readonly httpService: HttpService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(cacheConfig.KEY) private cacheConf: ConfigType<typeof cacheConfig>,
   ) {
     import(`./connectors/${options.type}/${options.type}.connector`).then(
       (conn) => {
@@ -67,15 +73,38 @@ export default class EngineService implements Connector {
     return this.connector.getConfiguration?.() ?? {};
   }
 
-  getDomains(ids: string[], req?: Request): Domain[] | Promise<Domain[]> {
-    return this.connector.getDomains(ids, req);
+  async getDomains(ids: string[], req: Request): Promise<Domain[]> {
+    const user = req?.user as User;
+    const key = user.id ? `domains-${ids.join('-')}-${user.id}` : undefined;
+
+    if (!key || !this.cacheConf.enabled)
+      return this.connector.getDomains(ids, req);
+
+    const cached = await this.cacheManager.get<Domain[]>(key);
+
+    if (cached) return cached;
+
+    const domains = await this.connector.getDomains(ids, req);
+    await this.cacheManager.set(key, domains);
+    return domains;
   }
 
-  getAlgorithms(req?: Request): Promise<Algorithm[]> {
-    return this.connector.getAlgorithms(req);
+  async getAlgorithms(req: Request): Promise<Algorithm[]> {
+    const key = 'algorithms';
+
+    if (!key) return this.connector.getAlgorithms(req);
+
+    const cached = await this.cacheManager.get<Algorithm[]>(key);
+
+    if (cached) return cached;
+
+    const algorithms = await this.connector.getAlgorithms(req);
+    await this.cacheManager.set(key, algorithms);
+
+    return algorithms;
   }
 
-  createExperiment(
+  async createExperiment(
     data: ExperimentCreateInput,
     isTransient: boolean,
     req?: Request,
@@ -84,7 +113,7 @@ export default class EngineService implements Connector {
     return this.connector.createExperiment(data, isTransient, req);
   }
 
-  runExperiment(
+  async runExperiment(
     data: ExperimentCreateInput,
     req?: Request,
   ): Promise<ExperimentResult[]> {
@@ -92,7 +121,7 @@ export default class EngineService implements Connector {
     return this.connector.runExperiment(data, req);
   }
 
-  listExperiments?(
+  async listExperiments?(
     page: number,
     name: string,
     req?: Request,
@@ -101,17 +130,20 @@ export default class EngineService implements Connector {
     return this.connector.listExperiments(page, name, req);
   }
 
-  getExperiment?(id: string, req?: Request): Promise<Experiment> {
+  async getExperiment?(id: string, req?: Request): Promise<Experiment> {
     if (!this.connector.getExperiment) throw new NotImplementedException();
     return this.connector.getExperiment(id, req);
   }
 
-  removeExperiment?(id: string, req?: Request): Promise<PartialExperiment> {
+  async removeExperiment?(
+    id: string,
+    req?: Request,
+  ): Promise<PartialExperiment> {
     if (!this.connector.removeExperiment) throw new NotImplementedException();
     return this.connector.removeExperiment(id, req);
   }
 
-  editExperiment?(
+  async editExperiment?(
     id: string,
     data: ExperimentEditInput,
     req?: Request,
@@ -120,12 +152,12 @@ export default class EngineService implements Connector {
     return this.connector.editExperiment(id, data, req);
   }
 
-  getActiveUser?(req?: Request): Promise<User> {
+  async getActiveUser?(req?: Request): Promise<User> {
     if (!this.connector.getActiveUser) throw new NotImplementedException();
     return this.connector.getActiveUser(req);
   }
 
-  updateUser?(
+  async updateUser?(
     req?: Request,
     userId?: string,
     data?: UpdateUserInput,
@@ -134,24 +166,24 @@ export default class EngineService implements Connector {
     return this.connector.updateUser(req, userId, data);
   }
 
-  getFormulaConfiguration?(req?: Request): Promise<FormulaOperation[]> {
+  async getFormulaConfiguration?(req?: Request): Promise<FormulaOperation[]> {
     if (!this.connector.getFormulaConfiguration)
       throw new NotImplementedException();
     return this.connector.getFormulaConfiguration(req);
   }
 
-  getFilterConfiguration?(req?: Request): Promise<FilterConfiguration[]> {
+  async getFilterConfiguration?(req?: Request): Promise<FilterConfiguration[]> {
     if (!this.connector.getFilterConfiguration)
       throw new NotImplementedException();
     return this.connector.getFilterConfiguration(req);
   }
 
-  logout?(req?: Request): Promise<void> {
+  async logout?(req?: Request): Promise<void> {
     if (!this.connector.logout) throw new NotImplementedException();
     return this.connector.logout(req);
   }
 
-  login?(username: string, password: string): Promise<User> {
+  async login?(username: string, password: string): Promise<User> {
     if (!this.connector.login) throw new NotImplementedException();
     return this.connector.login(username, password);
   }

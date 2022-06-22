@@ -20,7 +20,7 @@ export default class LocalConnector implements Connector {
     throw new Error('Method not implemented.');
   }
 
-  getDomains(): Domain[] {
+  async getDomains(): Promise<Domain[]> {
     return [
       {
         id: 'Dummy',

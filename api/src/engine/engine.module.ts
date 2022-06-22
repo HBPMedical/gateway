@@ -1,5 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
-import { DynamicModule, Logger, Module } from '@nestjs/common';
+import { CacheModule, DynamicModule, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ENGINE_MODULE_OPTIONS } from './engine.constants';
 import { EngineController } from './engine.controller';
 import { EngineResolver } from './engine.resolver';
@@ -20,7 +21,21 @@ export class EngineModule {
     return {
       global: true,
       module: EngineModule,
-      imports: [HttpModule],
+      imports: [
+        HttpModule,
+        CacheModule.registerAsync({
+          imports: [ConfigModule],
+          useFactory: async (configService: ConfigService) => {
+            const config = configService.get('cache');
+            return {
+              isGlobal: true,
+              ttl: config.ttl,
+              max: config.max,
+            };
+          },
+          inject: [ConfigService],
+        }),
+      ],
       providers: [optionsProvider, EngineService, EngineResolver],
       controllers: [EngineController],
       exports: [optionsProvider, EngineService],
