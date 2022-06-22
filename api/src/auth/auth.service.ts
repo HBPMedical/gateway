@@ -1,20 +1,19 @@
-import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ENGINE_SERVICE } from '../engine/engine.constants';
-import EngineService from '../engine/interfaces/engine-service.interface';
+import EngineService from '../engine/engine.service';
 import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
+    private readonly engineService: EngineService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(username: string, password: string): Promise<User> {
-    if (!this.engineService.login) throw new NotImplementedException();
-    return this.engineService.login?.(username, password);
+    if (!this.engineService.has('login')) throw new NotImplementedException();
+    return this.engineService.login(username, password);
   }
 
   /**

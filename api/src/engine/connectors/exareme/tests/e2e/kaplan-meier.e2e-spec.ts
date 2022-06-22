@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../../../../main/app.module';
-import { ENGINE_SERVICE } from '../../../../engine.constants';
+import EngineService from '../../../../../engine/engine.service';
 import { ExperimentCreateInput } from '../../../../../experiments/models/input/experiment-create.input';
+import { AppModule } from '../../../../../main/app.module';
 import {
   createExperiment,
   generateNumber,
@@ -9,7 +9,6 @@ import {
   TIMEOUT_DURATION_SECONDS,
   waitForResult,
 } from '../../interfaces/test-utilities';
-import EngineService from '../../../../interfaces/engine-service.interface';
 
 jest.setTimeout(1000 * TIMEOUT_DURATION_SECONDS);
 
@@ -21,7 +20,7 @@ describe('ExaremeService', () => {
       imports: [AppModule],
     }).compile();
 
-    exaremeService = await moduleRef.resolve<EngineService>(ENGINE_SERVICE);
+    exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `kaplan-meier-${generateNumber()}`;
   const algorithmId = 'KAPLAN_MEIER';

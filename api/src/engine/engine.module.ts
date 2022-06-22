@@ -1,76 +1,29 @@
-import { HttpModule, HttpService } from '@nestjs/axios';
-import {
-  DynamicModule,
-  Global,
-  InternalServerErrorException,
-  Logger,
-  Module,
-} from '@nestjs/common';
-import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
+import { HttpModule } from '@nestjs/axios';
+import { DynamicModule, Logger, Module } from '@nestjs/common';
+import { ENGINE_MODULE_OPTIONS } from './engine.constants';
 import { EngineController } from './engine.controller';
 import { EngineResolver } from './engine.resolver';
+import EngineService from './engine.service';
 import EngineOptions from './interfaces/engine-options.interface';
-import EngineService from './interfaces/engine-service.interface';
 
-@Global()
 @Module({})
 export class EngineModule {
-  private static readonly logger = new Logger(EngineModule.name);
-
   static forRoot(options?: Partial<EngineOptions>): DynamicModule {
     const optionsProvider = {
       provide: ENGINE_MODULE_OPTIONS,
       useValue: {
-        type: process.env.ENGINE_TYPE.toLowerCase(),
-        baseurl: process.env.ENGINE_BASE_URL,
-        ...(options ?? {}),
+        ...options,
+        type: options?.type.toLowerCase(),
       },
-    };
-
-    const engineProvider = {
-      provide: ENGINE_SERVICE,
-      useFactory: async (httpService: HttpService) => {
-        return this.createEngineConnection(
-          optionsProvider.useValue,
-          httpService,
-        );
-      },
-      inject: [HttpService],
     };
 
     return {
+      global: true,
       module: EngineModule,
       imports: [HttpModule],
-      providers: [optionsProvider, engineProvider, EngineResolver],
+      providers: [optionsProvider, EngineService, EngineResolver],
       controllers: [EngineController],
-      exports: [optionsProvider, engineProvider],
+      exports: [optionsProvider, EngineService],
     };
-  }
-
-  private static async createEngineConnection(
-    opt: EngineOptions,
-    httpService: HttpService,
-  ): Promise<EngineService> {
-    const service = await import(
-      `./connectors/${opt.type}/${opt.type}.connector`
-    );
-    const instance: EngineService = new service.default(opt, httpService);
-
-    if (instance.createExperiment && instance.runExperiment)
-      throw new InternalServerErrorException(
-        `Connector ${opt.type} should declare either createExperiment or runExperiment not both`,
-      );
-
-    if (
-      instance.createExperiment &&
-      (!instance.getExperiment ||
-        !instance.listExperiments ||
-        !instance.removeExperiment ||
-        !instance.editExperiment)
-    )
-      throw new InternalServerErrorException(
-        `Connector ${opt.type} has 'createExperiment' implemented it implies that getExperiment, listExperiments, removeExperiment and editExperiment methods must also be implemented.`,
-      );
-    return instance;
   }
 }

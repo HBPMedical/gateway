@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import EngineService from '../../../../interfaces/engine-service.interface';
+import EngineService from '../../../../../engine/engine.service';
 import { ExperimentCreateInput } from '../../../../../experiments/models/input/experiment-create.input';
 import { AppModule } from '../../../../../main/app.module';
-import { ENGINE_SERVICE } from '../../../../engine.constants';
 import {
   createExperiment,
   generateNumber,
@@ -21,7 +20,7 @@ describe('ExaremeService', () => {
       imports: [AppModule],
     }).compile();
 
-    exaremeService = await moduleRef.resolve<EngineService>(ENGINE_SERVICE);
+    exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `anova-1way-${generateNumber()}`;
   const algorithmId = 'ANOVA_ONEWAY';

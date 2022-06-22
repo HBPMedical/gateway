@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../../../main/app.module';
-import { ENGINE_SERVICE } from '../../../../engine.constants';
 import { ExperimentCreateInput } from '../../../../../experiments/models/input/experiment-create.input';
 import { RawResult } from '../../../../models/result/raw-result.model';
 import {
@@ -10,7 +9,7 @@ import {
   TIMEOUT_DURATION_SECONDS,
   waitForResult,
 } from '../../interfaces/test-utilities';
-import EngineService from '../../../../interfaces/engine-service.interface';
+import EngineService from '../../../../../engine/engine.service';
 
 jest.setTimeout(1000 * TIMEOUT_DURATION_SECONDS);
 
@@ -22,7 +21,7 @@ describe('ExaremeService', () => {
       imports: [AppModule],
     }).compile();
 
-    exaremeService = await moduleRef.resolve<EngineService>(ENGINE_SERVICE);
+    exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `anova-2way-${generateNumber()}`;
   const algorithmId = 'ANOVA';

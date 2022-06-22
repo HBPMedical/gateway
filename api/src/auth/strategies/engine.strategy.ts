@@ -1,20 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ENGINE_SERVICE } from 'src/engine/engine.constants';
 import { Request } from 'express';
 import { Strategy } from 'passport-custom';
-import EngineService from 'src/engine/interfaces/engine-service.interface';
+import EngineService from '../../engine/engine.service';
 
 @Injectable()
 export class EngineStrategy extends PassportStrategy(Strategy, 'engine') {
-  constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: EngineService,
-  ) {
+  constructor(private readonly engineService: EngineService) {
     super();
   }
 
   async validate(req: Request) {
-    if (!this.engineService.getActiveUser) return false;
+    if (!this.engineService.has('getActiveUser')) return false;
     const user = this.engineService.getActiveUser(req);
 
     return user ?? false;

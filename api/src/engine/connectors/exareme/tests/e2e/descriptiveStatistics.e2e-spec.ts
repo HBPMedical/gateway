@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import EngineService from '../../../../../engine/engine.service';
+import { ExperimentCreateInput } from '../../../../../experiments/models/input/experiment-create.input';
+import { AppModule } from '../../../../../main/app.module';
 import { GroupsResult } from '../../../../models/result/groups-result.model';
 import { TableResult } from '../../../../models/result/table-result.model';
-import { AppModule } from '../../../../../main/app.module';
-import { ENGINE_SERVICE } from '../../../../engine.constants';
-import { ExperimentCreateInput } from '../../../../../experiments/models/input/experiment-create.input';
 import {
   createExperiment,
   generateNumber,
@@ -11,7 +11,6 @@ import {
   TIMEOUT_DURATION_SECONDS,
   waitForResult,
 } from '../../interfaces/test-utilities';
-import EngineService from '../../../../interfaces/engine-service.interface';
 
 jest.setTimeout(1000 * TIMEOUT_DURATION_SECONDS);
 
@@ -23,7 +22,7 @@ describe('ExaremeService', () => {
       imports: [AppModule],
     }).compile();
 
-    exaremeService = await moduleRef.resolve<EngineService>(ENGINE_SERVICE);
+    exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `statistics-${generateNumber()}`;
   const algorithmId = 'DESCRIPTIVE_STATS';

@@ -1,8 +1,7 @@
 import { getMockReq } from '@jest-mock/express';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import EngineService from '../engine/interfaces/engine-service.interface';
-import { ENGINE_SERVICE } from '../engine/engine.constants';
+import EngineService from '../engine/engine.service';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 import { UsersResolver } from './users.resolver';
@@ -13,6 +12,7 @@ type MockUsersService = Partial<Record<keyof UsersService, jest.Mock>>;
 
 const createEngineService = (): MockEngineService => ({
   updateUser: jest.fn(),
+  has: jest.fn().mockReturnValue(true),
 });
 
 const createUsersService = (): MockUsersService => ({
@@ -37,14 +37,16 @@ describe('UsersResolver', () => {
         UsersResolver,
         { provide: UsersService, useValue: createUsersService() },
         {
-          provide: ENGINE_SERVICE,
+          provide: EngineService,
           useValue: createEngineService(),
         },
       ],
     }).compile();
 
     resolver = module.get<UsersResolver>(UsersResolver);
-    engineService = module.get<MockEngineService>(ENGINE_SERVICE);
+    engineService = module.get<EngineService>(
+      EngineService,
+    ) as unknown as MockEngineService;
     usersService = module.get<UsersService>(
       UsersService,
     ) as unknown as MockUsersService;
@@ -95,7 +97,7 @@ describe('UsersResolver', () => {
         ...updateData,
       };
 
-      engineService.updateUser = undefined;
+      engineService.has.mockReturnValue(false);
       usersService.update.mockReturnValue(expectedUser);
       const result = await resolver.updateUser(req, updateData, user);
 
