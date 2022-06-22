@@ -5,14 +5,14 @@ import {
   Dictionary,
   ExperimentResult,
 } from 'src/common/interfaces/utilities.interface';
+import Connector from 'src/engine/interfaces/connector.interface';
+import EngineOptions from 'src/engine/interfaces/engine-options.interface';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import EngineService from 'src/engine/interfaces/engine-service.interface';
 import { Group } from 'src/engine/models/group.model';
 import { User } from 'src/users/models/user.model';
-import EngineOptions from 'src/engine/interfaces/engine-options.interface';
 
-export default class CSVConnector implements EngineService {
+export default class CSVConnector implements Connector {
   constructor(
     private readonly options: EngineOptions,
     private readonly httpService: HttpService,

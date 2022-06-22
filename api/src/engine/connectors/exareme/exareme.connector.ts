@@ -12,8 +12,8 @@ import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
+import Connector from 'src/engine/interfaces/connector.interface';
 import EngineOptions from 'src/engine/interfaces/engine-options.interface';
-import EngineService from 'src/engine/interfaces/engine-service.interface';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
@@ -45,7 +45,7 @@ import transformToAlgorithms from './transformations/algorithms';
 type Headers = Record<string, string>;
 
 @Injectable()
-export default class ExaremeConnector implements EngineService {
+export default class ExaremeConnector implements Connector {
   constructor(
     @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
     private readonly httpService: HttpService,
