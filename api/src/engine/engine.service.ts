@@ -73,35 +73,49 @@ export default class EngineService implements Connector {
     return this.connector.getConfiguration?.() ?? {};
   }
 
+  /**
+   * "If the cache is enabled, try to get the value from the cache, otherwise call the function and cache
+   * the result."
+   *
+   * The function takes two arguments:
+   *
+   * * `key`: The key to use for the cache.
+   * * `fn`: The function to call if the value is not in the cache
+   * @param {string} key - The key to use for the cache.
+   * @param fn - () => Promise<T>
+   * @returns The result of the function call.
+   */
+  private async getFromCacheOrCall<T>(
+    key: string,
+    fn: () => Promise<T>,
+  ): Promise<T | undefined> {
+    if (!key || !this.cacheConf.enabled) return fn();
+
+    const cached = await this.cacheManager.get<T>(key);
+    if (cached) return cached;
+
+    const result = await fn();
+
+    this.cacheManager.set(key, result);
+
+    return result;
+  }
+
   async getDomains(ids: string[], req: Request): Promise<Domain[]> {
     const user = req?.user as User;
     const key = user.id ? `domains-${ids.join('-')}-${user.id}` : undefined;
 
-    if (!key || !this.cacheConf.enabled)
-      return this.connector.getDomains(ids, req);
-
-    const cached = await this.cacheManager.get<Domain[]>(key);
-
-    if (cached) return cached;
-
-    const domains = await this.connector.getDomains(ids, req);
-    await this.cacheManager.set(key, domains);
-    return domains;
+    return this.getFromCacheOrCall<Domain[]>(key, () =>
+      this.connector.getDomains(ids, req),
+    );
   }
 
   async getAlgorithms(req: Request): Promise<Algorithm[]> {
     const key = 'algorithms';
 
-    if (!key) return this.connector.getAlgorithms(req);
-
-    const cached = await this.cacheManager.get<Algorithm[]>(key);
-
-    if (cached) return cached;
-
-    const algorithms = await this.connector.getAlgorithms(req);
-    await this.cacheManager.set(key, algorithms);
-
-    return algorithms;
+    return this.getFromCacheOrCall<Algorithm[]>(key, () =>
+      this.connector.getAlgorithms(req),
+    );
   }
 
   async createExperiment(
