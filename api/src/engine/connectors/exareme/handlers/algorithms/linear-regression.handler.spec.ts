@@ -1,3 +1,4 @@
+import { Domain } from 'src/engine/models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import LinearRegressionHandler from './linear-regression.handler';
 
@@ -22,6 +23,20 @@ const data = {
   upper_ci: [0.2755544764379397, 0.6451975487993219, 1.132126625132179],
 };
 
+const domain: Domain = {
+  id: 'dummy-id',
+  groups: [],
+  rootGroup: {
+    id: 'dummy-id',
+  },
+  datasets: [{ id: 'desd-synthdata', label: 'Dead Synthdata' }],
+  variables: [
+    { id: 'lefthippocampus', label: 'Left Hippo Campus' },
+    { id: 'righthippocampus', label: 'Right Hippo Campus' },
+    { id: 'leftamygdala', label: 'Left Amygdala' },
+  ],
+};
+
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
@@ -30,8 +45,8 @@ const createExperiment = (): Experiment => ({
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
-  variables: ['righthippocampus'],
-  coVariables: ['leftamygdala'],
+  variables: ['lefthippocampus'],
+  coVariables: ['righthippocampus', 'leftamygdala'],
   results: [],
 });
 
@@ -46,13 +61,16 @@ describe('Linear regression result handler', () => {
 
   describe('Handle', () => {
     it('with standard linear algo data', () => {
-      linearHandler.handle(experiment, data);
+      linearHandler.handle(experiment, data, domain);
 
+      const json = JSON.stringify(experiment.results);
+
+      expect(json.includes(domain.variables[0].label)).toBeTruthy();
       expect(experiment.results.length === 2);
     });
     it('Should be empty with another algo', () => {
       experiment.algorithm.name = 'dummy_algo';
-      linearHandler.handle(experiment, data);
+      linearHandler.handle(experiment, data, domain);
 
       expect(experiment.results.length === 0);
     });

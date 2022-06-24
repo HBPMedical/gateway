@@ -5,8 +5,6 @@ import {
   Experiment,
   ExperimentStatus,
 } from 'src/engine/models/experiment/experiment.model';
-import { AlgorithmParamInput } from 'src/experiments/models/input/algorithm-parameter.input';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import { Group } from 'src/engine/models/group.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
 import {
@@ -17,6 +15,8 @@ import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
 import { LineChartResult } from 'src/engine/models/result/line-chart-result.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { Variable } from 'src/engine/models/variable.model';
+import { AlgorithmParamInput } from 'src/experiments/models/input/algorithm-parameter.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { ResultChartExperiment } from './interfaces/experiment/result-chart-experiment.interface';

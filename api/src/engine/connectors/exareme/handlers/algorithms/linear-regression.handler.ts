@@ -1,3 +1,5 @@
+import { Domain } from 'src/engine/models/domain.model';
+import { Variable } from 'src/engine/models/variable.model';
 import { isNumber } from '../../../../../common/utils/shared.utils';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import {
@@ -7,7 +9,7 @@ import {
 import BaseHandler from '../base.handler';
 
 const NUMBER_PRECISION = 4;
-const ALGO_NANE = 'linear_regression';
+const ALGO_NAME = 'linear_regression';
 const lookupDict = {
   dependent_var: 'Dependent variable',
   n_obs: 'Number of observations',
@@ -88,14 +90,29 @@ export default class LinearRegressionHandler extends BaseHandler {
     return tableCoef;
   }
 
-  handle(experiment: Experiment, data: any): void {
-    if (experiment.algorithm.name.toLowerCase() !== ALGO_NANE)
-      return super.handle(experiment, data);
+  getLabelFromVariableId(id: string, vars: Variable[]): string {
+    const varible = vars.find((v) => v.id === id);
+    return varible.label ?? id;
+  }
 
-    const model = this.getModel(data);
+  handle(experiment: Experiment, data: any, domain: Domain): void {
+    if (experiment.algorithm.name.toLowerCase() !== ALGO_NAME)
+      return super.handle(experiment, data, domain);
+
+    const varIds = [...experiment.variables, ...(experiment.coVariables ?? [])];
+    const variables = domain.variables.filter((v) => varIds.includes(v.id));
+
+    let jsonData = JSON.stringify(data);
+    variables.forEach((v) => {
+      const regEx = new RegExp(v.id, 'gi');
+      jsonData = jsonData.replaceAll(regEx, v.label);
+    });
+    const improvedData = JSON.parse(jsonData);
+
+    const model = this.getModel(improvedData);
     if (model) experiment.results.push(model);
 
-    const coefs = this.getCoefficients(data);
+    const coefs = this.getCoefficients(improvedData);
     if (coefs) experiment.results.push(coefs);
   }
 }

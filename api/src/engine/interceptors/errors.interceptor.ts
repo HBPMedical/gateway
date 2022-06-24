@@ -9,14 +9,14 @@ import {
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { catchError, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from '../engine.constants';
-import { IEngineOptions } from '../engine.interfaces';
+import EngineOptions from '../interfaces/engine-options.interface';
 
 @Injectable()
 export class ErrorsInterceptor implements NestInterceptor {
   private readonly logger: Logger;
 
   constructor(
-    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
+    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
   ) {
     // Logger name is the engine name
     // HttpService will be used mostly by the engine (but it's not always true)

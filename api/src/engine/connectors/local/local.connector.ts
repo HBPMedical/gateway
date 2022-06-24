@@ -1,10 +1,10 @@
-import { IEngineService } from 'src/engine/engine.interfaces';
+import Connector from 'src/engine/interfaces/connector.interface';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
 import { User } from 'src/users/models/user.model';
 
-export default class LocalService implements IEngineService {
+export default class LocalConnector implements Connector {
   async login(): Promise<User> {
     return {
       id: '1',
@@ -20,7 +20,7 @@ export default class LocalService implements IEngineService {
     throw new Error('Method not implemented.');
   }
 
-  getDomains(): Domain[] {
+  async getDomains(): Promise<Domain[]> {
     return [
       {
         id: 'Dummy',

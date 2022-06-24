@@ -1,6 +1,6 @@
-import { IEngineService } from 'src/engine/engine.interfaces';
-import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
+import EngineService from '../../../engine.service';
+import { Experiment } from '../../../models/experiment/experiment.model';
+import { ExperimentCreateInput } from '../../../../experiments/models/input/experiment-create.input';
 
 const TIMEOUT_DURATION_SECONDS = 60 * 10;
 
@@ -28,14 +28,14 @@ const TEST_PATHOLOGIES = {
 
 const createExperiment = async (
   input: ExperimentCreateInput,
-  service: IEngineService,
+  service: EngineService,
 ): Promise<Experiment | undefined> => {
   return service.createExperiment(input, false);
 };
 
 const waitForResult = (
   id: string,
-  service: IEngineService,
+  service: EngineService,
 ): Promise<Experiment> =>
   new Promise((resolve, reject) => {
     let elapsed = 0;
