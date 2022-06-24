@@ -8,11 +8,9 @@ import {
 } from 'src/common/interfaces/utilities.interface';
 import { errorAxiosHandler } from 'src/common/utils/shared.utils';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
-import {
-  IConfiguration,
-  IEngineOptions,
-  IEngineService,
-} from 'src/engine/engine.interfaces';
+import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
+import Connector from 'src/engine/interfaces/connector.interface';
+import EngineOptions from 'src/engine/interfaces/engine-options.interface';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import { Experiment } from 'src/engine/models/experiment/experiment.model';
@@ -31,15 +29,15 @@ import {
   transformToTable,
 } from './transformations';
 
-export default class DataShieldService implements IEngineService {
-  private static readonly logger = new Logger(DataShieldService.name);
+export default class DataShieldConnector implements Connector {
+  private static readonly logger = new Logger(DataShieldConnector.name);
   headers = {};
   constructor(
-    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
+    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
     private readonly httpService: HttpService,
   ) {}
 
-  getConfiguration(): IConfiguration {
+  getConfiguration(): ConnectorConfiguration {
     return {
       hasGalaxy: false,
       hasGrouping: false,
@@ -104,8 +102,8 @@ export default class DataShieldService implements IEngineService {
     );
 
     if (response.data['global'] === undefined) {
-      DataShieldService.logger.warn('Cannot parse histogram result');
-      DataShieldService.logger.verbose(path);
+      DataShieldConnector.logger.warn('Cannot parse histogram result');
+      DataShieldConnector.logger.verbose(path);
       return {
         rawdata: {
           data:

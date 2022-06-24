@@ -423,7 +423,7 @@ describe('Pearson result handler', () => {
       'high_confidence_intervals',
     ];
 
-    handlers(exp, data);
+    handlers(exp, data, null);
     const results = exp.results as HeatMapResult[];
 
     const heatmaps = names.map((name) =>

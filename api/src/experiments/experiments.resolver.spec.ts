@@ -1,14 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import EngineService from '../engine/engine.service';
 import { ExperimentStatus } from '../engine/models/experiment/experiment.model';
 import { User } from '../users/models/user.model';
-import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
 import { ExperimentsResolver } from './experiments.resolver';
 import { ExperimentsService } from './experiments.service';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
 import { ExperimentEditInput } from './models/input/experiment-edit.input';
 
-type MockEngineService = Partial<Record<keyof IEngineService, jest.Mock>>;
+type MockEngineService = Partial<Record<keyof EngineService, jest.Mock>>;
 type MockExperimentService = Partial<
   Record<keyof ExperimentsService, jest.Mock>
 >;
@@ -22,6 +21,7 @@ const createEngineService = (): MockEngineService => ({
   editExperiment: jest.fn(),
   listExperiments: jest.fn(),
   removeExperiment: jest.fn(),
+  has: jest.fn().mockReturnValue(true),
 });
 
 const createExperimentsService = (): MockExperimentService => ({
@@ -44,13 +44,15 @@ describe('ExperimentsResolver', () => {
         ExperimentsResolver,
         { provide: ExperimentsService, useValue: createExperimentsService() },
         {
-          provide: ENGINE_SERVICE,
+          provide: EngineService,
           useValue: createEngineService(),
         },
       ],
     }).compile();
 
-    engineService = module.get<MockEngineService>(ENGINE_SERVICE);
+    engineService = module.get<EngineService>(
+      EngineService,
+    ) as unknown as MockEngineService;
     experimentsService = module.get<ExperimentsService>(
       ExperimentsService,
     ) as unknown as MockExperimentService;
@@ -77,7 +79,7 @@ describe('ExperimentsResolver', () => {
     describe('when engine method does not exist', () => {
       it('should call service method', async () => {
         const request: any = jest.fn();
-        engineService.listExperiments = undefined;
+        engineService.has.mockReturnValue(false);
         experimentsService.findAll.mockReturnValue([[], 9]);
         await resolver.experimentList(0, '', request);
 
@@ -110,7 +112,7 @@ describe('ExperimentsResolver', () => {
           id: 'dummyUser',
           username: 'test',
         };
-        engineService.getExperiment = undefined;
+        engineService.has.mockReturnValue(false);
         await resolver.experiment('test', request, user);
 
         expect(experimentsService.findOne.mock.calls.length).toBeGreaterThan(0);
@@ -146,7 +148,7 @@ describe('ExperimentsResolver', () => {
           id: 'dummyUser',
           username: 'test',
         };
-        engineService.createExperiment = undefined;
+        engineService.has.mockReturnValue(false);
         engineService.runExperiment.mockResolvedValue([]);
         experimentsService.create.mockReturnValue({ id: 'test' });
         await resolver.createExperiment(request, user, data, false);
@@ -162,7 +164,7 @@ describe('ExperimentsResolver', () => {
           id: 'dummyUser',
           username: 'test',
         };
-        engineService.createExperiment = undefined;
+        engineService.has.mockReturnValue(false);
         engineService.runExperiment.mockResolvedValue([]);
         experimentsService.create.mockReturnValue({ id: 'test' });
         const result = await resolver.createExperiment(
@@ -206,7 +208,7 @@ describe('ExperimentsResolver', () => {
           id: 'dummyUser',
           username: 'test',
         };
-        engineService.editExperiment = undefined;
+        engineService.has.mockReturnValue(false);
         await resolver.editExperiment(request, 'test', data, user);
 
         expect(experimentsService.update.mock.calls.length).toBeGreaterThan(0);
@@ -238,7 +240,7 @@ describe('ExperimentsResolver', () => {
           id: 'dummyUser',
           username: 'test',
         };
-        engineService.removeExperiment = undefined;
+        engineService.has.mockReturnValue(false);
         await resolver.removeExperiment('test', request, user);
 
         expect(experimentsService.remove.mock.calls.length).toBeGreaterThan(0);

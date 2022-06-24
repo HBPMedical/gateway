@@ -1,43 +1,33 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { ExperimentResult } from 'src/common/interfaces/utilities.interface';
 import { UpdateUserInput } from 'src/users/inputs/update-user.input';
-import { User } from '../users/models/user.model';
-import { Configuration } from './models/configuration.model';
-import { Domain } from './models/domain.model';
-import { Algorithm } from './models/experiment/algorithm.model';
+import { ExperimentCreateInput } from '../../experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from '../../experiments/models/input/experiment-edit.input';
+import { User } from '../../users/models/user.model';
+import { Domain } from '../models/domain.model';
+import { Algorithm } from '../models/experiment/algorithm.model';
 import {
   Experiment,
   PartialExperiment,
-} from './models/experiment/experiment.model';
-import { ExperimentCreateInput } from '../experiments/models/input/experiment-create.input';
-import { ExperimentEditInput } from '../experiments/models/input/experiment-edit.input';
-import { ListExperiments } from './models/experiment/list-experiments.model';
-import { ResultUnion } from './models/result/common/result-union.model';
-import { FormulaOperation } from './models/formula/formula-operation.model';
-import { FilterConfiguration } from './models/filter/filter-configuration';
+} from '../models/experiment/experiment.model';
+import { ListExperiments } from '../models/experiment/list-experiments.model';
+import { FilterConfiguration } from '../models/filter/filter-configuration';
+import { FormulaOperation } from '../models/formula/formula-operation.model';
+import ConnectorConfiguration from './connector-configuration.interface';
 
-export interface IEngineOptions {
-  type: string;
-  baseurl: string;
-}
-
-export type IConfiguration = Pick<
-  Configuration,
-  'contactLink' | 'hasGalaxy' | 'hasGrouping'
->;
-
-export interface IEngineService {
+export default interface Connector {
   /**
    * Allow specific configuration for the engine
    */
-  getConfiguration?(): IConfiguration;
+  getConfiguration?(): ConnectorConfiguration;
 
   /**
    * Get the list of domains along with a list of variables
    * @param ids - Ids to filter the domain needed
    * @param req - Request - this is the request object from the HTTP request.
    */
-  getDomains(ids: string[], req?: Request): Domain[] | Promise<Domain[]>;
+  getDomains(ids: string[], req?: Request): Promise<Domain[]>;
 
   /**
    * Create and return a full detailed experiment
@@ -62,7 +52,7 @@ export interface IEngineService {
   runExperiment?(
     data: ExperimentCreateInput,
     req?: Request,
-  ): Promise<Array<typeof ResultUnion>>;
+  ): Promise<ExperimentResult[]>;
 
   /**
    * Get a list of experiment (limited to 10 per page)

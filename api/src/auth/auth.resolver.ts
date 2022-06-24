@@ -10,11 +10,7 @@ import { Response, Request } from 'express';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { GQLResponse } from '../common/decorators/gql-response.decoractor';
-import {
-  ENGINE_MODULE_OPTIONS,
-  ENGINE_SERVICE,
-} from '../engine/engine.constants';
-import { IEngineOptions, IEngineService } from '../engine/engine.interfaces';
+import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
 import { User } from '../users/models/user.model';
 import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
@@ -23,6 +19,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
 import { AuthenticationOutput } from './outputs/authentication.output';
 import { parseToBoolean } from '../common/utils/shared.utils';
+import EngineOptions from '../engine/interfaces/engine-options.interface';
+import EngineService from '../engine/engine.service';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
@@ -32,9 +30,9 @@ export class AuthResolver {
   private readonly logger = new Logger(AuthResolver.name);
 
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    private readonly engineService: EngineService,
     @Inject(ENGINE_MODULE_OPTIONS)
-    private readonly engineOptions: IEngineOptions,
+    private readonly engineOptions: EngineOptions,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {}
@@ -82,7 +80,9 @@ export class AuthResolver {
     if (user) {
       this.logger.verbose(`${user.username} logged out`);
       try {
-        await this.engineService.logout?.(req);
+        if (this.engineService.has('logout')) {
+          await this.engineService.logout(req);
+        }
       } catch (e) {
         this.logger.debug(
           `Service ${this.engineOptions.type} produce an error when logging out ${user.username}`,

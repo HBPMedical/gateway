@@ -1,11 +1,10 @@
-import { Inject, Logger, UseGuards } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
+import EngineService from '../engine/engine.service';
 import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { CurrentUser } from '../common/decorators/user.decorator';
-import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
 import {
   Experiment,
   ExperimentStatus,
@@ -25,7 +24,7 @@ export class ExperimentsResolver {
   private readonly logger = new Logger(ExperimentsResolver.name);
 
   constructor(
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    private readonly engineService: EngineService,
     private readonly experimentService: ExperimentsService,
   ) {}
 
@@ -35,7 +34,7 @@ export class ExperimentsResolver {
     @Args('name', { nullable: true, defaultValue: '' }) name: string,
     @GQLRequest() req: Request,
   ): Promise<ListExperiments> {
-    if (this.engineService.listExperiments) {
+    if (this.engineService.has('listExperiments')) {
       return this.engineService.listExperiments(page, name, req);
     }
 
@@ -60,7 +59,7 @@ export class ExperimentsResolver {
     @GQLRequest() req: Request,
     @CurrentUser() user: User,
   ) {
-    if (this.engineService.getExperiment)
+    if (this.engineService.has('getExperiment'))
       return this.engineService.getExperiment(id, req);
 
     return this.experimentService.findOne(id, user);
@@ -74,7 +73,7 @@ export class ExperimentsResolver {
     @Args('isTransient', { nullable: true, defaultValue: false })
     isTransient: boolean,
   ) {
-    if (this.engineService.createExperiment) {
+    if (this.engineService.has('createExperiment')) {
       return this.engineService.createExperiment(data, isTransient, req);
     }
 
@@ -116,7 +115,7 @@ export class ExperimentsResolver {
     @Args('data') experiment: ExperimentEditInput,
     @CurrentUser() user: User,
   ) {
-    if (this.engineService.editExperiment)
+    if (this.engineService.has('editExperiment'))
       return this.engineService.editExperiment(id, experiment, req);
 
     return this.experimentService.update(id, experiment, user);
@@ -128,7 +127,7 @@ export class ExperimentsResolver {
     @GQLRequest() req: Request,
     @CurrentUser() user: User,
   ): Promise<PartialExperiment> {
-    if (this.engineService.removeExperiment)
+    if (this.engineService.has('removeExperiment'))
       return this.engineService.removeExperiment(id, req);
 
     return this.experimentService.remove(id, user);

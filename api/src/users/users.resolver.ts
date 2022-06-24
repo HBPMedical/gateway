@@ -1,19 +1,17 @@
 import {
-  Inject,
   InternalServerErrorException,
   Logger,
   UseGuards,
 } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { ENGINE_SERVICE } from '../engine/engine.constants';
-import { IEngineService } from '../engine/engine.interfaces';
+import { Request } from 'express';
+import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
+import { GQLRequest } from '../common/decorators/gql-request.decoractor';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import EngineService from '../engine/engine.service';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 import { UsersService } from './users.service';
-import { GQLRequest } from '../common/decorators/gql-request.decoractor';
-import { Request } from 'express';
-import { CurrentUser } from '../common/decorators/user.decorator';
-import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 
 @UseGuards(GlobalAuthGuard)
 @Resolver()
@@ -22,7 +20,7 @@ export class UsersResolver {
 
   constructor(
     private readonly usersService: UsersService,
-    @Inject(ENGINE_SERVICE) private readonly engineService: IEngineService,
+    private readonly engineService: EngineService,
   ) {}
 
   @Query(() => User, { name: 'user' })
@@ -56,7 +54,7 @@ export class UsersResolver {
 
     let updatedInfo: Partial<User>;
 
-    if (this.engineService.updateUser) {
+    if (this.engineService.has('updateUser')) {
       updatedInfo = await this.engineService.updateUser(
         request,
         user?.id,
