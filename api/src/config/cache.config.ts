@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { parseToBoolean } from 'src/common/utils/shared.utils';
+import { parseToBoolean } from '../common/utils/shared.utils';
 
 export default registerAs('cache', () => {
   const max = process.env.CACHE_MAX_ITEMS;

@@ -1,4 +1,5 @@
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
+import { Domain } from 'src/engine/models/domain.model';
 import { MeanChartResult } from 'src/engine/models/result/means-chart-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import {
@@ -97,8 +98,9 @@ export default class AnovaOneWayHandler extends BaseHandler {
     return AnovaOneWayHandler.meanPlotTransform.evaluate(data);
   }
 
-  handle(exp: Experiment, data: unknown): void {
-    if (!this.canHandle(exp.algorithm.name)) return super.handle(exp, data);
+  handle(exp: Experiment, data: unknown, domain: Domain): void {
+    if (!this.canHandle(exp.algorithm.name))
+      return super.handle(exp, data, domain);
 
     const summaryTable = this.getSummaryTable(data, exp.coVariables[0]);
     if (summaryTable) exp.results.push(summaryTable);
@@ -109,6 +111,6 @@ export default class AnovaOneWayHandler extends BaseHandler {
     const meanPlot = this.getMeanPlot(data);
     if (meanPlot && meanPlot.pointCIs) exp.results.push(meanPlot);
 
-    return super.handle(exp, data); // continue request
+    return super.handle(exp, data, domain); // continue request
   }
 }

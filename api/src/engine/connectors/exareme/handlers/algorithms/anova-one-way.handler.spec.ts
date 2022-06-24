@@ -140,7 +140,7 @@ describe('Anova oneway result handler', () => {
     const table2 = anovaHandler.getTuckeyTable(data);
     const meanPlot = anovaHandler.getMeanPlot(data);
 
-    handlers(exp, data);
+    handlers(exp, data, null);
 
     expect(exp.results.length).toBeGreaterThanOrEqual(3);
     expect(exp.results).toContainEqual(table1);
