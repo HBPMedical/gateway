@@ -208,6 +208,6 @@ export default class EngineService implements Connector {
   }
 
   has(name: keyof Connector): boolean {
-    return this.connector && typeof this.connector[name] !== undefined;
+    return this.connector && this.connector[name] !== undefined;
   }
 }
