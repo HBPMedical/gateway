@@ -30,6 +30,38 @@ export const transformToDomain = jsonata(`
 }
 `);
 
+export const transfoToHistoNominal = jsonata(`
+(
+  {
+  "chart": {
+    "type": 'column'
+  },
+  "legend": {
+    "enabled": false
+  },
+  "series": [{
+      "name": "Count",
+      "data": global.*   
+  }],
+  "title": {
+    "text": title ? title : ''
+  },
+  "tooltip": {
+    "enabled": true
+  },
+  "xAxis": {
+    "categories": $keys(global).(
+      $param := $lookup($$.lookup, $);
+      $param ? $param : $
+    )
+  },
+  "yAxis": {
+    "min": 0,
+    "minRange": 0.1,
+    "allowDecimals": true
+  }
+})`);
+
 export const transformToHisto = jsonata(`
 (
   $nbBreaks := $count(global.breaks);
@@ -71,6 +103,21 @@ export const transformToTable = jsonata(`
   {
   "name": "Descriptive Statistics",
   "headers": $append(title, ['5%','10%','25%','50%','75%','90%','95%','Mean']).{
+      "name": $,
+      "type": "string"
+  },
+  "data": $.$each(function($v, $k) {
+         $not($k in $params) ? $append($k,$v) : undefined
+      })[]
+})
+`);
+
+export const transformToTableNominal = jsonata(`
+(
+  $params := ["title"];
+  {
+  "name": "Descriptive Statistics",
+  "headers": $append(title, $keys($.*)).{
       "name": $,
       "type": "string"
   },
