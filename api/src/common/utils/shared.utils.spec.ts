@@ -6,8 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import axios from 'axios';
-import { response } from 'express';
-import { errorAxiosHandler, parseToBoolean } from './utilities';
+import { errorAxiosHandler, parseToBoolean } from './shared.utils';
 
 describe('Utility parseToBoolean testing', () => {
   it('Parse true string to boolean', () => {

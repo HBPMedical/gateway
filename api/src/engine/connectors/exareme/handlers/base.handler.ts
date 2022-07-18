@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { Domain } from 'src/engine/models/domain.model';
 import { Experiment } from '../../../models/experiment/experiment.model';
 import ResultHandler from './result-handler.interface';
 
@@ -12,7 +13,7 @@ export default abstract class BaseHandler implements ResultHandler {
     return h;
   }
 
-  handle(partialExperiment: Experiment, data: unknown): void {
-    this.next?.handle(partialExperiment, data);
+  handle(experiment: Experiment, data: unknown, domain: Domain): void {
+    this.next?.handle(experiment, data, domain);
   }
 }

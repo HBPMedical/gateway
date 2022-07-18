@@ -113,7 +113,7 @@ $fn := function($o, $prefix) {
   handle(exp: Experiment, data: unknown): void {
     let req = data;
 
-    if (exp.algorithm.id.toLowerCase() === 'descriptive_stats') {
+    if (exp.algorithm.name.toLowerCase() === 'descriptive_stats') {
       const inputs = data as ResultExperiment[];
 
       if (inputs && Array.isArray(inputs)) {

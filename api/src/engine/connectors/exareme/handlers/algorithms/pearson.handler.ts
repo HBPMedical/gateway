@@ -41,7 +41,7 @@ export default class PearsonHandler extends BaseHandler {
    * @returns
    */
   handle(exp: Experiment, data: unknown): void {
-    if (this.canHandle(exp.algorithm.id)) {
+    if (this.canHandle(exp.algorithm.name)) {
       try {
         const results = PearsonHandler.transform.evaluate(
           data,

@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import EngineService from '../../../../../engine/engine.service';
+import { ExperimentCreateInput } from '../../../../../experiments/models/input/experiment-create.input';
 import { AppModule } from '../../../../../main/app.module';
-import { ENGINE_SERVICE } from '../../../../engine.constants';
-import { IEngineService } from '../../../../engine.interfaces';
-import { ExperimentCreateInput } from '../../../../models/experiment/input/experiment-create.input';
-import { RawResult } from '../../../../models/result/raw-result.model';
 import {
   createExperiment,
   generateNumber,
@@ -15,14 +13,14 @@ import {
 jest.setTimeout(1000 * TIMEOUT_DURATION_SECONDS);
 
 describe('ExaremeService', () => {
-  let exaremeService: IEngineService;
+  let exaremeService: EngineService;
 
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    exaremeService = await moduleRef.resolve<IEngineService>(ENGINE_SERVICE);
+    exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `anova-1way-${generateNumber()}`;
   const algorithmId = 'ANOVA_ONEWAY';

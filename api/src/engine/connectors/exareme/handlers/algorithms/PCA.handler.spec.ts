@@ -7,7 +7,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    id: 'PCA',
+    name: 'PCA',
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
@@ -78,7 +78,7 @@ describe('PCA result handler', () => {
 
   it('Test PCA handler with regular data (no edge cases)', () => {
     const exp = createExperiment();
-    handlers(exp, data);
+    handlers(exp, data, null);
     expect(exp.results.length).toBeGreaterThanOrEqual(2);
 
     exp.results.forEach((it) => {
