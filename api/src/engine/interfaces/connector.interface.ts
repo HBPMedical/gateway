@@ -24,10 +24,9 @@ export default interface Connector {
 
   /**
    * Get the list of domains along with a list of variables
-   * @param ids - Ids to filter the domain needed
    * @param req - Request - this is the request object from the HTTP request.
    */
-  getDomains(ids: string[], req?: Request): Promise<Domain[]>;
+  getDomains(req?: Request): Promise<Domain[]>;
 
   /**
    * Create and return a full detailed experiment

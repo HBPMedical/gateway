@@ -63,12 +63,8 @@ export class EngineResolver {
   }
 
   @Query(() => [Domain])
-  async domains(
-    @GQLRequest() req: Request,
-    @Args('ids', { nullable: true, type: () => [String], defaultValue: [] })
-    ids: string[],
-  ) {
-    return this.engineService.getDomains(ids, req);
+  async domains(@GQLRequest() req: Request) {
+    return this.engineService.getDomains(req);
   }
 
   @Query(() => [Algorithm])
