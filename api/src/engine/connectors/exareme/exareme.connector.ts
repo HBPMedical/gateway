@@ -11,26 +11,24 @@ import { AxiosRequestConfig } from 'axios';
 import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
 import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
-import {
-  IConfiguration,
-  IEngineOptions,
-  IEngineService,
-} from 'src/engine/engine.interfaces';
+import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
+import Connector from 'src/engine/interfaces/connector.interface';
+import EngineOptions from 'src/engine/interfaces/engine-options.interface';
 import { Domain } from 'src/engine/models/domain.model';
 import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
 import {
   Experiment,
   PartialExperiment,
 } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
-import { ExperimentEditInput } from 'src/engine/models/experiment/input/experiment-edit.input';
 import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
+import { FormulaOperation } from 'src/engine/models/formula/formula-operation.model';
 import { Group } from 'src/engine/models/group.model';
 import { Variable } from 'src/engine/models/variable.model';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
 import { User } from 'src/users/models/user.model';
 import { transformToUser } from '../datashield/transformations';
 import {
-  dataToAlgorithms,
   dataToDataset,
   dataToExperiment,
   dataToGroup,
@@ -41,20 +39,36 @@ import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { ExperimentsData } from './interfaces/experiment/experiments.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { Pathology } from './interfaces/pathology.interface';
+import { dataToUser } from './transformations';
+import transformToAlgorithms from './transformations/algorithms';
 
 type Headers = Record<string, string>;
 
 @Injectable()
-export default class ExaremeService implements IEngineService {
+export default class ExaremeConnector implements Connector {
   constructor(
-    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: IEngineOptions,
+    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
     private readonly httpService: HttpService,
   ) {}
 
-  getConfiguration(): IConfiguration {
+  async getFormulaConfiguration(): Promise<FormulaOperation[]> {
+    return [
+      {
+        variableType: 'real',
+        operationTypes: ['log', 'exp', 'center', 'standardize'],
+      },
+      {
+        variableType: 'nominal',
+        operationTypes: ['dummy', 'poly', 'contrast', 'additive'],
+      },
+    ];
+  }
+
+  getConfiguration(): ConnectorConfiguration {
     return {
       contactLink: 'https://ebrains.eu/support/',
       hasGalaxy: true,
+      hasGrouping: true,
     };
   }
 
@@ -105,9 +119,8 @@ export default class ExaremeService implements IEngineService {
 
     const resultAPI = await firstValueFrom(this.get<string>(request, path));
 
-    return dataToAlgorithms(resultAPI.data);
+    return transformToAlgorithms.evaluate(resultAPI.data);
   }
-
   async getExperiment(id: string, request: Request): Promise<Experiment> {
     const path = this.options.baseurl + `experiments/${id}`;
 
@@ -118,7 +131,7 @@ export default class ExaremeService implements IEngineService {
     return dataToExperiment(resultAPI.data);
   }
 
-  async editExperient(
+  async editExperiment(
     id: string,
     expriment: ExperimentEditInput,
     request: Request,
@@ -148,29 +161,27 @@ export default class ExaremeService implements IEngineService {
     }
   }
 
-  async getDomains(ids: string[], request: Request): Promise<Domain[]> {
+  async getDomains(request: Request): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
 
     try {
       const data = await firstValueFrom(this.get<Pathology[]>(request, path));
 
       return (
-        data?.data
-          .filter((data) => !ids || ids.length == 0 || ids.includes(data.code))
-          .map((data): Domain => {
-            const groups = this.flattenGroups(data.metadataHierarchy);
+        data?.data.map((d): Domain => {
+          const groups = this.flattenGroups(d.metadataHierarchy);
 
-            return {
-              id: data.code,
-              label: data.label,
-              groups: groups,
-              rootGroup: dataToGroup(data.metadataHierarchy),
-              datasets: data.datasets ? data.datasets.map(dataToDataset) : [],
-              variables: data.metadataHierarchy
-                ? this.flattenVariables(data.metadataHierarchy, groups)
-                : [],
-            };
-          }) ?? []
+          return {
+            id: d.code,
+            label: d.label,
+            groups: groups,
+            rootGroup: dataToGroup(d.metadataHierarchy),
+            datasets: d.datasets ? d.datasets.map(dataToDataset) : [],
+            variables: d.metadataHierarchy
+              ? this.flattenVariables(d.metadataHierarchy, groups)
+              : [],
+          };
+        }) ?? []
       );
     } catch (error) {
       throw new HttpException(
@@ -187,33 +198,23 @@ export default class ExaremeService implements IEngineService {
     try {
       return transformToUser.evaluate(response.data);
     } catch (e) {
-      new InternalServerErrorException('Cannot parse user data from Engine', e);
+      throw new InternalServerErrorException(
+        'Cannot parse user data from Engine',
+        e,
+      );
     }
   }
 
   async updateUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser/agreeNDA';
-    const response = await firstValueFrom(
+
+    const result = await firstValueFrom(
       this.post<string>(request, path, {
         agreeNDA: true,
       }),
     );
 
-    try {
-      return transformToUser.evaluate(response.data);
-    } catch (e) {
-      throw new InternalServerErrorException(
-        'Error when trying to parse user data from the engine',
-      );
-    }
-  }
-
-  getAlgorithmsREST(request: Request): Observable<string> {
-    const path = this.options.baseurl + 'algorithms';
-
-    return this.get<string>(request, path, { params: request.query }).pipe(
-      map((response) => response.data),
-    );
+    return dataToUser.evaluate(result.data);
   }
 
   getPassthrough(
@@ -239,7 +240,7 @@ export default class ExaremeService implements IEngineService {
   };
 
   private flattenVariables = (data: Hierarchy, groups: Group[]): Variable[] => {
-    const group = groups.find((group) => group.id == data.code);
+    const group = groups.find((g) => g.id == data.code);
     let variables = data.variables ? data.variables.map(dataToVariable) : [];
 
     variables.forEach((variable) => (variable.groups = group ? [group] : []));

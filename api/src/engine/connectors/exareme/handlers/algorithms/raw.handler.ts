@@ -21,7 +21,7 @@ export default class RawHandler extends BaseHandler {
     if (inputs && Array.isArray(inputs))
       inputs
         .filter((input) => !!input.data && !!input.type)
-        .map((input) => this.dataToRaw(exp.algorithm.id, input))
+        .map((input) => this.dataToRaw(exp.algorithm.name, input))
         .forEach((input) => exp.results.push(input));
 
     this.next?.handle(exp, data);

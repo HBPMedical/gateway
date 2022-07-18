@@ -6,7 +6,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    id: 'Anova_OnEway',
+    name: 'Anova_OnEway',
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
@@ -140,7 +140,7 @@ describe('Anova oneway result handler', () => {
     const table2 = anovaHandler.getTuckeyTable(data);
     const meanPlot = anovaHandler.getMeanPlot(data);
 
-    handlers(exp, data);
+    handlers(exp, data, null);
 
     expect(exp.results.length).toBeGreaterThanOrEqual(3);
     expect(exp.results).toContainEqual(table1);

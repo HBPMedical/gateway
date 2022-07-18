@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+interface BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+}
+
 type User {
   id: String!
   username: String!
@@ -23,12 +34,16 @@ type Matomo {
 type Configuration {
   connectorId: String!
   hasGalaxy: Boolean
+
+  """Indicates if histograms can handle grouping"""
+  hasGrouping: Boolean
   contactLink: String
   version: String!
   skipAuth: Boolean
   skipTos: Boolean
   enableSSO: Boolean
   matomo: Matomo
+  ontologyUrl: String
 }
 
 type Dataset {
@@ -45,10 +60,13 @@ type Group {
 
   """List of variable's ids"""
   variables: [String!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
 }
 
 type Category {
-  id: String!
+  value: String!
   label: String
 }
 
@@ -59,6 +77,9 @@ type Variable {
   description: String
   enumerations: [Category!]
   groups: [Group!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
 }
 
 type Domain {
@@ -71,25 +92,88 @@ type Domain {
   rootGroup: Group!
 }
 
-type AlgorithmParameter {
-  id: String!
-  value: String
+type OptionValue {
+  value: String!
+  label: String!
+}
+
+type NominalParameter implements BaseParameter {
+  name: String!
   label: String
-  description: String
-  defaultValue: String
-  isMultiple: Boolean
+
+  """Small hint (description) for the end user"""
+  hint: String
   isRequired: Boolean
-  min: String
-  max: String
-  type: String
+  hasMultiple: Boolean
+  defaultValue: String
+
+  """Id of the parameter"""
+  linkedTo: AllowedLink
+  allowedValues: [OptionValue!]
+}
+
+"""The supported links."""
+enum AllowedLink {
+  VARIABLE
+  COVARIABLE
+}
+
+type NumberParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+  min: Float
+  max: Float
+  isReal: Boolean
+}
+
+type StringParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+}
+
+type VariableParameter {
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+
+  """If undefined, all types are allowed"""
+  allowedTypes: [String!]
 }
 
 type Algorithm {
   id: String!
-  parameters: [AlgorithmParameter!]
-  label: String
+  parameters: [BaseParameter!]
+  variable: VariableParameter!
+  coVariable: VariableParameter
+  hasFormula: Boolean
   type: String
+  label: String
   description: String
+}
+
+type FilterConfiguration {
+  """List of types that can considered as number"""
+  numberTypes: [String!]
+}
+
+type FormulaOperation {
+  """Type name of the variable"""
+  variableType: String!
+
+  """List of operation available for this type"""
+  operationTypes: [String!]!
 }
 
 type GroupResult {
@@ -144,6 +228,7 @@ type LineChartResult {
   xAxis: ChartAxis
   yAxis: ChartAxis
   lines: [LineResult!]!
+  hasBisector: Boolean
 }
 
 type BarChartResult {
@@ -220,15 +305,25 @@ type Formula {
   interactions: [[String!]!]
 }
 
+type ParamValue {
+  name: String!
+  value: String!
+}
+
+type AlgorithmResult {
+  name: String!
+  parameters: [ParamValue!]
+}
+
 type Experiment {
   id: String!
   name: String!
   author: Author
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
-  status: String
+  status: ExperimentStatus
   shared: Boolean!
   results: [ResultUnion!]
   datasets: [String!]!
@@ -238,18 +333,26 @@ type Experiment {
   coVariables: [String!]
   filterVariables: [String!]
   formula: Formula
-  algorithm: Algorithm!
+  algorithm: AlgorithmResult!
+}
+
+enum ExperimentStatus {
+  INIT
+  PENDING
+  SUCCESS
+  WARN
+  ERROR
 }
 
 type PartialExperiment {
   id: String
   name: String
   author: Author
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
-  status: String
+  status: ExperimentStatus
   shared: Boolean
   results: [ResultUnion!]
   datasets: [String!]
@@ -259,32 +362,43 @@ type PartialExperiment {
   coVariables: [String!]
   filterVariables: [String!]
   formula: Formula
-  algorithm: Algorithm
+  algorithm: AlgorithmResult
 }
 
 type ListExperiments {
   currentPage: Float
   totalPages: Float
   totalExperiments: Float
-  experiments: [Experiment!]!
+  experiments: [Experiment!]
 }
 
 type Query {
   configuration: Configuration!
-  domains(ids: [String!] = []): [Domain!]!
+  domains: [Domain!]!
+  algorithms: [Algorithm!]!
+  formula: [FormulaOperation!]!
+  filter: FilterConfiguration!
+  user: User!
   experimentList(page: Float = 0, name: String = ""): ListExperiments!
   experiment(id: String!): Experiment!
-  algorithms: [Algorithm!]!
-  user: User!
 }
 
 type Mutation {
-  createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
-  editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
-  removeExperiment(id: String!): PartialExperiment!
   login(variables: AuthenticationInput!): AuthenticationOutput!
   logout: Boolean!
   updateUser(updateUserInput: UpdateUserInput!): User!
+  createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
+  editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
+  removeExperiment(id: String!): PartialExperiment!
+}
+
+input AuthenticationInput {
+  username: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  agreeNDA: Boolean!
 }
 
 input ExperimentCreateInput {
@@ -302,18 +416,12 @@ input ExperimentCreateInput {
 input AlgorithmInput {
   id: String!
   parameters: [AlgorithmParamInput!] = []
-  type: String!
+  type: String
 }
 
 input AlgorithmParamInput {
   id: String!
-  type: ParamType = STRING
   value: String!
-}
-
-enum ParamType {
-  STRING
-  NUMBER
 }
 
 input FormulaTransformation {
@@ -325,13 +433,4 @@ input ExperimentEditInput {
   name: String
   shared: Boolean
   viewed: Boolean
-}
-
-input AuthenticationInput {
-  username: String!
-  password: String!
-}
-
-input UpdateUserInput {
-  agreeNDA: Boolean!
 }

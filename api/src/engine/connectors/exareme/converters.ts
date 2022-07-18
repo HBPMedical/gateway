@@ -1,10 +1,10 @@
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { Category } from 'src/engine/models/category.model';
 import { Dataset } from 'src/engine/models/dataset.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
+import {
+  Experiment,
+  ExperimentStatus,
+} from 'src/engine/models/experiment/experiment.model';
 import { Group } from 'src/engine/models/group.model';
 import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
 import {
@@ -15,6 +15,8 @@ import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
 import { LineChartResult } from 'src/engine/models/result/line-chart-result.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { Variable } from 'src/engine/models/variable.model';
+import { AlgorithmParamInput } from 'src/experiments/models/input/algorithm-parameter.input';
+import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { ResultChartExperiment } from './interfaces/experiment/result-chart-experiment.interface';
@@ -26,7 +28,6 @@ import {
   dataToHeatmap,
   descriptiveModelToTables,
   descriptiveSingleToTables,
-  transformToAlgorithms,
   transformToExperiment,
 } from './transformations';
 
@@ -38,14 +39,14 @@ export const dataToGroup = (data: Hierarchy): Group => {
       ? data.groups.map(dataToGroup).map((group) => group.id)
       : [],
     variables: data.variables
-      ? data.variables.map((data: VariableEntity) => data.code)
+      ? data.variables.map((v: VariableEntity) => v.code)
       : [],
   };
 };
 
 export const dataToCategory = (data: Entity): Category => {
   return {
-    id: data.code,
+    value: data.code,
     label: data.label,
   };
 };
@@ -215,16 +216,36 @@ export const dataToExperiment = (
 
     exp.results = data.result
       ? data.result
-          .map((result) => dataToResult(result, exp.algorithm.id))
+          .map((result) => dataToResult(result, exp.algorithm.name))
+          .filter((r) => r.length > 0)
           .flat()
       : [];
+
+    const allVariables = exp.filterVariables || [];
+
+    // add filter variables
+    const extractVariablesFromFilter = (filter: any): any =>
+      filter.rules.forEach((r: any) => {
+        if (r.rules) {
+          extractVariablesFromFilter(r);
+        }
+        if (r.id) {
+          allVariables.push(r.id);
+        }
+      });
+
+    if (exp && exp.filter) {
+      extractVariablesFromFilter(JSON.parse(exp.filter));
+    }
+
+    exp.filterVariables = Array.from(new Set(allVariables));
 
     return exp;
   } catch (e) {
     return {
       id: data.uuid,
       name: data.name,
-      status: 'error',
+      status: ExperimentStatus.ERROR,
       variables: [],
       domain: data['domain'] ?? '',
       results: [
@@ -237,14 +258,10 @@ export const dataToExperiment = (
       ],
       datasets: [],
       algorithm: {
-        id: 'unknown',
+        name: 'unknown',
       },
     };
   }
-};
-
-export const dataToAlgorithms = (data: string): Algorithm[] => {
-  return transformToAlgorithms.evaluate(data);
 };
 
 export const dataToRaw = (
@@ -283,10 +300,13 @@ export const dataJSONtoResult = (
   algo: string,
 ): Array<typeof ResultUnion> => {
   switch (algo.toLowerCase()) {
+    case 'cart':
+    case 'id3':
+      return dataToRaw(algo, result);
     case 'descriptive_stats':
       return descriptiveDataToTableResult(result);
     default:
-      return dataToRaw(algo, result);
+      return [];
   }
 };
 

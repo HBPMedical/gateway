@@ -8,6 +8,13 @@ export class Configuration {
   @Field({ nullable: true, defaultValue: false })
   hasGalaxy?: boolean;
 
+  @Field({
+    nullable: true,
+    defaultValue: false,
+    description: 'Indicates if histograms can handle grouping',
+  })
+  hasGrouping?: boolean;
+
   @Field({ nullable: true })
   contactLink?: string;
 
@@ -25,4 +32,7 @@ export class Configuration {
 
   @Field(() => Matomo, { nullable: true })
   matomo?: Matomo;
+
+  @Field({ nullable: true })
+  ontologyUrl?: string;
 }
