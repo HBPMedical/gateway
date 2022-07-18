@@ -31,6 +31,10 @@ import { FilterConfiguration } from './models/filter/filter-configuration';
 import { FormulaOperation } from './models/formula/formula-operation.model';
 import { Variable } from './models/variable.model';
 
+const DOMAINS_CACHE_KEY = 'domains';
+const ALGORITHMS_CACHE_KEY = 'experiments';
+const CACHE_KEYS = [DOMAINS_CACHE_KEY, ALGORITHMS_CACHE_KEY];
+
 /**
  * Engine service.
  * This class is used as a Proxy to the real Connector.
@@ -102,17 +106,18 @@ export default class EngineService implements Connector {
     return result;
   }
 
-  async getDomains(ids: string[], req: Request): Promise<Domain[]> {
+  async getDomains(req: Request): Promise<Domain[]> {
     const user = req?.user as User;
-    const key = user.id ? `domains-${ids.join('-')}-${user.id}` : undefined;
+    const key = user.id ? `${DOMAINS_CACHE_KEY}-${user.id}` : undefined;
 
     return this.getFromCacheOrCall<Domain[]>(key, () =>
-      this.connector.getDomains(ids, req),
+      this.connector.getDomains(req),
     );
   }
 
   async getAlgorithms(req: Request): Promise<Algorithm[]> {
-    const key = 'algorithms';
+    const user = req?.user as User;
+    const key = user.id ? `${ALGORITHMS_CACHE_KEY}-${user.id}` : undefined;
 
     return this.getFromCacheOrCall<Algorithm[]>(key, () =>
       this.connector.getAlgorithms(req),
@@ -133,7 +138,7 @@ export default class EngineService implements Connector {
   ): Promise<Variable[]> {
     if (!domainId || varIds.length === 0) return [];
 
-    const domains = await this.getDomains([], request);
+    const domains = await this.getDomains(request);
 
     return (
       domains
@@ -217,6 +222,13 @@ export default class EngineService implements Connector {
   }
 
   async logout?(req?: Request): Promise<void> {
+    const user = req?.user as User;
+
+    if (user && user.id)
+      CACHE_KEYS.map((key) => `${key}-${user.id}`).forEach((key) =>
+        this.cacheManager.del(key),
+      );
+
     if (!this.connector.logout) throw new NotImplementedException();
     return this.connector.logout(req);
   }

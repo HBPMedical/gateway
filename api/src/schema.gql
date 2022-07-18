@@ -374,7 +374,7 @@ type ListExperiments {
 
 type Query {
   configuration: Configuration!
-  domains(ids: [String!] = []): [Domain!]!
+  domains: [Domain!]!
   algorithms: [Algorithm!]!
   formula: [FormulaOperation!]!
   filter: FilterConfiguration!

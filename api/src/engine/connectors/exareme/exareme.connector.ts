@@ -161,29 +161,27 @@ export default class ExaremeConnector implements Connector {
     }
   }
 
-  async getDomains(ids: string[], request: Request): Promise<Domain[]> {
+  async getDomains(request: Request): Promise<Domain[]> {
     const path = this.options.baseurl + 'pathologies';
 
     try {
       const data = await firstValueFrom(this.get<Pathology[]>(request, path));
 
       return (
-        data?.data
-          .filter((d) => !ids || ids.length == 0 || ids.includes(d.code))
-          .map((d): Domain => {
-            const groups = this.flattenGroups(d.metadataHierarchy);
+        data?.data.map((d): Domain => {
+          const groups = this.flattenGroups(d.metadataHierarchy);
 
-            return {
-              id: d.code,
-              label: d.label,
-              groups: groups,
-              rootGroup: dataToGroup(d.metadataHierarchy),
-              datasets: d.datasets ? d.datasets.map(dataToDataset) : [],
-              variables: d.metadataHierarchy
-                ? this.flattenVariables(d.metadataHierarchy, groups)
-                : [],
-            };
-          }) ?? []
+          return {
+            id: d.code,
+            label: d.label,
+            groups: groups,
+            rootGroup: dataToGroup(d.metadataHierarchy),
+            datasets: d.datasets ? d.datasets.map(dataToDataset) : [],
+            variables: d.metadataHierarchy
+              ? this.flattenVariables(d.metadataHierarchy, groups)
+              : [],
+          };
+        }) ?? []
       );
     } catch (error) {
       throw new HttpException(
