@@ -35,7 +35,7 @@ export default class LinearRegressionHandler extends BaseHandler {
     const tableModel: TableResult = {
       name: 'Model',
       tableStyle: TableStyle.NORMAL,
-      headers: ['name', 'value'].map((name) => ({ name, type: 'string' })),
+      headers: ['', 'name', 'value'].map((name) => ({ name, type: 'string' })),
       data: [
         'dependent_var',
         'n_obs',
@@ -72,7 +72,7 @@ export default class LinearRegressionHandler extends BaseHandler {
     const tableCoef: TableResult = {
       name: 'Coefficients',
       tableStyle: TableStyle.NORMAL,
-      headers: keys.map((name) => ({
+      headers: ['', ...keys].map((name) => ({
         name: lookupDict[name],
         type: 'string',
       })),
