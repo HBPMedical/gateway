@@ -324,7 +324,7 @@ export default class DataShieldConnector implements Connector {
     });
   }
 
-  async getDomains(_ids: string[], request: Request): Promise<Domain[]> {
+  async getDomains(request: Request): Promise<Domain[]> {
     const user = request.user as User;
     const sid = user && user.extraFields && user.extraFields['sid'];
 
