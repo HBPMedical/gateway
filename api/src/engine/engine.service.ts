@@ -29,6 +29,7 @@ import {
 import { ListExperiments } from './models/experiment/list-experiments.model';
 import { FilterConfiguration } from './models/filter/filter-configuration';
 import { FormulaOperation } from './models/formula/formula-operation.model';
+import { Variable } from './models/variable.model';
 
 /**
  * Engine service.
@@ -46,7 +47,7 @@ export default class EngineService implements Connector {
   ) {
     import(`./connectors/${options.type}/${options.type}.connector`).then(
       (conn) => {
-        const instance = new conn.default(options, httpService);
+        const instance = new conn.default(options, httpService, this);
 
         if (instance.createExperiment && instance.runExperiment)
           throw new InternalServerErrorException(
@@ -96,7 +97,7 @@ export default class EngineService implements Connector {
 
     const result = await fn();
 
-    this.cacheManager.set(key, result);
+    this.cacheManager.set(key, result, { ttl: this.cacheConf.ttl });
 
     return result;
   }
@@ -115,6 +116,29 @@ export default class EngineService implements Connector {
 
     return this.getFromCacheOrCall<Algorithm[]>(key, () =>
       this.connector.getAlgorithms(req),
+    );
+  }
+
+  /**
+   * It takes a domain ID and a list of variable IDs, and returns a list of variables that match the IDs
+   * @param {string} domainId - The domain ID of the domain you want to get variables from.
+   * @param {string[]} varIds - The list of variable IDs to get.
+   * @param {Request} request - The request object from the HTTP request.
+   * @returns An array of variables
+   */
+  async getVariables(
+    domainId: string,
+    varIds: string[],
+    request: Request,
+  ): Promise<Variable[]> {
+    if (!domainId || varIds.length === 0) return [];
+
+    const domains = await this.getDomains([], request);
+
+    return (
+      domains
+        .find((d) => d.id === domainId)
+        ?.variables?.filter((v) => varIds.includes(v.id)) ?? []
     );
   }
 

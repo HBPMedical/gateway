@@ -6,11 +6,14 @@ export class VariableParameter {
   hint?: string;
 
   @Field({ nullable: true, defaultValue: false })
-  isRequired: boolean;
+  isRequired?: boolean;
 
   @Field({ nullable: true, defaultValue: false })
-  hasMultiple: boolean;
+  hasMultiple?: boolean;
 
-  @Field(() => [String], { nullable: true })
-  allowedTypes: string[];
+  @Field(() => [String], {
+    nullable: true,
+    description: 'If undefined, all types are allowed',
+  })
+  allowedTypes?: string[];
 }
