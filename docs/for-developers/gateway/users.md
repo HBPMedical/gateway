@@ -9,7 +9,7 @@ The gateway is not meant to manage users directly. This is the engine's role to 
 
 ### How it works ?
 
-Let's say we want to retrieve the current user, the gateway will ask through the connector for the user's data in the same time the gateway will look in his own database if it has some data for this user. Then both data are merged to fit the User model. Data from the engine have precedence over the gateway data in case of conflict.
+Let's say we want to retrieve the current user, the Gateway will ask through the connector for the user's data in the same time the gateway will look in his own database if it has some data for this user. Then both data are merged to fit the User model. Data from the engine have precedence over the gateway data in case of conflict.
 
 {% code title="user.model.ts" %}
 ```typescript
@@ -42,27 +42,4 @@ After merging data from both source and make some integrity check the gateway wi
 
 #### Update user profile
 
-So now we know that the data can be retrieve through two different sources, how will we handle updating our user profile ? The system is simple, the gateway will ask the connector if he can handle the user's update by looking if the function `updateUser` is defined in the connector. If it's defined it means that the engine can handle at least some part of the update, so we delay the work to the engine. Now if the engine cannot handle all the update data, the connector can decide to return some attributes back to the gateway.&#x20;
-
-{% code title="example return update data" %}
-```typescript
-  async updateUser(
-     request: Request,
-     userId: string, 
-     data: UpdateUserInput
-   ): Promise<UpdateUserInput | undefined> {
-    const path = this.options.baseurl + 'user';
-    const response = await firstValueFrom(
-      this.post<string>(request, path, {
-        prop1: data.attrib1,
-        prop2: data.attrib2
-      }),
-    );
-
-    const { attrib1, attrib2, ...subset } = UpdateUserInput // Subset of updateData
-    return subset;
-  }
-```
-{% endcode %}
-
-The returned attributes will be provided back to the gateway and will be handle internally as far as it can do it.
+So now we know that the data can be retrieve through two different sources, how will we handle updating our user profile ? The system is simple, the gateway will check the connector if he can handle the user's update by looking at the function `updateUser` is defined in the connector. If it's defined it means that the connector can handle the update, so we delay the work to the connector. If the connector cannot handle the update, the Gateway will handle it by itself.

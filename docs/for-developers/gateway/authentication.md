@@ -1,6 +1,6 @@
 # 🔑 Authentication
 
-The authentication implementation is based on [passport.js](https://www.passportjs.org) it allows a flexible way to implement different strategies inside the gateway.&#x20;
+The authentication implementation is based on [passport.js](https://www.passportjs.org/) it allows a flexible way to implement different strategies inside the gateway.&#x20;
 
 For now the authentication system is quite simple and only use JWT. The real implementation of  authorization and authentication is left to the connector/engine.&#x20;
 
@@ -10,7 +10,7 @@ The communication between the frontend and the gateway is handled by JWT token w
 
 ![](<../../.gitbook/assets/image (2).png>)
 
-The gateway will handle the authentication process with the frontend in a unique fashion always using a JWT token. This token can contains information specific to some connector. For that purpose the user model contains a field `extraFields` which basically a dictionary.&#x20;
+The gateway will handle the authentication process with the frontend in a unique fashion always using a JWT token. This token can contains information specific to some connector. For that purpose the user model contains a field `extraFields` which is basically a dictionary.&#x20;
 
 {% code title="user.model.ts" %}
 ```typescript
@@ -90,3 +90,18 @@ export interface IEngineService {
 ```
 {% endcode %}
 
+#### How to get the user&#x20;
+
+Whether you use the local login or a 3rd party system, there is a unique way to access the user inside the Gateway. This method through the request :&#x20;
+
+```typescript
+request.user
+```
+
+This request's attribute is feed by strategy policies defined in the Gateway. Currently the following strategies are applied&#x20;
+
+1. JWT cookies
+2. JWT bearer
+3. Engine (use the connector to retrieve the user)
+
+Even if the `AUTH_SKIP` is defined you should be able to retrieve the user through the request.

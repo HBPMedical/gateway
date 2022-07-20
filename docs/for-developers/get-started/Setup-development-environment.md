@@ -21,9 +21,9 @@ In this guide we will see how to setup the last two elements.
 
 Make sure to have
 
-* [Node.js](https://nodejs.org)
-* [NPM](https://npmjs.com)
-* [Yarn](https://yarnpkg.com)
+* [Node.js](https://nodejs.org) (16.x)
+* [NPM](https://npmjs.com) (8.x)
+* [Yarn](https://yarnpkg.com) (1.22.x)
 * [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/)
 
 installed in your computer.
@@ -44,7 +44,7 @@ npm install
 
 #### Run the DB
 
-The gateway need a DB in order to work. [TypeORM](https://typeorm.io) is used to make the DB calls agnostic from the real implementation.&#x20;
+The gateway need a DB in order to work. [TypeORM](https://typeorm.io/) is used to make the DB calls agnostic from the real implementation.&#x20;
 
 We provide a docker-compose to run a `postgres` DB, you can use it by running the following command
 
@@ -66,7 +66,7 @@ npm run start:dev
 
 Once you have started the Gateway, you can play with the GraphQL playground that is automatically integrated within the gateway, follow this link : [http://127.0.0.1:8081/graphql](http://127.0.0.1:8081/graphql). You should be able to see something like this :
 
-![GraphQL Playground](<../.gitbook/assets/image (1).png>)
+![GraphQL Playground](<../../.gitbook/assets/image (1).png>)
 
 This environment is a tool provided by GraphQL to play with queries, mutations, etc...
 

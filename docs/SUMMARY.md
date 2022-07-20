@@ -1,6 +1,6 @@
 # Table of contents
 
-* [🏠 Home](../README.md)
+* [🏠 Home](README.md)
 
 ## For Developers
 
@@ -9,11 +9,14 @@
   * [Setup development environment](for-developers/get-started/Setup-development-environment.md)
 * [Configuration](for-developers/configuration/README.md)
   * [Gateway](for-developers/configuration/gateway.md)
-* [Connectors](for-developers/connector/README.md)
-  * [Parsing response with JSONdata](for-developers/connector/Parsing-response-with-JSONata.md)
 * [Gateway](for-developers/gateway/README.md)
   * [🔑 Authentication](for-developers/gateway/authentication.md)
   * [👥 Users](for-developers/gateway/users.md)
+  * [🗃 Static files](for-developers/gateway/static-files.md)
+  * [📝 Cache](for-developers/gateway/cache.md)
+  * [🔌 Connectors](for-developers/gateway/connector/README.md)
+    * [Create a connector](for-developers/gateway/connector/create-a-connector.md)
+    * [Parsing response with JSONdata](for-developers/gateway/connector/parsing-response-with-jsonata.md)
 * [Frontend](for-developers/frontend/README.md)
   * [Update GraphQL Queries](for-developers/frontend/Update-queries-GrahpQL-in-the-frontend.md)
   * [📊 Visualisations](for-developers/frontend/visualisations.md)
