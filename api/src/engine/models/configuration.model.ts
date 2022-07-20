@@ -5,7 +5,11 @@ export class Configuration {
   @Field()
   connectorId: string;
 
-  @Field({ nullable: true, defaultValue: false })
+  @Field({
+    nullable: true,
+    defaultValue: false,
+    deprecationReason: 'Only used for legacy reason should be avoided',
+  })
   hasGalaxy?: boolean;
 
   @Field({

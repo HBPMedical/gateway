@@ -1,6 +1,6 @@
 import { Inject, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { GlobalAuthGuard } from 'src/auth/guards/global-auth.guard';
@@ -9,6 +9,7 @@ import { Md5 } from 'ts-md5';
 import { authConstants } from '../auth/auth-constants';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import {
+  ENGINE_CONTACT_LINK,
   ENGINE_MODULE_OPTIONS,
   ENGINE_ONTOLOGY_URL,
   ENGINE_SKIP_TOS,
@@ -52,6 +53,7 @@ export class EngineResolver {
       ),
       matomo,
       ontologyUrl: this.configSerivce.get(ENGINE_ONTOLOGY_URL),
+      contactLink: this.configSerivce.get(ENGINE_CONTACT_LINK),
     };
 
     const version = Md5.hashStr(JSON.stringify(data));

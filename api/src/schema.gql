@@ -33,7 +33,7 @@ type Matomo {
 
 type Configuration {
   connectorId: String!
-  hasGalaxy: Boolean
+  hasGalaxy: Boolean @deprecated(reason: "Only used for legacy reason should be avoided")
 
   """Indicates if histograms can handle grouping"""
   hasGrouping: Boolean

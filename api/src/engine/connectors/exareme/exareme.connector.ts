@@ -66,7 +66,6 @@ export default class ExaremeConnector implements Connector {
 
   getConfiguration(): ConnectorConfiguration {
     return {
-      contactLink: 'https://ebrains.eu/support/',
       hasGalaxy: true,
       hasGrouping: true,
     };
