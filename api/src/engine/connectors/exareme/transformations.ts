@@ -22,7 +22,7 @@ export const transformToExperiment = jsonata(`
         "finishedAt": $convDate(finished),
         "shared": shared,
         "updateAt": $convDate(updated),
-        "domain": algorithm.parameters[name = "pathology"][0].value,
+        "domain": $split(algorithm.parameters[name = "pathology"][0].value, ':')[0],
         "datasets": $split(algorithm.parameters[name = "dataset"][0].value, ','),
         "variables": $split($rp(algorithm.parameters[name = "y"][0].value), ','),
         "coVariables": $toArray($split($rp(algorithm.parameters[name = "x"][0].value), ',')),
