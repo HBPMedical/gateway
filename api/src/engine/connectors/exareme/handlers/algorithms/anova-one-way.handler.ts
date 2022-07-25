@@ -59,7 +59,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
 
     const tableResult: TableResult = {
       ...tableData,
-      tableStyle: TableStyle.NORMAL,
+      tableStyle: TableStyle.DEFAULT,
     } as unknown as TableResult;
 
     return tableResult;
@@ -68,7 +68,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
   getSummaryTable(data: unknown, varname: string): TableResult | undefined {
     const tableSummary: TableResult = {
       name: 'Anova summary',
-      tableStyle: TableStyle.NORMAL,
+      tableStyle: TableStyle.DEFAULT,
       headers: ['', 'DF', 'SS', 'MS', 'F ratio', 'P value'].map((name) => ({
         name,
         type: 'string',
