@@ -96,15 +96,17 @@ export default class AnovaOneWayHandler extends BaseHandler {
     return tableSummary;
   }
 
-  getMeanPlot(data: unknown): MeanChartResult {
+  getMeanPlot(data: any): MeanChartResult {
     return AnovaOneWayHandler.meanPlotTransform.evaluate(data);
   }
 
-  handle(exp: Experiment, data: unknown, domain: Domain): void {
-    const result = data[0];
+  handle(exp: Experiment, data: any, domain: Domain): void {
+    if (!data || data.length === 0) return super.handle(exp, data, domain);
 
     if (!this.canHandle(exp.algorithm.name))
-      return super.handle(exp, result, domain);
+      return super.handle(exp, data, domain);
+
+    const result = data[0];
 
     const summaryTable = this.getSummaryTable(result, exp.coVariables[0]);
     if (summaryTable) exp.results.push(summaryTable);
