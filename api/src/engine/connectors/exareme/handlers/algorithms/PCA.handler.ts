@@ -1,3 +1,4 @@
+import { Domain } from 'src/engine/models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { BarChartResult } from '../../../../models/result/bar-chart-result.model';
 import {
@@ -7,19 +8,19 @@ import {
 import BaseHandler from '../base.handler';
 
 export default class PCAHandler extends BaseHandler {
-  canHandle(algorithm: string): boolean {
-    return algorithm.toLocaleLowerCase() === 'pca';
+  canHandle(algorithm: string, data: any): boolean {
+    return (
+      algorithm.toLowerCase() === 'pca' &&
+      data &&
+      data[0] &&
+      data[0]['eigenvalues'] &&
+      data[0]['eigenvectors']
+    );
   }
 
-  handle(exp: Experiment, data: any): void {
-    if (
-      !this.canHandle(exp.algorithm.name) ||
-      !data ||
-      !data[0] ||
-      !data[0]['eigenvalues'] ||
-      !data[0]['eigenvectors']
-    )
-      return this.next?.handle(exp, data);
+  handle(exp: Experiment, data: any, domain?: Domain): void {
+    if (!this.canHandle(exp.algorithm.name, data))
+      return this.next?.handle(exp, data, domain);
 
     const extractedData = data[0];
 

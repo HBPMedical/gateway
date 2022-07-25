@@ -35,15 +35,18 @@ export default class PearsonHandler extends BaseHandler {
    * @param {string} algorithm - The name of the algorithm to use.
    * @returns a boolean value.
    */
-  canHandle(algorithm: string): boolean {
-    return algorithm.toLocaleLowerCase() === 'pearson';
+  canHandle(algorithm: string, data: any): boolean {
+    return (
+      algorithm.toLocaleLowerCase() === 'pearson' &&
+      data &&
+      data[0] &&
+      data[0]['correlations'] &&
+      data[0]['p_values']
+    );
   }
 
-  handle(exp: Experiment, data: unknown, domain?: Domain): void {
-    if (!this.canHandle(exp.algorithm.name))
-      return super.handle(exp, data, domain);
-
-    if (!data || !data[0] || !data[0]['correlations'] || !data[0]['p_values'])
+  handle(exp: Experiment, data: any, domain?: Domain): void {
+    if (!this.canHandle(exp.algorithm.name, data))
       return super.handle(exp, data, domain);
 
     const extData = data[0];
