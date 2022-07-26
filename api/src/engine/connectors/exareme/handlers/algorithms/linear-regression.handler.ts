@@ -95,8 +95,18 @@ export default class LinearRegressionHandler extends BaseHandler {
     return varible.label ?? id;
   }
 
+  canHandle(exp: Experiment, data: any): boolean {
+    return (
+      exp.algorithm.name.toLowerCase() === ALGO_NAME &&
+      data &&
+      data[0] &&
+      data[0].rse &&
+      data[0].f_stat
+    );
+  }
+
   handle(experiment: Experiment, data: any, domain: Domain): void {
-    if (experiment.algorithm.name.toLowerCase() !== ALGO_NAME)
+    if (!this.canHandle(experiment, data))
       return super.handle(experiment, data, domain);
 
     const extractedData = data[0];
