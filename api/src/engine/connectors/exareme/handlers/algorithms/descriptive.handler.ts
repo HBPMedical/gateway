@@ -38,6 +38,7 @@ $fn := function($o, $prefix) {
         $ks := $keys($model.*.data.*[$i][$type($) = 'object']);
         {
             'name': $varName,
+            'tableStyle': 1,
             'headers': $append("", $keys($$.data.model)).{
                 'name': $,
                 'type': 'string'
@@ -67,6 +68,7 @@ $fn := function($o, $prefix) {
             $ks := $keys($p.*.data[$type($) = 'object']);
             {
             'name': $keys(%)[$i],
+            'tableStyle': 1,
             'headers': $append("", $keys(*)).{
                 'name': $,
                 'type': 'string'
