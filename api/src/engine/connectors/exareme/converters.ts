@@ -1,31 +1,28 @@
+import { Logger } from '@nestjs/common';
 import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { Category } from 'src/engine/models/category.model';
 import { Dataset } from 'src/engine/models/dataset.model';
+import { Domain } from 'src/engine/models/domain.model';
 import {
   Experiment,
   ExperimentStatus,
 } from 'src/engine/models/experiment/experiment.model';
 import { Group } from 'src/engine/models/group.model';
-import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
 import {
   GroupResult,
   GroupsResult,
 } from 'src/engine/models/result/groups-result.model';
-import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
-import { LineChartResult } from 'src/engine/models/result/line-chart-result.model';
 import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { AlgorithmParamInput } from 'src/experiments/models/input/algorithm-parameter.input';
 import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
+import handlers from './handlers';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
-import { ResultChartExperiment } from './interfaces/experiment/result-chart-experiment.interface';
 import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import {
-  dataROCToLineResult,
-  dataToHeatmap,
   descriptiveModelToTables,
   descriptiveSingleToTables,
   transformToExperiment,
@@ -80,7 +77,10 @@ const algoParamInputToData = (param: AlgorithmParamInput) => {
   };
 };
 
-export const experimentInputToData = (data: ExperimentCreateInput) => {
+export const experimentInputToData = (
+  data: ExperimentCreateInput,
+  domains?: Domain[],
+) => {
   const formula =
     ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
       single:
@@ -95,6 +95,8 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     }) ||
     null;
 
+  const domain = domains?.find((d) => d.id === data.domain);
+
   const params = {
     algorithm: {
       parameters: [
@@ -106,12 +108,14 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
         {
           name: 'filter',
           label: 'filter',
-          value: data.filter,
+          value: data.filter ?? '',
         },
         {
           name: 'pathology',
           label: 'pathology',
-          value: data.domain,
+          value: domain.version
+            ? `${data.domain}:${domain.version}`
+            : data.domain,
         },
         ...(formula
           ? [
@@ -205,6 +209,8 @@ export const descriptiveDataToTableResult = (
 
 export const dataToExperiment = (
   data: ExperimentData,
+  logger: Logger,
+  domains?: Domain[],
 ): Experiment | undefined => {
   try {
     const expTransform = transformToExperiment.evaluate(data);
@@ -214,12 +220,10 @@ export const dataToExperiment = (
       results: [],
     };
 
-    exp.results = data.result
-      ? data.result
-          .map((result) => dataToResult(result, exp.algorithm.name))
-          .filter((r) => r.length > 0)
-          .flat()
-      : [];
+    const domain = domains?.find((d) => d.id === exp.domain);
+
+    if (data && data.result && data.result.length)
+      handlers(exp, data.result, domain);
 
     const allVariables = exp.filterVariables || [];
 
@@ -242,6 +246,8 @@ export const dataToExperiment = (
 
     return exp;
   } catch (e) {
+    logger.error('Error parsing experiment', data.uuid);
+    logger.debug(e);
     return {
       id: data.uuid,
       name: data.name,
@@ -279,47 +285,4 @@ export const dataToRaw = (
       rawdata: data,
     },
   ];
-};
-
-export const dataToResult = (
-  result: ResultExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (result.type.toLowerCase()) {
-    case 'application/json':
-      return dataJSONtoResult(result, algo);
-    case 'application/vnd.highcharts+json':
-      return dataHighchartToResult(result as ResultChartExperiment, algo);
-    default:
-      return dataToRaw(algo, result);
-  }
-};
-
-export const dataJSONtoResult = (
-  result: ResultExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (algo.toLowerCase()) {
-    case 'cart':
-    case 'id3':
-      return dataToRaw(algo, result);
-    case 'descriptive_stats':
-      return descriptiveDataToTableResult(result);
-    default:
-      return [];
-  }
-};
-
-export const dataHighchartToResult = (
-  result: ResultChartExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (result.data.chart.type) {
-    case 'heatmap':
-      return [dataToHeatmap.evaluate(result) as HeatMapResult];
-    case 'area':
-      return [dataROCToLineResult.evaluate(result) as LineChartResult];
-    default:
-      return dataToRaw(algo, result);
-  }
 };

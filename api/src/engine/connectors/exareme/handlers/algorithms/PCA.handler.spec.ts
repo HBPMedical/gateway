@@ -24,15 +24,15 @@ const createExperiment = (): Experiment => ({
   results: [],
 });
 
-describe('PCA result handler', () => {
-  const data = {
+const data = [
+  {
     n_obs: 920,
-    eigen_vals: [
+    eigenvalues: [
       4.355128575368841, 1.0450017532423244, 0.7421875389691931,
       0.5621334410413102, 0.4449774285333259, 0.3926006044635884,
       0.24709792171717856, 0.2195778509188677,
     ],
-    eigen_vecs: [
+    eigenvectors: [
       [
         -0.39801260415007417, -0.408618968170694, -0.005388160172392957,
         -0.39520225162483835, -0.34101372698341037, -0.3857891852309699,
@@ -74,27 +74,27 @@ describe('PCA result handler', () => {
         0.29263999750747904, -0.009909769193655195,
       ],
     ],
-  };
+  },
+];
 
+describe('PCA result handler', () => {
   it('Test PCA handler with regular data (no edge cases)', () => {
     const exp = createExperiment();
     handlers(exp, data, null);
     expect(exp.results.length).toBeGreaterThanOrEqual(2);
 
-    exp.results.forEach((it) => {
-      if (it['matrix']) {
-        const heatmap = it as HeatMapResult;
-        const matrix = data.eigen_vecs[0].map(
-          (_, i) => data.eigen_vecs.map((row) => row[i]), // reverse matrix as we want row-major order
+    exp.results.forEach((result) => {
+      if (result['matrix']) {
+        const heatmap = result as HeatMapResult;
+        const matrix = data[0].eigenvectors[0].map(
+          (_, i) => data[0].eigenvectors.map((row) => row[i]), // reverse matrix as we want row-major order
         );
         expect(heatmap.matrix).toEqual(matrix);
         expect(heatmap.yAxis.categories).toEqual(exp.variables);
       }
-    });
-    exp.results.forEach((it) => {
-      if (it['barValues']) {
-        const barchart = it as BarChartResult;
-        expect(barchart.barValues).toEqual(data.eigen_vals);
+      if (result['barValues']) {
+        const barchart = result as BarChartResult;
+        expect(barchart.barValues).toEqual(data[0].eigenvalues);
       }
     });
   });

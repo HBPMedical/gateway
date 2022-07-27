@@ -86,6 +86,7 @@ type Domain {
   id: String!
   label: String
   description: String
+  version: String
   groups: [Group!]!
   variables: [Variable!]!
   datasets: [Dataset!]!

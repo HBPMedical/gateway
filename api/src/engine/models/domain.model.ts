@@ -9,6 +9,9 @@ export class Domain extends BaseModel {
   @Field({ nullable: true })
   description?: string;
 
+  @Field({ nullable: true })
+  version?: string;
+
   @Field(() => [Group])
   groups: Group[];
 

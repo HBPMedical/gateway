@@ -8,6 +8,8 @@ import {
 } from '../../../../models/result/table-result.model';
 import BaseHandler from '../base.handler';
 
+const ALGO_NAME = 'one_way_anova';
+
 export default class AnovaOneWayHandler extends BaseHandler {
   private static readonly tuckeyTransform = jsonata(`
     {
@@ -22,7 +24,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
             {"name": 'T value', "type": 'string'},
             {"name": 'P value', "type": 'string'}     
         ],
-        "data": tuckey_test.[$.groupA, $.groupB, $.meanA, $.meanB, $.diff, $.se, $.t_stat, $.p_tuckey]
+        "data": tuckey_test.[$.groupA, $.groupB, $.meanA, $.meanB, $.diff, $.se, $.t_stat, $.p_tuckey][]
     }
   `);
 
@@ -30,24 +32,24 @@ export default class AnovaOneWayHandler extends BaseHandler {
   (
     $cats:= $keys(ci_info.means);
     {
-    "name": "Mean Plot: " & y_label & ' ~ ' & x_label,
+    "name": "Mean Plot: " & anova_table.y_label & ' ~ ' & anova_table.x_label,
     "xAxis": {
-        "label": x_label,
+        "label": anova_table.x_label,
         "categories": $cats
     },
     "yAxis": {
-        "label": '95% CI: ' & y_label
+        "label": '95% CI: ' & anova_table.y_label
     },
-    "pointCIs": $cats.[{
+    "pointCIs": $cats.{
         "min": $lookup($$.ci_info.'m-s', $),
         "mean": $lookup($$.ci_info.means, $),
         "max": $lookup($$.ci_info.'m+s', $)
-    }]
+    }[]
   })
   `);
 
   canHandle(algorithm: string): boolean {
-    return algorithm.toLocaleLowerCase() === 'anova_oneway';
+    return algorithm.toLocaleLowerCase() === ALGO_NAME;
   }
 
   getTuckeyTable(data: unknown): TableResult | undefined {
@@ -57,7 +59,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
 
     const tableResult: TableResult = {
       ...tableData,
-      tableStyle: TableStyle.NORMAL,
+      tableStyle: TableStyle.DEFAULT,
     } as unknown as TableResult;
 
     return tableResult;
@@ -65,8 +67,8 @@ export default class AnovaOneWayHandler extends BaseHandler {
 
   getSummaryTable(data: unknown, varname: string): TableResult | undefined {
     const tableSummary: TableResult = {
-      name: 'Annova summary',
-      tableStyle: TableStyle.NORMAL,
+      name: 'Anova summary',
+      tableStyle: TableStyle.DEFAULT,
       headers: ['', 'DF', 'SS', 'MS', 'F ratio', 'P value'].map((name) => ({
         name,
         type: 'string',
@@ -74,17 +76,17 @@ export default class AnovaOneWayHandler extends BaseHandler {
       data: [
         [
           varname,
-          data['df_explained'],
-          data['ss_explained'],
-          data['ms_explained'],
-          data['p_value'],
-          data['f_stat'],
+          data['anova_table']['df_explained'],
+          data['anova_table']['ss_explained'],
+          data['anova_table']['ms_explained'],
+          data['anova_table']['p_value'],
+          data['anova_table']['f_stat'],
         ],
         [
           'Residual',
-          data['df_residual'],
-          data['ss_residual'],
-          data['ms_residual'],
+          data['anova_table']['df_residual'],
+          data['anova_table']['ss_residual'],
+          data['anova_table']['ms_residual'],
           '',
           '',
         ],
@@ -94,23 +96,25 @@ export default class AnovaOneWayHandler extends BaseHandler {
     return tableSummary;
   }
 
-  getMeanPlot(data: unknown): MeanChartResult {
+  getMeanPlot(data: any): MeanChartResult {
     return AnovaOneWayHandler.meanPlotTransform.evaluate(data);
   }
 
-  handle(exp: Experiment, data: unknown, domain: Domain): void {
+  handle(exp: Experiment, data: any, domain: Domain): void {
+    if (!data || data.length === 0) return super.handle(exp, data, domain);
+
     if (!this.canHandle(exp.algorithm.name))
       return super.handle(exp, data, domain);
 
-    const summaryTable = this.getSummaryTable(data, exp.coVariables[0]);
+    const result = data[0];
+
+    const summaryTable = this.getSummaryTable(result, exp.coVariables[0]);
     if (summaryTable) exp.results.push(summaryTable);
 
-    const tuckeyTable = this.getTuckeyTable(data);
+    const tuckeyTable = this.getTuckeyTable(result);
     if (tuckeyTable) exp.results.push(tuckeyTable);
 
-    const meanPlot = this.getMeanPlot(data);
+    const meanPlot = this.getMeanPlot(result);
     if (meanPlot && meanPlot.pointCIs) exp.results.push(meanPlot);
-
-    return super.handle(exp, data, domain); // continue request
   }
 }

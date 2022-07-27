@@ -1,20 +1,32 @@
+import { Domain } from 'src/engine/models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { BarChartResult } from '../../../../models/result/bar-chart-result.model';
-import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
+import {
+  HeatMapResult,
+  HeatMapStyle,
+} from '../../../../models/result/heat-map-result.model';
 import BaseHandler from '../base.handler';
 
 export default class PCAHandler extends BaseHandler {
-  canHandle(algorithm: string): boolean {
-    return algorithm.toLocaleLowerCase() === 'pca';
+  canHandle(algorithm: string, data: any): boolean {
+    return (
+      algorithm.toLowerCase() === 'pca' &&
+      data &&
+      data[0] &&
+      data[0]['eigenvalues'] &&
+      data[0]['eigenvectors']
+    );
   }
 
-  handle(exp: Experiment, data: unknown): void {
-    if (!this.canHandle(exp.algorithm.name))
-      return this.next?.handle(exp, data);
+  handle(exp: Experiment, data: any, domain?: Domain): void {
+    if (!this.canHandle(exp.algorithm.name, data))
+      return this.next?.handle(exp, data, domain);
+
+    const extractedData = data[0];
 
     const barChar: BarChartResult = {
       name: 'Eigen values',
-      barValues: data['eigen_vals'],
+      barValues: extractedData['eigenvalues'],
       xAxis: {
         label: 'Dimensions',
         categories: exp.variables.map((_, i) => i + 1).map(String),
@@ -28,11 +40,12 @@ export default class PCAHandler extends BaseHandler {
     if (barChar.barValues && barChar.barValues.length > 0)
       exp.results.push(barChar);
 
-    const matrix = data['eigen_vecs'] as number[][];
+    const matrix = extractedData['eigenvectors'] as number[][];
 
     const heatMapChart: HeatMapResult = {
       name: 'Eigen vectors',
       matrix,
+      heatMapStyle: HeatMapStyle.BUBBLE,
       yAxis: {
         categories: exp.variables,
       },

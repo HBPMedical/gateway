@@ -9,7 +9,7 @@ import {
 import BaseHandler from '../base.handler';
 
 const NUMBER_PRECISION = 4;
-const ALGO_NAME = 'linear_regression_cross_validation';
+const ALGO_NAME = 'linear_regression_cv';
 const lookupDict = {
   dependent_var: 'Dependent variable',
   indep_vars: 'Independent variables',
@@ -23,7 +23,7 @@ export default class LinearRegressionCVHandler extends BaseHandler {
   private getModel(data: any): TableResult | undefined {
     return {
       name: 'Data points',
-      tableStyle: TableStyle.NORMAL,
+      tableStyle: TableStyle.DEFAULT,
       headers: ['', `${lookupDict['n_obs']} (${data['dependent_var']})`].map(
         (name) => ({ name, type: 'string' }),
       ),
@@ -37,7 +37,7 @@ export default class LinearRegressionCVHandler extends BaseHandler {
   private getScores(data: any): TableResult | undefined {
     return {
       name: 'Scores',
-      tableStyle: TableStyle.NORMAL,
+      tableStyle: TableStyle.DEFAULT,
       headers: ['', 'Mean', 'Standard deviation'].map((name) => ({
         name: name,
         type: 'string',
@@ -56,14 +56,26 @@ export default class LinearRegressionCVHandler extends BaseHandler {
     return varible.label ?? id;
   }
 
+  canHandle(exp: Experiment, data: any): boolean {
+    return (
+      exp.algorithm.name.toLowerCase() === ALGO_NAME &&
+      data &&
+      data[0] &&
+      data[0].mean_sq_error &&
+      data[0].r_squared
+    );
+  }
+
   handle(experiment: Experiment, data: any, domain: Domain): void {
-    if (experiment.algorithm.name.toLowerCase() !== ALGO_NAME)
+    if (!this.canHandle(experiment, data))
       return super.handle(experiment, data, domain);
+
+    const extractedData = data[0];
 
     const varIds = [...experiment.variables, ...(experiment.coVariables ?? [])];
     const variables = domain.variables.filter((v) => varIds.includes(v.id));
 
-    let jsonData = JSON.stringify(data);
+    let jsonData = JSON.stringify(extractedData);
 
     variables.forEach((v) => {
       const regEx = new RegExp(v.id, 'gi');

@@ -221,16 +221,28 @@ export default class EngineService implements Connector {
     return this.connector.getFilterConfiguration(req);
   }
 
-  async logout?(req?: Request): Promise<void> {
-    const user = req?.user as User;
-
-    if (user && user.id)
-      CACHE_KEYS.map((key) => `${key}-${user.id}`).forEach((key) =>
-        this.cacheManager.del(key),
-      );
+  async logout?(req: Request): Promise<void> {
+    await this.clearCache(req);
 
     if (!this.connector.logout) throw new NotImplementedException();
     return this.connector.logout(req);
+  }
+
+  /**
+   * It deletes all the cache keys for the current user
+   * @param {Request} req - Request - The request object.
+   * @returns A promise that resolves to an array of promises that resolve to undefined.
+   */
+  async clearCache(req: Request): Promise<void> {
+    const user = req?.user as User;
+
+    if (!user || !user.id) return;
+
+    await Promise.all(
+      CACHE_KEYS.map((key) => `${key}-${user.id}`).map((key) =>
+        this.cacheManager.del(key),
+      ),
+    );
   }
 
   async login?(username: string, password: string): Promise<User> {

@@ -23,7 +23,7 @@ export class ErrorsInterceptor implements NestInterceptor {
     this.logger = new Logger(options.type);
   }
 
-  intercept(context: GqlExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_context: GqlExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((e) => {
         if (!e.response || !e.response.data || !e.response.status) throw e;

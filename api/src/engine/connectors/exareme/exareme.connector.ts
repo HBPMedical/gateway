@@ -3,14 +3,14 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { AxiosRequestConfig } from 'axios';
 import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
-import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
+import EngineService from 'src/engine/engine.service';
 import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
 import Connector from 'src/engine/interfaces/connector.interface';
 import EngineOptions from 'src/engine/interfaces/engine-options.interface';
@@ -46,9 +46,12 @@ type Headers = Record<string, string>;
 
 @Injectable()
 export default class ExaremeConnector implements Connector {
+  private static readonly logger = new Logger(ExaremeConnector.name);
+
   constructor(
-    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
+    private readonly options: EngineOptions,
     private readonly httpService: HttpService,
+    private readonly engineService: EngineService,
   ) {}
 
   async getFormulaConfiguration(): Promise<FormulaOperation[]> {
@@ -82,7 +85,9 @@ export default class ExaremeConnector implements Connector {
     isTransient = false,
     request: Request,
   ): Promise<Experiment> {
-    const form = experimentInputToData(data);
+    const domains = await this.engineService.getDomains(request);
+
+    const form = experimentInputToData(data, domains);
 
     const path =
       this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
@@ -91,7 +96,7 @@ export default class ExaremeConnector implements Connector {
       this.post<ExperimentData>(request, path, form),
     );
 
-    return dataToExperiment(resultAPI.data);
+    return dataToExperiment(resultAPI.data, ExaremeConnector.logger, domains);
   }
 
   async listExperiments(
@@ -109,7 +114,10 @@ export default class ExaremeConnector implements Connector {
 
     return {
       ...resultAPI.data,
-      experiments: resultAPI.data.experiments?.map(dataToExperiment) ?? [],
+      experiments:
+        resultAPI.data.experiments?.map((exp) =>
+          dataToExperiment(exp, ExaremeConnector.logger),
+        ) ?? [],
     };
   }
 
@@ -120,6 +128,7 @@ export default class ExaremeConnector implements Connector {
 
     return transformToAlgorithms.evaluate(resultAPI.data);
   }
+
   async getExperiment(id: string, request: Request): Promise<Experiment> {
     const path = this.options.baseurl + `experiments/${id}`;
 
@@ -127,7 +136,9 @@ export default class ExaremeConnector implements Connector {
       this.get<ExperimentData>(request, path),
     );
 
-    return dataToExperiment(resultAPI.data);
+    const domains = await this.engineService.getDomains(request);
+
+    return dataToExperiment(resultAPI.data, ExaremeConnector.logger, domains);
   }
 
   async editExperiment(
@@ -141,7 +152,9 @@ export default class ExaremeConnector implements Connector {
       this.patch<ExperimentData>(request, path, expriment),
     );
 
-    return dataToExperiment(resultAPI.data);
+    const domains = await this.engineService.getDomains(request);
+
+    return dataToExperiment(resultAPI.data, ExaremeConnector.logger, domains);
   }
 
   async removeExperiment(
@@ -173,6 +186,7 @@ export default class ExaremeConnector implements Connector {
           return {
             id: d.code,
             label: d.label,
+            version: d.version,
             groups: groups,
             rootGroup: dataToGroup(d.metadataHierarchy),
             datasets: d.datasets ? d.datasets.map(dataToDataset) : [],
