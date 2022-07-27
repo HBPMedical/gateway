@@ -1,4 +1,5 @@
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
+import { Domain } from '../../../../models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import {
   GroupResult,
@@ -37,6 +38,7 @@ $fn := function($o, $prefix) {
         $ks := $keys($model.*.data.*[$i][$type($) = 'object']);
         {
             'name': $varName,
+            'tableStyle': 1,
             'headers': $append("", $keys($$.data.model)).{
                 'name': $,
                 'type': 'string'
@@ -66,6 +68,7 @@ $fn := function($o, $prefix) {
             $ks := $keys($p.*.data[$type($) = 'object']);
             {
             'name': $keys(%)[$i],
+            'tableStyle': 1,
             'headers': $append("", $keys(*)).{
                 'name': $,
                 'type': 'string'
@@ -110,24 +113,17 @@ $fn := function($o, $prefix) {
     return result;
   }
 
-  handle(exp: Experiment, data: unknown): void {
-    let req = data;
+  handle(exp: Experiment, data: unknown, domain?: Domain): void {
+    if (exp.algorithm.name.toLowerCase() !== 'descriptive_stats')
+      return super.handle(exp, data, domain);
 
-    if (exp.algorithm.name.toLowerCase() === 'descriptive_stats') {
-      const inputs = data as ResultExperiment[];
+    const inputs = data as ResultExperiment[];
 
-      if (inputs && Array.isArray(inputs)) {
-        inputs
-          .filter((input) => input.type === 'application/json')
-          .map((input) => this.descriptiveDataToTableResult(input))
-          .forEach((input) => exp.results.push(input));
-
-        req = JSON.stringify(
-          inputs.filter((input) => input.type !== 'application/json'),
-        );
-      }
+    if (inputs && Array.isArray(inputs)) {
+      inputs
+        .filter((input) => input.type === 'application/json')
+        .map((input) => this.descriptiveDataToTableResult(input))
+        .forEach((input) => exp.results.push(input));
     }
-
-    this.next?.handle(exp, req);
   }
 }

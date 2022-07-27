@@ -136,7 +136,7 @@ describe('Pearson result handler', () => {
         0.47221482855748664, 0.5181316725208311,
       ],
     },
-    'p-values': {
+    p_values: {
       variables: [
         'leftputamen',
         'leftttgtransversetemporalgyrus',
@@ -228,7 +228,7 @@ describe('Pearson result handler', () => {
         7.914506269450685e-103, 6.154408322606963e-127,
       ],
     },
-    low_confidence_intervals: {
+    ci_lo: {
       variables: [
         'leftputamen',
         'leftttgtransversetemporalgyrus',
@@ -320,7 +320,7 @@ describe('Pearson result handler', () => {
         0.4329922438384865, 0.48111874424540896,
       ],
     },
-    high_confidence_intervals: {
+    ci_hi: {
       variables: [
         'leftputamen',
         'leftttgtransversetemporalgyrus',
@@ -418,7 +418,7 @@ describe('Pearson result handler', () => {
     const exp = createExperiment();
     const names = [
       'correlations',
-      'p-values',
+      'p_values',
       'low_confidence_intervals',
       'high_confidence_intervals',
     ];

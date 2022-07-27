@@ -3,19 +3,21 @@ import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import LinearRegressionCVHandler from './linear-regression-cv.handler';
 
-const data = {
-  dependent_var: 'leftocpoccipitalpole',
-  indep_vars: [
-    'Intercept',
-    'righthippocampus',
-    'rightsogsuperioroccipitalgyrus',
-    'leftppplanumpolare',
-  ],
-  n_obs: [497, 498, 498, 499],
-  mean_sq_error: [0.3296455054532643, 0.02930654997949175],
-  r_squared: [0.5886631959286948, 0.04365853383949705],
-  mean_abs_error: [0.2585157369288272, 0.019919123005319055],
-};
+const data = [
+  {
+    dependent_var: 'leftocpoccipitalpole',
+    indep_vars: [
+      'Intercept',
+      'righthippocampus',
+      'rightsogsuperioroccipitalgyrus',
+      'leftppplanumpolare',
+    ],
+    n_obs: [497, 498, 498, 499],
+    mean_sq_error: [0.3296455054532643, 0.02930654997949175],
+    r_squared: [0.5886631959286948, 0.04365853383949705],
+    mean_abs_error: [0.2585157369288272, 0.019919123005319055],
+  },
+];
 
 const domain: Domain = {
   id: 'dummy-id',
@@ -36,7 +38,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'LINEAR_REGRESSION_CROSS_VALIDATION',
+    name: 'LINEAR_REGRESSION_CV',
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
@@ -76,14 +78,18 @@ describe('Linear regression CV result handler', () => {
 
       const json = JSON.stringify(experiment.results);
 
+      expect(experiment.results.length).toEqual(2);
+
       const dataPoints = experiment.results[0] as TableResult;
       const scoresData = experiment.results[1] as TableResult;
+
+      console.log(JSON.stringify(dataPoints));
+      console.log(JSON.stringify(scoresData));
 
       expect(dataPoints.data).toStrictEqual(expectedDataPoints);
       expect(scoresData.data).toStrictEqual(expectedScoresData);
 
       expect(json.includes(domain.variables[0].label)).toBeTruthy();
-      expect(experiment.results.length === 2);
     });
 
     it('Should be empty with another algo', () => {

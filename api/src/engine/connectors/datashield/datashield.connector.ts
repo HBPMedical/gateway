@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, InternalServerErrorException, Logger } from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
 import {
@@ -7,7 +7,6 @@ import {
   MIME_TYPES,
 } from 'src/common/interfaces/utilities.interface';
 import { errorAxiosHandler } from 'src/common/utils/shared.utils';
-import { ENGINE_MODULE_OPTIONS } from 'src/engine/engine.constants';
 import EngineService from 'src/engine/engine.service';
 import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
 import Connector from 'src/engine/interfaces/connector.interface';
@@ -38,7 +37,7 @@ export default class DataShieldConnector implements Connector {
   private static readonly logger = new Logger(DataShieldConnector.name);
   headers = {};
   constructor(
-    @Inject(ENGINE_MODULE_OPTIONS) private readonly options: EngineOptions,
+    private readonly options: EngineOptions,
     private readonly httpService: HttpService,
     private readonly engineService: EngineService,
   ) {}

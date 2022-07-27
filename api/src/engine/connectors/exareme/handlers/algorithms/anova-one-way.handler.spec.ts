@@ -6,7 +6,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'Anova_OnEway',
+    name: 'one_way_ANOVA',
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
@@ -15,19 +15,20 @@ const createExperiment = (): Experiment => ({
   results: [],
 });
 
-describe('Anova oneway result handler', () => {
-  const anovaHandler = new AnovaOneWayHandler();
-  const data = {
-    x_label: 'Variable X',
-    y_label: 'Variable Y',
-    df_residual: 1424.0,
-    df_explained: 3.0,
-    ss_residual: 1941.1517872154072,
-    ss_explained: 23.52938815624377,
-    ms_residual: 1.3631683898984601,
-    ms_explained: 7.843129385414589,
-    p_value: 0.0006542139533101455,
-    f_stat: 5.753602741623733,
+const data = [
+  {
+    anova_table: {
+      x_label: 'Variable X',
+      y_label: 'Variable Y',
+      df_residual: 1424.0,
+      df_explained: 3.0,
+      ss_residual: 1941.1517872154072,
+      ss_explained: 23.52938815624377,
+      ms_residual: 1.3631683898984601,
+      ms_explained: 7.843129385414589,
+      p_value: 0.0006542139533101455,
+      f_stat: 5.753602741623733,
+    },
     tuckey_test: [
       {
         groupA: 'GENPD',
@@ -90,22 +91,11 @@ describe('Anova oneway result handler', () => {
         p_tuckey: 0.02355122851783331,
       },
     ],
-    min_per_group: [
-      {
-        GENPD: 7.2276,
-        HC: 7.2107,
-        PD: 7.0258,
-        PRODROMA: 6.3771,
-      },
-    ],
-    max_per_group: [
-      {
-        GENPD: 13.7312,
-        HC: 14.52,
-        PD: 14.4812,
-        PRODROMA: 12.3572,
-      },
-    ],
+    min_max_per_group: {
+      categories: ['GENPD', 'HC, PD', 'PRODROMA'],
+      min: [2.6377, 8.4133, 2.6377, 8.4133],
+      max: [61.1428, 66.8592, 2.6377, 8.4133],
+    },
     ci_info: {
       sample_stds: {
         GENPD: 1.2338388511229372,
@@ -132,13 +122,17 @@ describe('Anova oneway result handler', () => {
         PRODROMA: 11.35849951898973,
       },
     },
-  };
+  },
+];
+
+describe('Anova oneway result handler', () => {
+  const anovaHandler = new AnovaOneWayHandler();
 
   it('Test anova 1 way handler', () => {
     const exp = createExperiment();
-    const table1 = anovaHandler.getSummaryTable(data, exp.coVariables[0]);
-    const table2 = anovaHandler.getTuckeyTable(data);
-    const meanPlot = anovaHandler.getMeanPlot(data);
+    const table1 = anovaHandler.getSummaryTable(data[0], exp.coVariables[0]);
+    const table2 = anovaHandler.getTuckeyTable(data[0]);
+    const meanPlot = anovaHandler.getMeanPlot(data[0]);
 
     handlers(exp, data, null);
 
@@ -153,7 +147,7 @@ describe('Anova oneway result handler', () => {
 
     expect(meanPlot.pointCIs.length).toBeGreaterThan(1);
     expect(meanPlot.name).toEqual(
-      `Mean Plot: ${data.y_label} ~ ${data.x_label}`,
+      `Mean Plot: ${data[0].anova_table.y_label} ~ ${data[0].anova_table.x_label}`,
     );
   });
 });

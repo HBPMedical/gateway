@@ -34,8 +34,8 @@ export default class LinearRegressionHandler extends BaseHandler {
     const excepts = ['n_obs'];
     const tableModel: TableResult = {
       name: 'Model',
-      tableStyle: TableStyle.NORMAL,
-      headers: ['', 'name', 'value'].map((name) => ({ name, type: 'string' })),
+      tableStyle: TableStyle.DEFAULT,
+      headers: ['name', 'value'].map((name) => ({ name, type: 'string' })),
       data: [
         'dependent_var',
         'n_obs',
@@ -71,8 +71,8 @@ export default class LinearRegressionHandler extends BaseHandler {
 
     const tableCoef: TableResult = {
       name: 'Coefficients',
-      tableStyle: TableStyle.NORMAL,
-      headers: ['', ...keys].map((name) => ({
+      tableStyle: TableStyle.DEFAULT,
+      headers: keys.map((name) => ({
         name: lookupDict[name],
         type: 'string',
       })),
@@ -95,18 +95,32 @@ export default class LinearRegressionHandler extends BaseHandler {
     return varible.label ?? id;
   }
 
+  canHandle(exp: Experiment, data: any): boolean {
+    return (
+      exp.algorithm.name.toLowerCase() === ALGO_NAME &&
+      data &&
+      data[0] &&
+      data[0].rse &&
+      data[0].f_stat
+    );
+  }
+
   handle(experiment: Experiment, data: any, domain: Domain): void {
-    if (experiment.algorithm.name.toLowerCase() !== ALGO_NAME)
+    if (!this.canHandle(experiment, data))
       return super.handle(experiment, data, domain);
+
+    const extractedData = data[0];
 
     const varIds = [...experiment.variables, ...(experiment.coVariables ?? [])];
     const variables = domain.variables.filter((v) => varIds.includes(v.id));
 
-    let jsonData = JSON.stringify(data);
+    let jsonData = JSON.stringify(extractedData);
+
     variables.forEach((v) => {
       const regEx = new RegExp(v.id, 'gi');
       jsonData = jsonData.replaceAll(regEx, v.label);
     });
+
     const improvedData = JSON.parse(jsonData);
 
     const model = this.getModel(improvedData);

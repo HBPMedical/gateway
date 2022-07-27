@@ -1,5 +1,6 @@
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 import { Expression } from 'jsonata';
+import { Domain } from 'src/engine/models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import BaseHandler from '../base.handler';
@@ -7,16 +8,22 @@ import BaseHandler from '../base.handler';
 export default class PearsonHandler extends BaseHandler {
   private static readonly transform: Expression = jsonata(`
   (
-    $params := ['correlations', 'p-values', 'low_confidence_intervals', 'high_confidence_intervals'];
+    $params := ['correlations', 'p_values', 'ci_lo', 'ci_hi'];
+    $dictName := {
+        "correlations": "Correlations",
+        "p_values": "P values",
+        "ci_lo": 'Low confidence intervals',
+        "ci_hi": 'High confidence intervals'
+    };
 
     $.$sift(function($v, $k) {$k in $params}).$each(function($v, $k) {
         {
-            'name': $k,
+            'name': $lookup($dictName, $k),
             'xAxis': {
                 'categories': $v.variables
             },
             'yAxis': {
-                'categories': $keys($v.$sift(function($val, $key) {$key ~> /^(?!variables$)/}))
+                'categories': $reverse($v.variables)
             },
             'matrix': $v.$sift(function($val, $key) {$key ~> /^(?!variables$)/}).$each(function($val, $key) {$val})[]
             }
@@ -28,34 +35,28 @@ export default class PearsonHandler extends BaseHandler {
    * @param {string} algorithm - The name of the algorithm to use.
    * @returns a boolean value.
    */
-  canHandle(algorithm: string): boolean {
-    return algorithm.toLocaleLowerCase() === 'pearson';
+  canHandle(algorithm: string, data: any): boolean {
+    return (
+      algorithm.toLocaleLowerCase() === 'pearson' &&
+      data &&
+      data[0] &&
+      data[0]['correlations'] &&
+      data[0]['p_values']
+    );
   }
 
-  /**
-   * If the algorithm is Pearson, then transform the data into a HeatMapResult and push it into the
-   * results array
-   * @param {string} algorithm - The name of the algorithm.
-   * @param {unknown} data - The data that is passed to the algorithm.
-   * @param {AlgoResults} res - list of possible results
-   * @returns
-   */
-  handle(exp: Experiment, data: unknown): void {
-    if (this.canHandle(exp.algorithm.name)) {
-      try {
-        const results = PearsonHandler.transform.evaluate(
-          data,
-        ) as HeatMapResult[];
-        results
-          .filter((heatMap) => heatMap.matrix.length > 0 && heatMap.name)
-          .forEach((heatMap) => exp.results.push(heatMap));
-      } catch (e) {
-        PearsonHandler.logger.warn(
-          'An error occur when converting result from Pearson',
-        );
-        PearsonHandler.logger.verbose(JSON.stringify(data));
-      }
-    }
+  handle(exp: Experiment, data: any, domain?: Domain): void {
+    if (!this.canHandle(exp.algorithm.name, data))
+      return super.handle(exp, data, domain);
+
+    const extData = data[0];
+
+    const results = PearsonHandler.transform.evaluate(
+      extData,
+    ) as HeatMapResult[];
+    results
+      .filter((heatMap) => heatMap.matrix.length > 0 && heatMap.name)
+      .forEach((heatMap) => exp.results.push(heatMap));
 
     this.next?.handle(exp, data);
   }
