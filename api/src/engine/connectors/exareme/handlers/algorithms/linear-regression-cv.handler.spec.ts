@@ -83,9 +83,6 @@ describe('Linear regression CV result handler', () => {
       const dataPoints = experiment.results[0] as TableResult;
       const scoresData = experiment.results[1] as TableResult;
 
-      console.log(JSON.stringify(dataPoints));
-      console.log(JSON.stringify(scoresData));
-
       expect(dataPoints.data).toStrictEqual(expectedDataPoints);
       expect(scoresData.data).toStrictEqual(expectedScoresData);
 
