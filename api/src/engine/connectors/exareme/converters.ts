@@ -1,5 +1,4 @@
 import { Logger } from '@nestjs/common';
-import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
 import { Category } from 'src/engine/models/category.model';
 import { Dataset } from 'src/engine/models/dataset.model';
 import { Domain } from 'src/engine/models/domain.model';
@@ -8,25 +7,15 @@ import {
   ExperimentStatus,
 } from 'src/engine/models/experiment/experiment.model';
 import { Group } from 'src/engine/models/group.model';
-import {
-  GroupResult,
-  GroupsResult,
-} from 'src/engine/models/result/groups-result.model';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
 import { Variable } from 'src/engine/models/variable.model';
 import { AlgorithmParamInput } from 'src/experiments/models/input/algorithm-parameter.input';
 import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
 import handlers from './handlers';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
-import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
-import {
-  descriptiveModelToTables,
-  descriptiveSingleToTables,
-  transformToExperiment,
-} from './transformations';
+import { transformToExperiment } from './transformations';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -182,31 +171,6 @@ export const experimentInputToData = (
   return params;
 };
 
-export const descriptiveDataToTableResult = (
-  data: ResultExperiment,
-): GroupsResult[] => {
-  const result = new GroupsResult();
-
-  result.groups = [
-    new GroupResult({
-      name: 'Variables',
-      description: 'Descriptive statistics for the variables of interest.',
-      results: descriptiveSingleToTables.evaluate(data),
-    }),
-  ];
-
-  result.groups.push(
-    new GroupResult({
-      name: 'Model',
-      description:
-        'Intersection table for the variables of interest as it appears in the experiment.',
-      results: descriptiveModelToTables.evaluate(data),
-    }),
-  );
-
-  return [result];
-};
-
 export const dataToExperiment = (
   data: ExperimentData,
   logger: Logger,
@@ -268,21 +232,4 @@ export const dataToExperiment = (
       },
     };
   }
-};
-
-export const dataToRaw = (
-  algo: string,
-  result: ResultExperiment,
-): RawResult[] => {
-  let data = result;
-
-  if (algo === 'CART') {
-    data = { ...data, type: MIME_TYPES.JSONBTREE };
-  }
-
-  return [
-    {
-      rawdata: data,
-    },
-  ];
 };
