@@ -1,5 +1,5 @@
-import { Domain } from 'src/engine/models/domain.model';
-import { Variable } from 'src/engine/models/variable.model';
+import { Domain } from '../../../../models/domain.model';
+import { Variable } from '../../../../models/variable.model';
 import { isNumber } from '../../../../../common/utils/shared.utils';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import {
@@ -31,7 +31,7 @@ const lookupDict = {
 
 export default class LinearRegressionHandler extends BaseHandler {
   private getModel(data: any): TableResult | undefined {
-    const excepts = ['n_obs'];
+    const exclude = ['n_obs'];
     const tableModel: TableResult = {
       name: 'Model',
       tableStyle: TableStyle.DEFAULT,
@@ -48,7 +48,7 @@ export default class LinearRegressionHandler extends BaseHandler {
         'f_pvalue',
       ].map((name) => [
         lookupDict[name],
-        isNumber(data[name]) && !excepts.includes(name)
+        isNumber(data[name]) && !exclude.includes(name)
           ? data[name].toPrecision(NUMBER_PRECISION)
           : data[name],
       ]),
