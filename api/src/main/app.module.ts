@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
 import { join } from 'path';
 import { AuthModule } from 'src/auth/auth.module';
+import authConfig from 'src/config/auth.config';
 import cacheConfig from 'src/config/cache.config';
 import dbConfig from 'src/config/db.config';
 import matomoConfig from 'src/config/matomo.config';
@@ -21,7 +22,7 @@ import { AppService } from './app.service';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env', '.env.defaults'],
-      load: [dbConfig, matomoConfig, cacheConfig],
+      load: [dbConfig, matomoConfig, cacheConfig, authConfig],
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

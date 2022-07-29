@@ -1,5 +1,7 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Inject, Injectable, NotImplementedException } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import authConfig from '../config/auth.config';
 import EngineService from '../engine/engine.service';
 import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
@@ -9,6 +11,7 @@ export class AuthService {
   constructor(
     private readonly engineService: EngineService,
     private jwtService: JwtService,
+    @Inject(authConfig.KEY) private authConf: ConfigType<typeof authConfig>,
   ) {}
 
   async validateUser(username: string, password: string): Promise<User> {
@@ -21,10 +24,14 @@ export class AuthService {
    * @param {User} user - The user object that is being authenticated.
    * @returns An object with an accessToken property.
    */
-  async login(user: User): Promise<Pick<AuthenticationOutput, 'accessToken'>> {
+  async login(user: User): Promise<AuthenticationOutput> {
     const payload = { username: user.username, sub: user };
     return Promise.resolve({
       accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, {
+        expiresIn: this.authConf.refreshExperiesIn,
+        secret: this.authConf.JWTResfreshSecret,
+      }),
     });
   }
 }

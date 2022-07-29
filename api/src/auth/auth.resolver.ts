@@ -4,23 +4,23 @@ import {
   Logger,
   UseGuards,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { Response, Request } from 'express';
-import { CurrentUser } from '../common/decorators/user.decorator';
+import { Request, Response } from 'express';
+import authConfig from '../config/auth.config';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { GQLResponse } from '../common/decorators/gql-response.decoractor';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import { parseToBoolean } from '../common/utils/shared.utils';
 import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
+import EngineService from '../engine/engine.service';
+import EngineOptions from '../engine/interfaces/engine-options.interface';
 import { User } from '../users/models/user.model';
-import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
 import { GlobalAuthGuard } from './guards/global-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
 import { AuthenticationOutput } from './outputs/authentication.output';
-import { parseToBoolean } from '../common/utils/shared.utils';
-import EngineOptions from '../engine/interfaces/engine-options.interface';
-import EngineService from '../engine/engine.service';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
@@ -34,7 +34,7 @@ export class AuthResolver {
     @Inject(ENGINE_MODULE_OPTIONS)
     private readonly engineOptions: EngineOptions,
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    @Inject(authConfig.KEY) private authConf: ConfigType<typeof authConfig>,
   ) {}
 
   @Mutation(() => AuthenticationOutput)
@@ -52,22 +52,13 @@ export class AuthResolver {
         `Error during the authentication process`,
       );
 
-    res.cookie(authConstants.cookie.name, data.accessToken, {
-      httpOnly: parseToBoolean(
-        this.configService.get(authConstants.cookie.httpOnly, 'true'),
-      ),
-      sameSite: this.configService.get<SameSiteType>(
-        authConstants.cookie.sameSite,
-        'strict',
-      ),
-      secure: parseToBoolean(
-        this.configService.get(authConstants.cookie.secure, 'true'),
-      ),
+    res.cookie(this.authConf.cookie.name, data.accessToken, {
+      httpOnly: parseToBoolean(this.authConf.cookie.httpOnly),
+      sameSite: this.authConf.cookie.sameSite as SameSiteType,
+      secure: parseToBoolean(this.authConf.cookie.secure),
     });
 
-    return {
-      accessToken: data.accessToken,
-    };
+    return data;
   }
 
   @Mutation(() => Boolean)
@@ -90,7 +81,7 @@ export class AuthResolver {
       }
     }
 
-    res.clearCookie(authConstants.cookie.name);
+    res.clearCookie(this.authConf.cookie.name);
 
     return true;
   }

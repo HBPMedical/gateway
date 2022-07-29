@@ -5,9 +5,10 @@ import EngineService from '../engine/engine.service';
 import LocalService from '../engine/connectors/local/local.connector';
 import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
 import { User } from '../users/models/user.model';
-import { authConstants } from './auth-constants';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
+import authConfig from '../config/auth.config';
+import { ConfigType } from '@nestjs/config';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -16,6 +17,7 @@ describe('AuthResolver', () => {
   const { res } = getMockRes();
   const mockCookie = jest.fn();
   const mockClearCookie = jest.fn();
+  let config: ConfigType<typeof authConfig>;
 
   res.cookie = mockCookie;
   res.clearCookie = mockClearCookie;
@@ -37,6 +39,10 @@ describe('AuthResolver', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: authConfig.KEY,
+          useValue: authConfig(),
+        },
         {
           provide: EngineService,
           useClass: LocalService,
@@ -67,12 +73,13 @@ describe('AuthResolver', () => {
       .compile();
 
     resolver = module.get<AuthResolver>(AuthResolver);
+    config = module.get<ConfigType<typeof authConfig>>(authConfig.KEY);
   });
 
   it('login', async () => {
     const data = await resolver.login(res, user, credentials);
 
-    expect(mockCookie.mock.calls[0][0]).toBe(authConstants.cookie.name);
+    expect(mockCookie.mock.calls[0][0]).toBe(config.cookie.name);
     expect(mockCookie.mock.calls[0][1]).toBe(authData.accessToken);
     expect(data.accessToken).toBe(authData.accessToken);
   });
@@ -81,6 +88,6 @@ describe('AuthResolver', () => {
     const request: any = jest.fn();
     await resolver.logout(request, res, user);
 
-    expect(mockClearCookie.mock.calls[0][0]).toBe(authConstants.cookie.name);
+    expect(mockClearCookie.mock.calls[0][0]).toBe(config.cookie.name);
   });
 });

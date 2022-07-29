@@ -5,6 +5,7 @@ import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
 import { AuthService } from './auth.service';
 import { User } from '../users/models/user.model';
 import EngineService from '../engine/engine.service';
+import authConfig from '../config/auth.config';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -27,6 +28,10 @@ describe('AuthService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: authConfig.KEY,
+          useValue: authConfig(),
+        },
         {
           provide: EngineService,
           useValue: createEngineService(),
