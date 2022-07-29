@@ -5,7 +5,7 @@ export default registerAs('auth', () => ({
   JWTResfreshSecret: process.env.AUTH_JWT_REFRESH_SECRET || 'refresh-secret',
   skipAuth: process.env.AUTH_SKIP || 'false',
   expiresIn: process.env.AUTH_JWT_TOKEN_EXPIRES_IN || '1h',
-  refreshExperiesIn: process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRES_IN || '7d',
+  refreshExperiesIn: process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRES_IN || '2d',
   enableSSO: process.env.AUTH_ENABLE_SSO || 'false',
   cookie: {
     name: process.env.AUTH_COOKIE_NAME || 'jwt-gateway',

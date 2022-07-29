@@ -23,6 +23,7 @@ type User {
 
 type AuthenticationOutput {
   accessToken: String!
+  refreshToken: String!
 }
 
 type Matomo {
@@ -385,21 +386,22 @@ type Query {
 }
 
 type Mutation {
-  login(variables: AuthenticationInput!): AuthenticationOutput!
-  logout: Boolean!
   updateUser(updateUserInput: UpdateUserInput!): User!
+  login(variables: AuthenticationInput!): AuthenticationOutput!
+  refresh(refreshToken: String!): AuthenticationOutput!
+  logout: Boolean!
   createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
   editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
   removeExperiment(id: String!): PartialExperiment!
 }
 
+input UpdateUserInput {
+  agreeNDA: Boolean!
+}
+
 input AuthenticationInput {
   username: String!
   password: String!
-}
-
-input UpdateUserInput {
-  agreeNDA: Boolean!
 }
 
 input ExperimentCreateInput {

@@ -50,6 +50,7 @@ describe('AuthService', () => {
         if (token === JwtService) {
           return {
             sign: jest.fn().mockReturnValue(jwtToken),
+            signAsync: jest.fn().mockResolvedValue(jwtToken),
           };
         }
         if (typeof token === 'function') {

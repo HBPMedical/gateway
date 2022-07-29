@@ -61,6 +61,13 @@ export class AuthResolver {
     return data;
   }
 
+  @Mutation(() => AuthenticationOutput)
+  async refresh(
+    @Args('refreshToken', { type: () => String }) refreshToken: string,
+  ): Promise<AuthenticationOutput> {
+    return this.authService.createTokensWithRefreshToken(refreshToken);
+  }
+
   @Mutation(() => Boolean)
   @UseGuards(GlobalAuthGuard)
   async logout(
@@ -73,11 +80,14 @@ export class AuthResolver {
       try {
         if (this.engineService.has('logout')) {
           await this.engineService.logout(req);
+        } else {
+          this.authService.logout(user);
         }
       } catch (e) {
-        this.logger.debug(
+        this.logger.warn(
           `Service ${this.engineOptions.type} produce an error when logging out ${user.username}`,
         );
+        this.logger.debug(e);
       }
     }
 

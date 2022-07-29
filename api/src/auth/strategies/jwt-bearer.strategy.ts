@@ -20,6 +20,6 @@ export class JwtBearerStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    return payload.sub;
+    return payload.context;
   }
 }

@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import authConfig from 'src/config/auth.config';
+import { UsersModule } from 'src/users/users.module';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { EngineStrategy } from './strategies/engine.strategy';
@@ -12,6 +13,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
+    UsersModule,
     PassportModule.register({
       session: false,
     }),

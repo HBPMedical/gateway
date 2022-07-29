@@ -22,4 +22,7 @@ export class User {
   agreeNDA?: boolean;
 
   extraFields?: Record<string, any>;
+
+  @Column({ nullable: true })
+  refreshToken?: string;
 }

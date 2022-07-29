@@ -29,6 +29,6 @@ export class JwtCookiesStrategy extends PassportStrategy(
   };
 
   async validate(payload: any) {
-    return payload.sub;
+    return payload.context;
   }
 }
