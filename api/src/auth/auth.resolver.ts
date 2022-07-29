@@ -63,9 +63,20 @@ export class AuthResolver {
 
   @Mutation(() => AuthenticationOutput)
   async refresh(
+    @GQLResponse() res: Response,
     @Args('refreshToken', { type: () => String }) refreshToken: string,
   ): Promise<AuthenticationOutput> {
-    return this.authService.createTokensWithRefreshToken(refreshToken);
+    const data = await this.authService.createTokensWithRefreshToken(
+      refreshToken,
+    );
+
+    res.cookie(this.authConf.cookie.name, data.accessToken, {
+      httpOnly: parseToBoolean(this.authConf.cookie.httpOnly),
+      sameSite: this.authConf.cookie.sameSite as SameSiteType,
+      secure: parseToBoolean(this.authConf.cookie.secure),
+    });
+
+    return data;
   }
 
   @Mutation(() => Boolean)

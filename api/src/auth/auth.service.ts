@@ -11,7 +11,7 @@ import authConfig from '../config/auth.config';
 import EngineService from '../engine/engine.service';
 import { User } from '../users/models/user.model';
 import { AuthenticationOutput } from './outputs/authentication.output';
-import * as bcrypt from 'bcrypt';
+import * as hashing from 'object-hash';
 
 type TokenPayload = {
   context: User;
@@ -67,7 +67,7 @@ export class AuthService {
    * @param {User} user - User object that is being logged out.
    */
   async logout(user: User): Promise<void> {
-    this.usersService.update(user.id, { refreshToken: null });
+    if (user.id) this.usersService.update(user.id, { refreshToken: null });
   }
 
   async createTokensWithRefreshToken(
@@ -79,19 +79,27 @@ export class AuthService {
         this.getRefreshTokenOptions(),
       );
       const user = await this.usersService.findOne(payload.context.id);
-      const isMatchingTokens = await bcrypt.compare(
-        refreshToken,
-        user.refreshToken,
-      );
-      if (!isMatchingTokens) throw new UnauthorizedException();
+      const isMatchingTokens =
+        user.refreshToken === (await this.getHash(refreshToken));
+
+      if (!isMatchingTokens) {
+        this.logout(payload.context);
+        throw new UnauthorizedException();
+      }
       return this.login(payload.context);
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
 
+  /**
+   * Make a hash out of an object. This function is not cryptographically secure
+   * and should only be used for hashing purposes.
+   * @param {any} obj - The object to be hashed.
+   * @returns A promise that resolves to a string.
+   */
   private async getHash(obj: any): Promise<string> {
-    return bcrypt.hash(obj, 5);
+    return hashing(obj);
   }
 
   private getRefreshTokenOptions(): JwtSignOptions {
