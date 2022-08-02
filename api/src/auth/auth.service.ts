@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  Logger,
   NotImplementedException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -19,6 +20,8 @@ type TokenPayload = {
 
 @Injectable()
 export class AuthService {
+  private static readonly logger = new Logger(AuthService.name);
+
   constructor(
     @Inject(authConfig.KEY) private authConf: ConfigType<typeof authConfig>,
     private readonly engineService: EngineService,
@@ -67,7 +70,13 @@ export class AuthService {
    * @param {User} user - User object that is being logged out.
    */
   async logout(user: User): Promise<void> {
-    if (user.id) this.usersService.update(user.id, { refreshToken: null });
+    try {
+      if (user.id)
+        await this.usersService.update(user.id, { refreshToken: null });
+    } catch (err) {
+      //user not found or others errors
+      AuthService.logger.debug('Error while logging out user', err);
+    }
   }
 
   async createTokensWithRefreshToken(

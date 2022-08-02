@@ -7,11 +7,11 @@ import {
 import { ConfigType } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { Request, Response } from 'express';
-import authConfig from '../config/auth.config';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { GQLResponse } from '../common/decorators/gql-response.decoractor';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { parseToBoolean } from '../common/utils/shared.utils';
+import authConfig from '../config/auth.config';
 import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
 import EngineService from '../engine/engine.service';
 import EngineOptions from '../engine/interfaces/engine-options.interface';
@@ -41,10 +41,13 @@ export class AuthResolver {
   @UseGuards(LocalAuthGuard)
   async login(
     @GQLResponse() res: Response,
+    @GQLRequest() req: Request,
     @CurrentUser() user: User,
     @Args('variables') inputs: AuthenticationInput,
   ): Promise<AuthenticationOutput> {
     this.logger.verbose(`${inputs.username} logged in`);
+
+    this.engineService.clearCache(req);
 
     const data = await this.authService.login(user);
     if (!data)
@@ -91,9 +94,8 @@ export class AuthResolver {
       try {
         if (this.engineService.has('logout')) {
           await this.engineService.logout(req);
-        } else {
-          this.authService.logout(user);
         }
+        this.authService.logout(user);
       } catch (e) {
         this.logger.warn(
           `Service ${this.engineOptions.type} produce an error when logging out ${user.username}`,
