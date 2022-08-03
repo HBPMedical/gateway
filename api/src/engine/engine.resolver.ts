@@ -1,12 +1,12 @@
 import { Inject, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
 import { Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { GlobalAuthGuard } from 'src/auth/guards/global-auth.guard';
 import { parseToBoolean } from 'src/common/utils/shared.utils';
+import authConfig from 'src/config/auth.config';
 import { Md5 } from 'ts-md5';
-import { authConstants } from '../auth/auth-constants';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import {
   ENGINE_CONTACT_LINK,
@@ -37,20 +37,17 @@ export class EngineResolver {
   @Query(() => Configuration)
   @Public()
   configuration(): Configuration {
-    const config = this.engineService.getConfiguration();
+    const engineConf = this.engineService.getConfiguration();
     const matomo = this.configSerivce.get('matomo');
+    const authConf: ConfigType<typeof authConfig> =
+      this.configSerivce.get('auth');
 
     const data = {
-      ...(config ?? {}),
+      ...(engineConf ?? {}),
       connectorId: this.engineOptions.type,
       skipTos: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
-      enableSSO: parseToBoolean(
-        this.configSerivce.get(authConstants.enableSSO),
-      ),
-      skipAuth: parseToBoolean(
-        this.configSerivce.get(authConstants.skipAuth),
-        true,
-      ),
+      enableSSO: parseToBoolean(authConf.enableSSO),
+      skipAuth: parseToBoolean(authConf.skipAuth, true),
       matomo,
       ontologyUrl: this.configSerivce.get(ENGINE_ONTOLOGY_URL),
       contactLink: this.configSerivce.get(ENGINE_CONTACT_LINK),

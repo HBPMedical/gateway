@@ -4,23 +4,23 @@ import {
   Logger,
   UseGuards,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { Response, Request } from 'express';
-import { CurrentUser } from '../common/decorators/user.decorator';
+import { Request, Response } from 'express';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { GQLResponse } from '../common/decorators/gql-response.decoractor';
+import { CurrentUser } from '../common/decorators/user.decorator';
+import { parseToBoolean } from '../common/utils/shared.utils';
+import authConfig from '../config/auth.config';
 import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
+import EngineService from '../engine/engine.service';
+import EngineOptions from '../engine/interfaces/engine-options.interface';
 import { User } from '../users/models/user.model';
-import { authConstants } from './auth-constants';
 import { AuthService } from './auth.service';
 import { GlobalAuthGuard } from './guards/global-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthenticationInput } from './inputs/authentication.input';
 import { AuthenticationOutput } from './outputs/authentication.output';
-import { parseToBoolean } from '../common/utils/shared.utils';
-import EngineOptions from '../engine/interfaces/engine-options.interface';
-import EngineService from '../engine/engine.service';
 
 //Custom defined type because Pick<CookieOptions, 'sameSite'> does not work
 type SameSiteType = boolean | 'lax' | 'strict' | 'none' | undefined;
@@ -34,17 +34,20 @@ export class AuthResolver {
     @Inject(ENGINE_MODULE_OPTIONS)
     private readonly engineOptions: EngineOptions,
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    @Inject(authConfig.KEY) private authConf: ConfigType<typeof authConfig>,
   ) {}
 
   @Mutation(() => AuthenticationOutput)
   @UseGuards(LocalAuthGuard)
   async login(
     @GQLResponse() res: Response,
+    @GQLRequest() req: Request,
     @CurrentUser() user: User,
     @Args('variables') inputs: AuthenticationInput,
   ): Promise<AuthenticationOutput> {
     this.logger.verbose(`${inputs.username} logged in`);
+
+    this.engineService.clearCache(req);
 
     const data = await this.authService.login(user);
     if (!data)
@@ -52,22 +55,31 @@ export class AuthResolver {
         `Error during the authentication process`,
       );
 
-    res.cookie(authConstants.cookie.name, data.accessToken, {
-      httpOnly: parseToBoolean(
-        this.configService.get(authConstants.cookie.httpOnly, 'true'),
-      ),
-      sameSite: this.configService.get<SameSiteType>(
-        authConstants.cookie.sameSite,
-        'strict',
-      ),
-      secure: parseToBoolean(
-        this.configService.get(authConstants.cookie.secure, 'true'),
-      ),
+    res.cookie(this.authConf.cookie.name, data.accessToken, {
+      httpOnly: parseToBoolean(this.authConf.cookie.httpOnly),
+      sameSite: this.authConf.cookie.sameSite as SameSiteType,
+      secure: parseToBoolean(this.authConf.cookie.secure),
     });
 
-    return {
-      accessToken: data.accessToken,
-    };
+    return data;
+  }
+
+  @Mutation(() => AuthenticationOutput)
+  async refresh(
+    @GQLResponse() res: Response,
+    @Args('refreshToken', { type: () => String }) refreshToken: string,
+  ): Promise<AuthenticationOutput> {
+    const data = await this.authService.createTokensWithRefreshToken(
+      refreshToken,
+    );
+
+    res.cookie(this.authConf.cookie.name, data.accessToken, {
+      httpOnly: parseToBoolean(this.authConf.cookie.httpOnly),
+      sameSite: this.authConf.cookie.sameSite as SameSiteType,
+      secure: parseToBoolean(this.authConf.cookie.secure),
+    });
+
+    return data;
   }
 
   @Mutation(() => Boolean)
@@ -83,14 +95,16 @@ export class AuthResolver {
         if (this.engineService.has('logout')) {
           await this.engineService.logout(req);
         }
+        this.authService.logout(user);
       } catch (e) {
-        this.logger.debug(
+        this.logger.warn(
           `Service ${this.engineOptions.type} produce an error when logging out ${user.username}`,
         );
+        this.logger.debug(e);
       }
     }
 
-    res.clearCookie(authConstants.cookie.name);
+    res.clearCookie(this.authConf.cookie.name);
 
     return true;
   }

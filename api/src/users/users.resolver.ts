@@ -9,10 +9,12 @@ import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import EngineService from '../engine/engine.service';
+import { ExtendUser } from './decorators/extend-user.decorator';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 import { UsersService } from './users.service';
 
+@ExtendUser()
 @UseGuards(GlobalAuthGuard)
 @Resolver()
 export class UsersResolver {
