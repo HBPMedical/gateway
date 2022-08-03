@@ -68,7 +68,7 @@ The third parameter, `engineService`, is the engine service which inject itself 
 The Gateway offers two possibilities to manage experiment&#x20;
 
 1. Experiments are managed (save, edit, delete, etc...) directly internally
-2. Experiments are management by the external engine.
+2. Experiments are managed by the external engine.
 
 #### Case 1
 
