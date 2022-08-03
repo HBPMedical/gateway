@@ -13,6 +13,8 @@
   * [🔑 Authentication](for-developers/gateway/authentication.md)
   * [👥 Users](for-developers/gateway/users.md)
   * [🗃 Static files](for-developers/gateway/static-files.md)
+  * [🧙♂ GraphQL](for-developers/gateway/graphql/README.md)
+    * [Decorators](for-developers/gateway/graphql/decorators.md)
   * [📝 Cache](for-developers/gateway/cache.md)
   * [🔌 Connectors](for-developers/connector/README.md)
     * [Create a connector](for-developers/gateway/connector/create-a-connector.md)
