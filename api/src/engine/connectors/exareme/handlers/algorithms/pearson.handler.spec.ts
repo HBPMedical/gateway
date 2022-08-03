@@ -1,12 +1,13 @@
 import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
 import handlers from '..';
 import { Experiment } from '../../../../models/experiment/experiment.model';
+import PearsonHandler from './pearson.handler';
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'pearson',
+    name: PearsonHandler.ALGO_NAME,
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',

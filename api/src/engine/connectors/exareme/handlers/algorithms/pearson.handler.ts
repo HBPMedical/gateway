@@ -6,6 +6,8 @@ import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import BaseHandler from '../base.handler';
 
 export default class PearsonHandler extends BaseHandler {
+  public static readonly ALGO_NAME = 'pearson_correlation';
+
   private static readonly transform: Expression = jsonata(`
   (
     $params := ['correlations', 'p_values', 'ci_lo', 'ci_hi'];
@@ -37,7 +39,7 @@ export default class PearsonHandler extends BaseHandler {
    */
   canHandle(algorithm: string, data: any): boolean {
     return (
-      algorithm.toLocaleLowerCase() === 'pearson' &&
+      algorithm.toLocaleLowerCase() === PearsonHandler.ALGO_NAME &&
       data &&
       data[0] &&
       data[0]['correlations'] &&

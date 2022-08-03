@@ -6,7 +6,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'one_way_ANOVA',
+    name: AnovaOneWayHandler.ALGO_NAME,
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',

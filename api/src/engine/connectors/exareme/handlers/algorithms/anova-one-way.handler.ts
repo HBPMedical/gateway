@@ -7,10 +7,8 @@ import {
   TableStyle,
 } from '../../../../models/result/table-result.model';
 import BaseHandler from '../base.handler';
-
-const ALGO_NAME = 'one_way_anova';
-
 export default class AnovaOneWayHandler extends BaseHandler {
+  public static readonly ALGO_NAME = 'anova_oneway';
   private static readonly tuckeyTransform = jsonata(`
     {
         "name": 'Tuckey Honest Significant Differences',
@@ -49,7 +47,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
   `);
 
   canHandle(algorithm: string): boolean {
-    return algorithm.toLocaleLowerCase() === ALGO_NAME;
+    return algorithm.toLocaleLowerCase() === AnovaOneWayHandler.ALGO_NAME;
   }
 
   getTuckeyTable(data: unknown): TableResult | undefined {
