@@ -32,5 +32,8 @@ COPY --from=development /usr/src/app/assets ./assets
 
 ARG JWT_SECRET
 ENV AUTH_JWT_SECRET=${JWT_SECRET:-DefaultSecretNotToBeUse}
+ARG JWT_REFRESH_SECRET
+ENV AUTH_JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-DefaultRefreshSecretNotToBeUse}
+
 
 CMD ["node", "dist/main"]
