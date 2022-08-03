@@ -1,20 +1,21 @@
-import { getMockRes } from '@jest-mock/express';
+import { getMockReq, getMockRes } from '@jest-mock/express';
+import { ConfigType } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request } from 'express';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
-import EngineService from '../engine/engine.service';
-import LocalService from '../engine/connectors/local/local.connector';
+import authConfig from '../config/auth.config';
 import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
+import EngineService from '../engine/engine.service';
 import { User } from '../users/models/user.model';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import authConfig from '../config/auth.config';
-import { ConfigType } from '@nestjs/config';
 
 const moduleMocker = new ModuleMocker(global);
 
 describe('AuthResolver', () => {
   let resolver: AuthResolver;
   const { res } = getMockRes();
+  const req: Request = getMockReq();
   const mockCookie = jest.fn();
   const mockClearCookie = jest.fn();
   let config: ConfigType<typeof authConfig>;
@@ -45,7 +46,9 @@ describe('AuthResolver', () => {
         },
         {
           provide: EngineService,
-          useClass: LocalService,
+          useValue: {
+            clearCache: jest.fn(),
+          },
         },
         {
           provide: ENGINE_MODULE_OPTIONS,
@@ -77,7 +80,7 @@ describe('AuthResolver', () => {
   });
 
   it('login', async () => {
-    const data = await resolver.login(res, user, credentials);
+    const data = await resolver.login(res, req, user, credentials);
 
     expect(mockCookie.mock.calls[0][0]).toBe(config.cookie.name);
     expect(mockCookie.mock.calls[0][1]).toBe(authData.accessToken);
