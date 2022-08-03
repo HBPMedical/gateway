@@ -4,7 +4,10 @@ import { Repository } from 'typeorm';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 
-export type InternalUser = Pick<User, 'id' | 'agreeNDA'>;
+export type InternalUser = Pick<User, 'id' | 'agreeNDA' | 'refreshToken'>;
+export type UserDataUpdate = Partial<
+  Pick<User, 'agreeNDA' | 'refreshToken'> | UpdateUserInput
+>;
 
 @Injectable()
 export class UsersService {
@@ -31,10 +34,10 @@ export class UsersService {
   /**
    * Update a user
    * @param {string} id - The id of the user to update.
-   * @param {UpdateUserInput} data - update params
+   * @param {UserDataUpdate} data - update params
    * @returns The updated user.
    */
-  async update(id: string, data: UpdateUserInput): Promise<InternalUser> {
+  async update(id: string, data: UserDataUpdate): Promise<InternalUser> {
     const updateData = {
       id,
       ...data,

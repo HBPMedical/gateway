@@ -221,11 +221,10 @@ export default class EngineService implements Connector {
     return this.connector.getFilterConfiguration(req);
   }
 
-  async logout?(req: Request): Promise<void> {
+  async logout(req: Request): Promise<void> {
     await this.clearCache(req);
 
-    if (!this.connector.logout) throw new NotImplementedException();
-    return this.connector.logout(req);
+    if (this.connector.logout) this.connector.logout(req);
   }
 
   /**

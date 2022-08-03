@@ -5,6 +5,7 @@ import { ENGINE_MODULE_OPTIONS } from '../engine/engine.constants';
 import { AuthService } from './auth.service';
 import { User } from '../users/models/user.model';
 import EngineService from '../engine/engine.service';
+import authConfig from '../config/auth.config';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -28,6 +29,10 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
+          provide: authConfig.KEY,
+          useValue: authConfig(),
+        },
+        {
           provide: EngineService,
           useValue: createEngineService(),
         },
@@ -45,6 +50,7 @@ describe('AuthService', () => {
         if (token === JwtService) {
           return {
             sign: jest.fn().mockReturnValue(jwtToken),
+            signAsync: jest.fn().mockResolvedValue(jwtToken),
           };
         }
         if (typeof token === 'function') {

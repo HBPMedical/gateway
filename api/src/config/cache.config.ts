@@ -5,8 +5,8 @@ export default registerAs('cache', () => {
   const max = process.env.CACHE_MAX_ITEMS;
   const ttl = process.env.CACHE_TTL;
   return {
-    enabled: parseToBoolean(process.env.CACHE_ENABLED, false),
-    ttl: ttl ? parseInt(ttl) : undefined,
-    max: max ? parseInt(max) : undefined,
+    enabled: parseToBoolean(process.env.CACHE_ENABLED, true),
+    ttl: ttl ? parseInt(ttl) : 1800,
+    max: max ? parseInt(max) : 100,
   };
 });
