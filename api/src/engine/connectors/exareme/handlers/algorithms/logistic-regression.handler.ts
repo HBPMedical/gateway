@@ -34,6 +34,8 @@ const roundNumber = (val: any, name: string) =>
     : val;
 
 export default class LogisticRegressionHandler extends BaseHandler {
+  public static readonly ALGO_NAME = 'logistic_regression';
+
   private getModel(data: any): TableResult | undefined {
     return {
       name: 'Model',
@@ -73,13 +75,16 @@ export default class LogisticRegressionHandler extends BaseHandler {
         name: lookupDict[name],
         type: 'string',
       })),
-      data: [fields.map((name) => roundNumber(data[name], name))],
+      data: data['indep_vars'].map((_var: string, i: number) =>
+        fields.map((name) => roundNumber(data[name][i], name)),
+      ),
     };
   }
 
   canHandle(exp: Experiment, data: any): boolean {
     return (
-      exp.algorithm.name.toLowerCase() === 'logistic_regression' &&
+      exp.algorithm.name.toLowerCase() ===
+        LogisticRegressionHandler.ALGO_NAME &&
       !!data &&
       !!data[0] &&
       !!data[0]['summary']

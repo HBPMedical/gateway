@@ -43,7 +43,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'LOGISTIC_REGRESSION',
+    name: LogisticRegressionHandler.ALGO_NAME,
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
