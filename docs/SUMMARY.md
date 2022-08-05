@@ -8,6 +8,7 @@
   * [Introduction](for-developers/get-started/Introduction.md)
   * [Setup development environment](for-developers/get-started/Setup-development-environment.md)
 * [Configuration](for-developers/configuration/README.md)
+  * [Frontend](for-developers/configuration/frontend.md)
   * [Gateway](for-developers/configuration/gateway.md)
 * [Gateway](for-developers/gateway/README.md)
   * [🔑 Authentication](for-developers/gateway/authentication.md)

@@ -43,16 +43,6 @@ description: >-
 | DB\_PASSWORD | string | pass123   | Password                        |
 | DB\_NAME     | string | postgres  | Name of the database's instance |
 
-#### Matomo
-
-Matomo is an open source alternative to Google Analytics. The Gateway provide this configuration in order to be used by any frontend. The real implementation is left to the frontend.
-
-| name             | type                | default   | description                                                                                         |
-| ---------------- | ------------------- | --------- | --------------------------------------------------------------------------------------------------- |
-| MATOMO\_ENABLED  | boolean             | false     | Enable or disable Matomo                                                                            |
-| MATOMO\_URL      | string \| undefined | undefined | Base url for matomo scripts and data reporting. This parameter is `required` if Matomo is `enabled` |
-| MATOMO\_SITE\_ID | string \| undefined | undefined | Matomo Website ID. This parameter is required if `Matomo` is `enabled`.                             |
-
 #### Cache
 
 The Gateway offers the possibility to cache some of the most used queries (domains and algorithms queries). This cache use In-Memory data store.
