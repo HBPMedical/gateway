@@ -38,7 +38,6 @@ export class EngineResolver {
   @Public()
   configuration(): Configuration {
     const engineConf = this.engineService.getConfiguration();
-    const matomo = this.configSerivce.get('matomo');
     const authConf: ConfigType<typeof authConfig> =
       this.configSerivce.get('auth');
 
@@ -48,7 +47,6 @@ export class EngineResolver {
       skipTos: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
       enableSSO: parseToBoolean(authConf.enableSSO),
       skipAuth: parseToBoolean(authConf.skipAuth, true),
-      matomo,
       ontologyUrl: this.configSerivce.get(ENGINE_ONTOLOGY_URL),
       contactLink: this.configSerivce.get(ENGINE_CONTACT_LINK),
     };

@@ -26,12 +26,6 @@ type AuthenticationOutput {
   refreshToken: String!
 }
 
-type Matomo {
-  enabled: Boolean
-  siteId: String
-  urlBase: String
-}
-
 type Configuration {
   connectorId: String!
   hasGalaxy: Boolean @deprecated(reason: "Only used for legacy reason should be avoided")
@@ -43,7 +37,6 @@ type Configuration {
   skipAuth: Boolean
   skipTos: Boolean
   enableSSO: Boolean
-  matomo: Matomo
   ontologyUrl: String
 }
 
