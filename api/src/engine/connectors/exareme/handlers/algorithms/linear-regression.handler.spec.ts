@@ -68,13 +68,13 @@ describe('Linear regression result handler', () => {
       const json = JSON.stringify(experiment.results);
 
       expect(json.includes(domain.variables[0].label)).toBeTruthy();
-      expect(experiment.results.length === 2);
+      expect(experiment.results.length).toBe(2);
     });
     it('Should be empty with another algo', () => {
       experiment.algorithm.name = 'dummy_algo';
       linearHandler.handle(experiment, data, domain);
 
-      expect(experiment.results.length === 0);
+      expect(experiment.results.length).toBe(0);
     });
   });
 });

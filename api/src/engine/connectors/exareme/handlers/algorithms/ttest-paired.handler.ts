@@ -50,7 +50,8 @@ export default class TTestPairedHandler extends BaseHandler {
   }
 
   handle(experiment: Experiment, data: any, domain?: Domain): void {
-    if (!this.canHandle) return super.handle(experiment, data, domain);
+    if (!this.canHandle(experiment.algorithm.name))
+      return super.handle(experiment, data, domain);
 
     const tableModel = this.getTable(data);
 

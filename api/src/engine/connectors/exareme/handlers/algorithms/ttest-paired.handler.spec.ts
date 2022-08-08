@@ -41,15 +41,15 @@ describe('T-Test Paired handler', () => {
 
       const table = experiment.results[0] as TableResult;
 
-      expect(experiment.results.length === 1);
-      expect(table.data.length === 7);
+      expect(experiment.results.length).toBe(1);
+      expect(table.data.length).toBe(8);
     });
 
     it('Should be empty with another algo', () => {
       experiment.algorithm.name = 'dummy_algo';
       tTestPairedHandler.handle(experiment, data);
 
-      expect(experiment.results.length === 0);
+      expect(experiment.results.length).toBe(0);
     });
   });
 });
