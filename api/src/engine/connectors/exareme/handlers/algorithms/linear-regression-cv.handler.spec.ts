@@ -93,7 +93,7 @@ describe('Linear regression CV result handler', () => {
       experiment.algorithm.name = 'dummy_algo';
       linearHandler.handle(experiment, data, domain);
 
-      expect(experiment.results.length === 0);
+      expect(experiment.results.length).toBe(0);
     });
   });
 });

@@ -1,23 +1,24 @@
 import { TableResult } from '../../../../models/result/table-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
-import TTestPairedHandler from './ttest-paired.handler';
+import TtestOnesampleHandler from './ttest-onesample.handler';
 
 const data = {
-  t_stat: -97.35410837992711,
-  p: 1.0,
-  df: 144.0,
-  mean_diff: -66.00088551724139,
-  se_diff: 0.6779465871093092,
-  ci_upper: 'Infinity',
-  ci_lower: -67.12322892404309,
-  cohens_d: -11.456478738682357,
+  n_obs: 1991,
+  t_value: 304.98272738655413,
+  p_value: 0.0,
+  df: 1990.0,
+  mean_diff: 220.17867654445,
+  se_diff: 0.7464781919192859,
+  ci_upper: 221.64263732187715,
+  ci_lower: 218.71471576702288,
+  cohens_d: 6.835017232945105,
 };
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'TTEST_PAIRED',
+    name: TtestOnesampleHandler.ALGO_NAME.toUpperCase(),
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
@@ -27,27 +28,27 @@ const createExperiment = (): Experiment => ({
 });
 
 describe('T-Test Paired handler', () => {
-  let tTestPairedHandler: TTestPairedHandler;
+  let tTestOnesampleHandler: TtestOnesampleHandler;
   let experiment: Experiment;
 
   beforeEach(() => {
-    tTestPairedHandler = new TTestPairedHandler();
+    tTestOnesampleHandler = new TtestOnesampleHandler();
     experiment = createExperiment();
   });
 
   describe('Handle', () => {
     it('with standard t-test algo data', () => {
-      tTestPairedHandler.handle(experiment, data);
+      tTestOnesampleHandler.handle(experiment, data);
 
       const table = experiment.results[0] as TableResult;
 
       expect(experiment.results.length).toBe(1);
-      expect(table.data.length).toBe(8);
+      expect(table.data.length).toBe(9);
     });
 
     it('Should be empty with another algo', () => {
       experiment.algorithm.name = 'dummy_algo';
-      tTestPairedHandler.handle(experiment, data);
+      tTestOnesampleHandler.handle(experiment, data);
 
       expect(experiment.results.length).toBe(0);
     });

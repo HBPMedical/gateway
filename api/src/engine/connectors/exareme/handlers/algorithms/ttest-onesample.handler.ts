@@ -8,7 +8,8 @@ import {
 import BaseHandler from '../base.handler';
 
 const lookupDict = {
-  t_stat: 'Statistic',
+  t_value: 'T-value',
+  n_obs: 'Number of observations',
   p: 'P-value',
   df: 'Degrees of freedom',
   mean_diff: 'Mean difference',
@@ -18,10 +19,20 @@ const lookupDict = {
   cohens_d: "Cohen's d",
 };
 const NUMBER_PRECISION = 4;
+const EXCLUDE_PRECISION = ['n_obs', 'ci_lower', 'ci_upper'];
 
-export default class TTestPairedHandler extends BaseHandler {
-  private canHandle(experimentId: string) {
-    return experimentId.toLocaleLowerCase() === 'ttest_paired';
+const isNumberPrecision = (value: any, name: string) => {
+  if (!EXCLUDE_PRECISION.includes(name) && isNumber(value))
+    return value.toPrecision(NUMBER_PRECISION);
+
+  return value;
+};
+
+export default class TtestOnesampleHandler extends BaseHandler {
+  public static readonly ALGO_NAME = 'ttest_onesample';
+
+  private canHandle(algoId: string) {
+    return algoId.toLocaleLowerCase() === TtestOnesampleHandler.ALGO_NAME;
   }
 
   private getTable(data: any): TableResult {
@@ -30,7 +41,8 @@ export default class TTestPairedHandler extends BaseHandler {
       tableStyle: TableStyle.NORMAL,
       headers: ['name', 'value'].map((name) => ({ name, type: 'string' })),
       data: [
-        't_stat',
+        'n_obs',
+        't_value',
         'p',
         'df',
         'mean_diff',
@@ -40,7 +52,7 @@ export default class TTestPairedHandler extends BaseHandler {
         'cohens_d',
       ].map((name) => [
         lookupDict[name],
-        isNumber(data[name])
+        isNumberPrecision(data[name], name)
           ? data[name].toPrecision(NUMBER_PRECISION)
           : data[name],
       ]),
