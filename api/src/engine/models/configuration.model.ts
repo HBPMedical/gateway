@@ -18,6 +18,13 @@ export class Configuration {
   })
   hasGrouping?: boolean;
 
+  @Field({
+    nullable: true,
+    defaultValue: true,
+    description: 'Indicates if filters and formula are enabled',
+  })
+  hasFilters?: boolean;
+
   @Field({ nullable: true })
   contactLink?: string;
 
