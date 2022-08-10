@@ -32,6 +32,9 @@ type Configuration {
 
   """Indicates if histograms can handle grouping"""
   hasGrouping: Boolean
+
+  """Indicates if filters and formula are enabled"""
+  hasFilters: Boolean
   contactLink: String
   version: String!
   skipAuth: Boolean

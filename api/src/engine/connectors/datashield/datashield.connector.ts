@@ -46,6 +46,7 @@ export default class DataShieldConnector implements Connector {
     return {
       hasGalaxy: false,
       hasGrouping: false,
+      hasFilters: false,
     };
   }
 
