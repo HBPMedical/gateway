@@ -1,4 +1,4 @@
-import { Domain } from 'src/engine/models/domain.model';
+import { Domain } from '../../../../models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { BarChartResult } from '../../../../models/result/bar-chart-result.model';
 import {
