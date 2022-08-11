@@ -1,4 +1,4 @@
-import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
+import { Domain } from '../../../../models/domain.model';
 import handlers from '..';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import PearsonHandler from './pearson.handler';
@@ -42,8 +42,21 @@ const createExperiment = (): Experiment => ({
   results: [],
 });
 
-describe('Pearson result handler', () => {
-  const data = {
+const domain: Domain = {
+  id: 'dummy-id',
+  groups: [],
+  rootGroup: {
+    id: 'dummy-id',
+  },
+  datasets: [{ id: 'desd-synthdata', label: 'Dead Synthdata' }],
+  variables: [
+    { id: 'rightcerebralwhitematter', label: 'Example label' },
+    { id: 'ppmicategory', label: 'Example label 2' },
+  ],
+};
+
+const data = [
+  {
     n_obs: 1840,
     correlations: {
       variables: [
@@ -413,24 +426,16 @@ describe('Pearson result handler', () => {
         0.5096526209667468, 0.5533006654400224,
       ],
     },
-  };
+  },
+];
 
+describe('Pearson result handler', () => {
   it('Test pearson handler with regular data', () => {
     const exp = createExperiment();
-    const names = [
-      'correlations',
-      'p_values',
-      'low_confidence_intervals',
-      'high_confidence_intervals',
-    ];
 
-    handlers(exp, data, null);
-    const results = exp.results as HeatMapResult[];
+    handlers(exp, data, domain);
+    const results = exp.results;
 
-    const heatmaps = names.map((name) =>
-      results.find((it) => it.name === name),
-    );
-
-    expect(heatmaps.length).toBeGreaterThanOrEqual(4);
+    expect(results.length).toBe(2);
   });
 });
