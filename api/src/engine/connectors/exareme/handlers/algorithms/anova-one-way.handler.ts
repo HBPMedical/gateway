@@ -63,6 +63,7 @@ export default class AnovaOneWayHandler extends BaseHandler {
     return (
       data &&
       data.length !== 0 &&
+      data[0]['anova_table'] &&
       algorithm.toLocaleLowerCase() === AnovaOneWayHandler.ALGO_NAME
     );
   }
