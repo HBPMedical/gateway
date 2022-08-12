@@ -2,6 +2,7 @@ import { Experiment } from '../../../../models/experiment/experiment.model';
 import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import handlers from '..';
 import { BarChartResult } from '../../../../models/result/bar-chart-result.model';
+import { Domain } from '../../../../models/domain.model';
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
@@ -23,6 +24,16 @@ const createExperiment = (): Experiment => ({
   ],
   results: [],
 });
+
+const domain: Domain = {
+  id: 'dummy-id',
+  groups: [],
+  rootGroup: {
+    id: 'dummy-id',
+  },
+  datasets: [{ id: 'desd-synthdata', label: 'Dead Synthdata' }],
+  variables: [],
+};
 
 const data = [
   {
@@ -80,7 +91,7 @@ const data = [
 describe('PCA result handler', () => {
   it('Test PCA handler with regular data (no edge cases)', () => {
     const exp = createExperiment();
-    handlers(exp, data, null);
+    handlers(exp, data, domain);
     expect(exp.results.length).toBeGreaterThanOrEqual(2);
 
     exp.results.forEach((result) => {
