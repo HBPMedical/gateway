@@ -117,6 +117,7 @@ The connector has it's own part of configuration, it's mainly parameters that ar
 | name        | default | description                                                                                             |
 | ----------- | ------- | ------------------------------------------------------------------------------------------------------- |
 | hasGrouping | false   | Define if the connector is able to make query grouping by nominal variable (mainly used for histograms) |
+| hasFilters  | true    | Define if the engine behind the connector is able to manage filters                                     |
 | hasGalaxy   | false   | `Deprecated`. Only used by Exareme engine                                                               |
 
 These elements can be configured by the function `getConfiguration`.

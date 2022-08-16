@@ -1,4 +1,4 @@
-# 📊 Visualisations
+# 📖 Storybook
 
 To see the different possible visualisations in the frontend we have integrated [storybook.js](https://storybook.js.org/) directly in the frontend.
 
