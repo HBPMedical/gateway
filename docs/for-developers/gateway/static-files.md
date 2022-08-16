@@ -11,7 +11,7 @@ As different connector implies different context, there is some cases where the 
 3. Terms of Service&#x20;
 4. Login page&#x20;
 
-A module so a module `files` has been create. It allows to have dynamic resources based on the connector currently used.&#x20;
+A module `files` has been create to allows dynamic resources based on the connector currently used.&#x20;
 
 All static assets are stored under `assets/engines/*`, in this path you have one folder for each connector. By default, all resources are retrieve in the `default` folder. If you want to override a specific file for your connector you just need to create a file with the same name under your connector's folder `assets/engines/yourconnector`.
 

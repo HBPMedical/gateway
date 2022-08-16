@@ -23,7 +23,7 @@
 * [Frontend](for-developers/frontend/README.md)
   * [GraphQL](for-developers/frontend/graphql/README.md)
     * [Unions and interfaces](for-developers/frontend/graphql/unions-and-interfaces.md)
-    * [Update GraphQL Queries](for-developers/frontend/graphql/update-queries-grahpql-in-the-frontend.md)
+    * [Update GraphQL Queries](for-developers/frontend/Update-queries-GrahpQL-in-the-frontend.md)
   * [📖 Storybook](for-developers/frontend/visualisations.md)
 * [👩🍳 Recipes](for-developers/recipes/README.md)
   * [🚧 Add a visualization](for-developers/recipes/add-a-visualization.md)
