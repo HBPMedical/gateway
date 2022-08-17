@@ -26,5 +26,5 @@
     * [Update GraphQL Queries](for-developers/frontend/Update-queries-GrahpQL-in-the-frontend.md)
   * [📖 Storybook](for-developers/frontend/visualisations.md)
 * [👩🍳 Recipes](for-developers/recipes/README.md)
-  * [🚧 Add a visualization](for-developers/recipes/add-a-visualization.md)
+  * [Add a result type](for-developers/recipes/add-a-result-type.md)
   * [Add an algorithm handler on Exareme](for-developers/recipes/add-an-algorithm-handler-on-exareme.md)
