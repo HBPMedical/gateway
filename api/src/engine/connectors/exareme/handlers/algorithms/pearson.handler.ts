@@ -97,7 +97,7 @@ export default class PearsonHandler extends BaseHandler {
     );
   }
 
-  handle(exp: Experiment, data: any, domain?: Domain): void {
+  handle(exp: Experiment, data: any, domain: Domain): void {
     if (!this.canHandle(exp.algorithm.name, data))
       return super.handle(exp, data, domain);
 
@@ -126,6 +126,6 @@ export default class PearsonHandler extends BaseHandler {
       .filter((heatMap) => heatMap.matrix.length > 0 && heatMap.name)
       .forEach((heatMap) => exp.results.push(heatMap));
 
-    this.next?.handle(exp, data);
+    this.next?.handle(exp, data, domain);
   }
 }
