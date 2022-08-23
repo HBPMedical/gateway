@@ -31,13 +31,18 @@ const isNumberPrecision = (value: any, name: string) => {
 export default class TtestOnesampleHandler extends BaseHandler {
   public static readonly ALGO_NAME = 'ttest_onesample';
 
-  private canHandle(algoId: string) {
-    return algoId.toLocaleLowerCase() === TtestOnesampleHandler.ALGO_NAME;
+  private canHandle(algoId: string, data: any) {
+    return (
+      data &&
+      data[0] &&
+      data[0]['t_value'] &&
+      algoId.toLowerCase() === TtestOnesampleHandler.ALGO_NAME
+    );
   }
 
   private getTable(data: any): TableResult {
     const tableModel: TableResult = {
-      name: 'T-test',
+      name: 'Results',
       tableStyle: TableStyle.NORMAL,
       headers: ['name', 'value'].map((name) => ({ name, type: 'string' })),
       data: [
@@ -62,10 +67,12 @@ export default class TtestOnesampleHandler extends BaseHandler {
   }
 
   handle(experiment: Experiment, data: any, domain?: Domain): void {
-    if (!this.canHandle(experiment.algorithm.name))
+    if (!this.canHandle(experiment.algorithm.name, data))
       return super.handle(experiment, data, domain);
 
-    const tableModel = this.getTable(data);
+    const extData = data[0];
+
+    const tableModel = this.getTable(extData);
 
     if (tableModel) experiment.results.push(tableModel);
   }

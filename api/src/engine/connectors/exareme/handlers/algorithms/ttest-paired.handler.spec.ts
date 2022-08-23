@@ -2,22 +2,24 @@ import { TableResult } from '../../../../models/result/table-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import TTestPairedHandler from './ttest-paired.handler';
 
-const data = {
-  t_stat: -97.35410837992711,
-  p: 1.0,
-  df: 144.0,
-  mean_diff: -66.00088551724139,
-  se_diff: 0.6779465871093092,
-  ci_upper: 'Infinity',
-  ci_lower: -67.12322892404309,
-  cohens_d: -11.456478738682357,
-};
+const data = [
+  {
+    t_stat: -97.35410837992711,
+    p: 1.0,
+    df: 144.0,
+    mean_diff: -66.00088551724139,
+    se_diff: 0.6779465871093092,
+    ci_upper: 'Infinity',
+    ci_lower: -67.12322892404309,
+    cohens_d: -11.456478738682357,
+  },
+];
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'TTEST_PAIRED',
+    name: TTestPairedHandler.ALGO_NAME.toUpperCase(),
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',
