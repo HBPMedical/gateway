@@ -62,7 +62,6 @@
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.2.2",
-    "@saithodev/semantic-release-backmerge": "^2.1.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/gitlab": "^7.0.4",
@@ -147,17 +146,6 @@
               "skipTags": [
                 "latest"
               ]
-            }
-          ]
-        }
-      ],
-      [
-        "@saithodev/semantic-release-backmerge",
-        {
-          "branches": [
-            {
-              "from": "main",
-              "to": "develop"
             }
           ]
         }
