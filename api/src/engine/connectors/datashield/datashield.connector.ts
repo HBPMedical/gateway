@@ -23,6 +23,7 @@ import {
 import { Variable } from '../../../engine/models/variable.model';
 import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
 import { User } from '../../../users/models/user.model';
+import handlers from './handlers';
 import {
   dataToGroups,
   dsGroup,
@@ -92,12 +93,12 @@ export default class DataShieldConnector implements Connector {
         variable: {
           isRequired: true,
           allowedTypes: ['number'],
-          hasMultiple: false,
+          hasMultiple: true,
         },
         coVariable: {
           isRequired: true,
           allowedTypes: ['number'],
-          hasMultiple: true,
+          hasMultiple: false,
         },
       },
       {
@@ -108,24 +109,19 @@ export default class DataShieldConnector implements Connector {
         variable: {
           isRequired: true,
           allowedTypes: ['nominal'],
-          hasMultiple: false,
+          hasMultiple: true,
           hint: 'A binary event to predict',
         },
         coVariable: {
           isRequired: true,
           allowedTypes: ['number'],
-          hasMultiple: true,
+          hasMultiple: false,
         },
         parameters: [
           {
             name: 'pos-level',
             label: 'Positive level',
-            linkedTo: AllowedLink.VARIABLE,
-            isRequired: true,
-          },
-          {
-            name: 'neg-level',
-            label: 'Negative level',
+            hint: 'All other categories will be considered negative',
             linkedTo: AllowedLink.VARIABLE,
             isRequired: true,
           },
@@ -304,9 +300,43 @@ export default class DataShieldConnector implements Connector {
         expResult.results = results;
         break;
       }
+      default: {
+        expResult.results = [];
+        await this.runAlgorithm(expResult, allVariables, cookie);
+      }
     }
 
     return expResult.results;
+  }
+
+  private async runAlgorithm(
+    experiment: Experiment,
+    vars: Variable[],
+    cookie?: string,
+  ) {
+    const path = new URL('/runAlgorithm', this.options.baseurl);
+
+    const coVariable =
+      experiment.coVariables.length > 0 ? experiment.coVariables[0] : undefined;
+
+    const result = await firstValueFrom(
+      this.httpService.post(
+        path.href,
+        {
+          coVariable,
+          variables: experiment.variables,
+          algorithm: {
+            id: experiment.algorithm.name,
+          },
+          datasets: experiment.datasets,
+        },
+        {
+          headers: { cookie, 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    handlers(experiment, result.data, vars);
   }
 
   async logout(request: Request): Promise<void> {

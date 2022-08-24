@@ -15,6 +15,7 @@ import { User } from '../users/models/user.model';
 import { ExperimentsService } from './experiments.service';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
 import { ExperimentEditInput } from './models/input/experiment-edit.input';
+import { MIME_TYPES } from '../common/interfaces/utilities.interface';
 
 const LIMIT_EXP_BY_PAGE = 10; // TODO Consider refactoring to allow offset and limit in API call
 
@@ -92,17 +93,37 @@ export class ExperimentsResolver {
     );
 
     //create an async query that will update the result when it's done
-    this.engineService.runExperiment(data, req).then((results) => {
-      this.experimentService.update(
-        experiment.id,
-        {
-          results,
-          finishedAt: new Date().toISOString(),
-          status: ExperimentStatus.SUCCESS,
-        },
-        user,
-      );
-    });
+    this.engineService
+      .runExperiment(data, req)
+      .then((results) => {
+        this.experimentService.update(
+          experiment.id,
+          {
+            results,
+            finishedAt: new Date().toISOString(),
+            status: ExperimentStatus.SUCCESS,
+          },
+          user,
+        );
+      })
+      .catch((err) => {
+        this.experimentService.update(
+          experiment.id,
+          {
+            finishedAt: new Date().toISOString(),
+            results: [
+              {
+                rawdata: {
+                  type: MIME_TYPES.ERROR,
+                  data: `Error while running experiment, details '${err}'`,
+                },
+              },
+            ],
+            status: ExperimentStatus.ERROR,
+          },
+          user,
+        );
+      });
 
     //we return the experiment before finishing the runExperiment
     return experiment;
