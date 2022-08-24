@@ -1,4 +1,5 @@
-import { Domain } from 'src/engine/models/domain.model';
+import { Variable } from 'src/engine/models/variable.model';
+import { Domain } from '../../../../models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { BarChartResult } from '../../../../models/result/bar-chart-result.model';
 import {
@@ -18,18 +19,13 @@ export default class PCAHandler extends BaseHandler {
     );
   }
 
-  handle(exp: Experiment, data: any, domain?: Domain): void {
-    if (!this.canHandle(exp.algorithm.name, data))
-      return this.next?.handle(exp, data, domain);
-
-    const extractedData = data[0];
-
-    const barChar: BarChartResult = {
+  private getBarChartResult(data: any): BarChartResult {
+    const barChart: BarChartResult = {
       name: 'Eigen values',
-      barValues: extractedData['eigenvalues'],
+      barValues: data['eigenvalues'],
       xAxis: {
         label: 'Dimensions',
-        categories: exp.variables.map((_, i) => i + 1).map(String),
+        categories: data['eigenvalues'].map((_: unknown, i: number) => i + 1),
       },
       hasConnectedBars: true,
       yAxis: {
@@ -37,17 +33,18 @@ export default class PCAHandler extends BaseHandler {
       },
     };
 
-    if (barChar.barValues && barChar.barValues.length > 0)
-      exp.results.push(barChar);
+    return barChart;
+  }
 
-    const matrix = extractedData['eigenvectors'] as number[][];
+  private getHeatMapResult(data: any, variables: Variable[]): HeatMapResult {
+    const matrix = data['eigenvectors'] as number[][];
 
     const heatMapChart: HeatMapResult = {
       name: 'Eigen vectors',
       matrix,
       heatMapStyle: HeatMapStyle.BUBBLE,
       yAxis: {
-        categories: exp.variables,
+        categories: variables.map((v) => v.label ?? v.id),
       },
       xAxis: {
         categories: [...Array(matrix.length).keys()]
@@ -62,8 +59,27 @@ export default class PCAHandler extends BaseHandler {
       );
     }
 
+    return heatMapChart;
+  }
+
+  handle(exp: Experiment, data: any, domain: Domain): void {
+    if (!this.canHandle(exp.algorithm.name, data))
+      return this.next?.handle(exp, data, domain);
+
+    const extractedData = data[0];
+
+    const variables =
+      exp.variables
+        ?.map((v) => domain.variables.find((v2) => v2.id === v) ?? { id: v })
+        .filter((v) => v) ?? [];
+
+    const barChart = this.getBarChartResult(extractedData);
+    if (barChart.barValues && barChart.barValues.length > 0)
+      exp.results.push(barChart);
+
+    const heatMapChart = this.getHeatMapResult(extractedData, variables);
     if (heatMapChart.matrix) exp.results.push(heatMapChart);
 
-    this.next?.handle(exp, data);
+    this.next?.handle(exp, data, domain);
   }
 }

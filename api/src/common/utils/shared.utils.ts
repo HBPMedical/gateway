@@ -111,6 +111,8 @@ export const isPlainObject = (fn: any): fn is object => {
 export const isFunction = (val: any): boolean => typeof val === 'function';
 export const isString = (val: any): val is string => typeof val === 'string';
 export const isNumber = (val: any): val is number => typeof val === 'number';
+export const formatNumber = (val: any, precision = 4): number | string =>
+  isNumber(val) ? val.toPrecision(precision) : val;
 export const isConstructor = (val: any): boolean => val === 'constructor';
 export const isNil = (val: any): val is null | undefined =>
   isUndefined(val) || val === null;

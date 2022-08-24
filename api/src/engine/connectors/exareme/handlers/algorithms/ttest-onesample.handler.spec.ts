@@ -2,17 +2,19 @@ import { TableResult } from '../../../../models/result/table-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import TtestOnesampleHandler from './ttest-onesample.handler';
 
-const data = {
-  n_obs: 1991,
-  t_value: 304.98272738655413,
-  p_value: 0.0,
-  df: 1990.0,
-  mean_diff: 220.17867654445,
-  se_diff: 0.7464781919192859,
-  ci_upper: 221.64263732187715,
-  ci_lower: 218.71471576702288,
-  cohens_d: 6.835017232945105,
-};
+const data = [
+  {
+    n_obs: 1991,
+    t_value: 304.98272738655413,
+    p_value: 0.0,
+    df: 1990.0,
+    mean_diff: 220.17867654445,
+    se_diff: 0.7464781919192859,
+    ci_upper: 221.64263732187715,
+    ci_lower: 218.71471576702288,
+    cohens_d: 6.835017232945105,
+  },
+];
 
 const createExperiment = (): Experiment => ({
   id: 'dummy-id',

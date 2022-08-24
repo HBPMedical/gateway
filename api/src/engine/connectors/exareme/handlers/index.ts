@@ -8,10 +8,10 @@ import LogisticRegressionHandler from './algorithms/logistic-regression.handler'
 import PCAHandler from './algorithms/PCA.handler';
 import PearsonHandler from './algorithms/pearson.handler';
 import RawHandler from './algorithms/raw.handler';
+import TtestOnesampleHandler from './algorithms/ttest-onesample.handler';
 import TTestPairedHandler from './algorithms/ttest-paired.handler';
-import ResultHandler from './result-handler.interface';
 
-const start = new PearsonHandler() as ResultHandler;
+const start = new PearsonHandler();
 
 start
   .setNext(new DescriptiveHandler())
@@ -21,6 +21,7 @@ start
   .setNext(new LinearRegressionCVHandler())
   .setNext(new LogisticRegressionHandler())
   .setNext(new TTestPairedHandler())
+  .setNext(new TtestOnesampleHandler())
   .setNext(new RawHandler()); // should be last handler as it works as a fallback (if other handlers could not process the results)
 
 export default (exp: Experiment, data: unknown, domain: Domain): Experiment => {

@@ -1,3 +1,4 @@
+import { Domain } from '../../../../models/domain.model';
 import handlers from '..';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import AnovaOneWayHandler from './anova-one-way.handler';
@@ -15,11 +16,24 @@ const createExperiment = (): Experiment => ({
   results: [],
 });
 
+const domain: Domain = {
+  id: 'dummy-id',
+  groups: [],
+  rootGroup: {
+    id: 'dummy-id',
+  },
+  datasets: [{ id: 'desd-synthdata', label: 'Dead Synthdata' }],
+  variables: [
+    { id: 'rightcerebralwhitematter', label: 'Example label' },
+    { id: 'ppmicategory', label: 'Example label 2' },
+  ],
+};
+
 const data = [
   {
     anova_table: {
-      x_label: 'Variable X',
-      y_label: 'Variable Y',
+      x_label: 'Example label 2',
+      y_label: 'Example label',
       df_residual: 1424.0,
       df_explained: 3.0,
       ss_residual: 1941.1517872154072,
@@ -130,16 +144,16 @@ describe('Anova oneway result handler', () => {
 
   it('Test anova 1 way handler', () => {
     const exp = createExperiment();
-    const table1 = anovaHandler.getSummaryTable(data[0], exp.coVariables[0]);
+    const table1 = anovaHandler.getSummaryTable(
+      data[0],
+      data[0].anova_table.x_label,
+    );
     const table2 = anovaHandler.getTuckeyTable(data[0]);
     const meanPlot = anovaHandler.getMeanPlot(data[0]);
 
-    handlers(exp, data, null);
+    handlers(exp, data, domain);
 
     expect(exp.results.length).toBeGreaterThanOrEqual(3);
-    expect(exp.results).toContainEqual(table1);
-    expect(exp.results).toContainEqual(table2);
-    expect(exp.results).toContainEqual(meanPlot);
 
     expect(table1.data[0].length).toEqual(6);
     expect(table2.headers.length).toEqual(8);

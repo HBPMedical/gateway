@@ -20,14 +20,21 @@ const lookupDict = {
 const NUMBER_PRECISION = 4;
 
 export default class TTestPairedHandler extends BaseHandler {
-  private canHandle(experimentId: string) {
-    return experimentId.toLocaleLowerCase() === 'ttest_paired';
+  public static readonly ALGO_NAME = 'paired_ttest';
+
+  private canHandle(algoName: string, data: any) {
+    return (
+      data &&
+      data[0] &&
+      data[0]['t_stat'] &&
+      algoName.toLowerCase() === TTestPairedHandler.ALGO_NAME
+    );
   }
 
   private getTable(data: any): TableResult {
     const tableModel: TableResult = {
-      name: 'T-test',
-      tableStyle: TableStyle.NORMAL,
+      name: 'Results',
+      tableStyle: TableStyle.DEFAULT,
       headers: ['name', 'value'].map((name) => ({ name, type: 'string' })),
       data: [
         't_stat',
@@ -50,10 +57,12 @@ export default class TTestPairedHandler extends BaseHandler {
   }
 
   handle(experiment: Experiment, data: any, domain?: Domain): void {
-    if (!this.canHandle(experiment.algorithm.name))
+    if (!this.canHandle(experiment.algorithm.name, data))
       return super.handle(experiment, data, domain);
 
-    const tableModel = this.getTable(data);
+    const extData = data[0];
+
+    const tableModel = this.getTable(extData);
 
     if (tableModel) experiment.results.push(tableModel);
   }
