@@ -316,15 +316,16 @@ export default class DataShieldConnector implements Connector {
   ) {
     const path = new URL('/runAlgorithm', this.options.baseurl);
 
+    // Covariable and variable are inversed in Datashield API
     const coVariable =
-      experiment.coVariables.length > 0 ? experiment.coVariables[0] : undefined;
+      experiment.variables.length > 0 ? experiment.variables[0] : undefined;
 
     const result = await firstValueFrom(
       this.httpService.post(
         path.href,
         {
           coVariable,
-          variables: experiment.variables,
+          variables: experiment.coVariables,
           algorithm: {
             id: experiment.algorithm.name,
           },
