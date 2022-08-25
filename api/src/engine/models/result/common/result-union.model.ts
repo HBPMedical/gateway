@@ -1,11 +1,12 @@
 import { createUnionType } from '@nestjs/graphql';
+import { AlertResult } from '../alert-result.model';
+import { BarChartResult } from '../bar-chart-result.model';
 import { GroupsResult } from '../groups-result.model';
 import { HeatMapResult } from '../heat-map-result.model';
 import { LineChartResult } from '../line-chart-result.model';
+import { MeanChartResult } from '../means-chart-result.model';
 import { RawResult } from '../raw-result.model';
 import { TableResult } from '../table-result.model';
-import { BarChartResult } from '../bar-chart-result.model';
-import { MeanChartResult } from '../means-chart-result.model';
 
 export const ResultUnion = createUnionType({
   name: 'ResultUnion',
@@ -17,6 +18,7 @@ export const ResultUnion = createUnionType({
     LineChartResult,
     BarChartResult,
     MeanChartResult,
+    AlertResult,
   ],
   resolveType(value) {
     if (value.headers) {
@@ -41,6 +43,10 @@ export const ResultUnion = createUnionType({
 
     if (value.pointCIs) {
       return MeanChartResult;
+    }
+
+    if (value.message) {
+      return AlertResult;
     }
 
     return RawResult;
