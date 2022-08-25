@@ -2,10 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
-import {
-  ExperimentResult,
-  MIME_TYPES,
-} from '../../../common/interfaces/utilities.interface';
+import { ExperimentResult } from '../../../common/interfaces/utilities.interface';
 import { errorAxiosHandler } from '../../../common/utils/shared.utils';
 import EngineService from '../../../engine/engine.service';
 import ConnectorConfiguration from '../../../engine/interfaces/connector-configuration.interface';
@@ -15,7 +12,7 @@ import { Domain } from '../../../engine/models/domain.model';
 import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
 import { AllowedLink } from '../../../engine/models/experiment/algorithm/nominal-parameter.model';
 import { Experiment } from '../../../engine/models/experiment/experiment.model';
-import { RawResult } from '../../../engine/models/result/raw-result.model';
+import { AlertLevel } from '../../../engine/models/result/alert-result.model';
 import {
   TableResult,
   TableStyle,
@@ -93,12 +90,12 @@ export default class DataShieldConnector implements Connector {
         variable: {
           isRequired: true,
           allowedTypes: ['number'],
-          hasMultiple: true,
+          hasMultiple: false,
         },
         coVariable: {
           isRequired: true,
           allowedTypes: ['number'],
-          hasMultiple: false,
+          hasMultiple: true,
         },
       },
       {
@@ -109,13 +106,13 @@ export default class DataShieldConnector implements Connector {
         variable: {
           isRequired: true,
           allowedTypes: ['nominal'],
-          hasMultiple: true,
+          hasMultiple: false,
           hint: 'A binary event to predict',
         },
         coVariable: {
           isRequired: true,
           allowedTypes: ['number'],
-          hasMultiple: false,
+          hasMultiple: true,
         },
         parameters: [
           {
@@ -134,7 +131,7 @@ export default class DataShieldConnector implements Connector {
     variable: Variable,
     datasets: string[],
     cookie?: string,
-  ): Promise<RawResult> {
+  ): Promise<ExperimentResult> {
     const url = new URL(this.options.baseurl + `histogram`);
 
     url.searchParams.append('var', variable.id);
@@ -155,12 +152,9 @@ export default class DataShieldConnector implements Connector {
       DataShieldConnector.logger.warn('Cannot parse histogram result');
       DataShieldConnector.logger.verbose(path);
       return {
-        rawdata: {
-          data:
-            'Engine error when processing the request. Reason: ' +
-            response.data,
-          type: MIME_TYPES.ERROR,
-        },
+        level: AlertLevel.ERROR,
+        message:
+          'Engine error when processing the request. Reason: ' + response.data,
       };
     }
 
@@ -277,7 +271,7 @@ export default class DataShieldConnector implements Connector {
 
     switch (data.algorithm.id) {
       case 'MULTIPLE_HISTOGRAMS': {
-        expResult.results = await Promise.all<RawResult>(
+        expResult.results = await Promise.all<ExperimentResult>(
           allVariables.map((variable) =>
             this.getHistogram(variable, expResult.datasets, cookie),
           ),

@@ -1,10 +1,11 @@
 import { Logger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
-import EngineService from '../engine/engine.service';
+import { AlertLevel } from '../engine/models/result/alert-result.model';
 import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { CurrentUser } from '../common/decorators/user.decorator';
+import EngineService from '../engine/engine.service';
 import {
   Experiment,
   ExperimentStatus,
@@ -15,7 +16,6 @@ import { User } from '../users/models/user.model';
 import { ExperimentsService } from './experiments.service';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
 import { ExperimentEditInput } from './models/input/experiment-edit.input';
-import { MIME_TYPES } from '../common/interfaces/utilities.interface';
 
 const LIMIT_EXP_BY_PAGE = 10; // TODO Consider refactoring to allow offset and limit in API call
 
@@ -113,10 +113,8 @@ export class ExperimentsResolver {
             finishedAt: new Date().toISOString(),
             results: [
               {
-                rawdata: {
-                  type: MIME_TYPES.ERROR,
-                  data: `Error while running experiment, details '${err}'`,
-                },
+                level: AlertLevel.ERROR,
+                message: `Error while running experiment, details '${err}'`,
               },
             ],
             status: ExperimentStatus.ERROR,

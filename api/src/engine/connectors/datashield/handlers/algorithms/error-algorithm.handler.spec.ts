@@ -1,5 +1,5 @@
+import { AlertResult } from '../../../../models/result/alert-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
-import { RawResult } from '../../../../models/result/raw-result.model';
 import ErrorAlgorithmHandler from './error-algorithm.handler';
 
 const vars = [];
@@ -36,9 +36,9 @@ describe('Error handler', () => {
 
       expect(exp.results).toHaveLength(1);
 
-      const result = exp.results[0] as RawResult;
+      const result = exp.results[0] as AlertResult;
 
-      expect(result.rawdata['data']).toBe(data.errorMessage[0][0]);
+      expect(result.message).toBe(data.errorMessage[0][0]);
     });
   });
 });

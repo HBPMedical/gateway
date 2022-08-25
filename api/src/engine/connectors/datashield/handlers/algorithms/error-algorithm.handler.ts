@@ -1,6 +1,6 @@
-import { MIME_TYPES } from '../../../../../common/interfaces/utilities.interface';
 import { Variable } from '../../../../models/variable.model';
 
+import { AlertLevel } from '../../../../models/result/alert-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import BaseHandler from '../base.handler';
 
@@ -21,10 +21,8 @@ export default class ErrorAlgorithmHandler extends BaseHandler {
     errors
       .filter((err) => err)
       .map((error) => ({
-        rawdata: {
-          type: MIME_TYPES.ERROR,
-          data: error.join(' '),
-        },
+        level: AlertLevel.ERROR,
+        message: error.join(' '),
       }))
       .forEach((error) => experiment.results.push(error));
   }
