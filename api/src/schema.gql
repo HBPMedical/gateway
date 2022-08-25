@@ -174,13 +174,21 @@ type FormulaOperation {
   operationTypes: [String!]!
 }
 
+type ChartAxis {
+  """label of the Axis"""
+  label: String
+
+  """label of each element on this Axis"""
+  categories: [String!]
+}
+
 type GroupResult {
   name: String!
   description: String
   results: [ResultUnion!]!
 }
 
-union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult | MeanChartResult
+union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult | MeanChartResult | AlertResult
 
 type TableResult {
   name: String!
@@ -248,12 +256,17 @@ type MeanChartResult {
   pointCIs: [PointCI!]!
 }
 
-type ChartAxis {
-  """label of the Axis"""
-  label: String
+type AlertResult {
+  title: String
+  message: String!
+  level: AlertLevel
+}
 
-  """label of each element on this Axis"""
-  categories: [String!]
+enum AlertLevel {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
 }
 
 type ExtraLineInfo {
@@ -274,15 +287,15 @@ enum LineType {
   DASHED
 }
 
-type Header {
-  name: String!
-  type: String!
-}
-
 type PointCI {
   min: Float
   mean: Float!
   max: Float
+}
+
+type Header {
+  name: String!
+  type: String!
 }
 
 type Author {
