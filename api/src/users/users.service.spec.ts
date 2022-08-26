@@ -10,6 +10,7 @@ type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
 const createMockRepository = <T = any>(): MockRepository<T> => ({
   findOne: jest.fn(),
+  findOneBy: jest.fn(),
   save: jest.fn(),
 });
 
@@ -44,7 +45,7 @@ describe('UsersService', () => {
   describe('getUser', () => {
     describe('when user exist', () => {
       it('Should return a user', async () => {
-        usersRepository.findOne.mockReturnValue(user);
+        usersRepository.findOneBy.mockReturnValue(user);
         const result = await service.findOne('idThatExist');
 
         expect(result).toStrictEqual(user);
@@ -53,7 +54,7 @@ describe('UsersService', () => {
 
     describe('otherwise', () => {
       it('Should return a NotFoundException', async () => {
-        usersRepository.findOne.mockReturnValue(undefined);
+        usersRepository.findOneBy.mockReturnValue(undefined);
 
         try {
           await service.findOne('IdThatDoesNotExist');
@@ -87,7 +88,7 @@ describe('UsersService', () => {
         agreeNDA: true,
       };
 
-      usersRepository.findOne.mockReturnValue(expectedUser);
+      usersRepository.findOneBy.mockReturnValue(expectedUser);
 
       await service.extendedUser(localUser);
 

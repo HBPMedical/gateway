@@ -8,7 +8,7 @@ import {
   Experiment,
   ExperimentStatus,
 } from '../engine/models/experiment/experiment.model';
-import { User } from 'src/users/models/user.model';
+import { User } from '../users/models/user.model';
 import { FindManyOptions, Like, Repository } from 'typeorm';
 import { ExperimentCreateInput } from './models/input/experiment-create.input';
 import { PaginationArgsInput } from './models/input/pagination-args.input';
@@ -59,7 +59,7 @@ export class ExperimentsService {
    */
   async findOne(id: string, user: User): Promise<Experiment>;
   async findOne(id: string, user?: User): Promise<Experiment> {
-    const experiment = await this.experimentRepository.findOne(id);
+    const experiment = await this.experimentRepository.findOneBy({ id });
 
     if (!experiment) throw new NotFoundException(`Experiment #${id} not found`);
 
