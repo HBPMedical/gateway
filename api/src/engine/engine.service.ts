@@ -100,8 +100,6 @@ export default class EngineService implements Connector {
     const cached = await this.cacheManager.get<T>(key);
     if (cached) return cached;
 
-    console.log(`Cache for ${key} not found. Calling function.`);
-
     const result = await fn();
 
     this.cacheManager.set(key, result, { ttl: this.cacheConf.ttl });
