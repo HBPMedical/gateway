@@ -1,5 +1,5 @@
-import { Domain } from 'src/engine/models/domain.model';
-import { Variable } from 'src/engine/models/variable.model';
+import { Domain } from '../../../../models/domain.model';
+import { Variable } from '../../../../models/variable.model';
 import { isNumber } from '../../../../../common/utils/shared.utils';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import {

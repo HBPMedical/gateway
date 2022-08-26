@@ -1,8 +1,8 @@
-import Connector from 'src/engine/interfaces/connector.interface';
-import { Domain } from 'src/engine/models/domain.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
-import { User } from 'src/users/models/user.model';
+import Connector from '../../interfaces/connector.interface';
+import { Domain } from '../../models/domain.model';
+import { Algorithm } from '../../models/experiment/algorithm.model';
+import { ResultUnion } from '../../models/result/common/result-union.model';
+import { User } from '../../../users/models/user.model';
 
 export default class LocalConnector implements Connector {
   async login(): Promise<User> {

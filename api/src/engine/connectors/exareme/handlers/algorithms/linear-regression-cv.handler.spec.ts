@@ -1,5 +1,5 @@
-import { Domain } from 'src/engine/models/domain.model';
-import { TableResult } from 'src/engine/models/result/table-result.model';
+import { Domain } from '../../../../models/domain.model';
+import { TableResult } from '../../../../models/result/table-result.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import LinearRegressionCVHandler from './linear-regression-cv.handler';
 

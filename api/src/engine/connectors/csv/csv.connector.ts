@@ -4,13 +4,13 @@ import { firstValueFrom } from 'rxjs';
 import {
   Dictionary,
   ExperimentResult,
-} from 'src/common/interfaces/utilities.interface';
-import Connector from 'src/engine/interfaces/connector.interface';
-import EngineOptions from 'src/engine/interfaces/engine-options.interface';
-import { Domain } from 'src/engine/models/domain.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { Group } from 'src/engine/models/group.model';
-import { User } from 'src/users/models/user.model';
+} from '../../../common/interfaces/utilities.interface';
+import Connector from '../../../engine/interfaces/connector.interface';
+import EngineOptions from '../../../engine/interfaces/engine-options.interface';
+import { Domain } from '../../../engine/models/domain.model';
+import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
+import { Group } from '../../../engine/models/group.model';
+import { User } from '../../../users/models/user.model';
 
 export default class CSVConnector implements Connector {
   constructor(

@@ -5,24 +5,24 @@ import { catchError, firstValueFrom } from 'rxjs';
 import {
   ExperimentResult,
   MIME_TYPES,
-} from 'src/common/interfaces/utilities.interface';
-import { errorAxiosHandler } from 'src/common/utils/shared.utils';
-import EngineService from 'src/engine/engine.service';
-import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
-import Connector from 'src/engine/interfaces/connector.interface';
-import EngineOptions from 'src/engine/interfaces/engine-options.interface';
-import { Domain } from 'src/engine/models/domain.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { AllowedLink } from 'src/engine/models/experiment/algorithm/nominal-parameter.model';
-import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
+} from '../../../common/interfaces/utilities.interface';
+import { errorAxiosHandler } from '../../../common/utils/shared.utils';
+import EngineService from '../../../engine/engine.service';
+import ConnectorConfiguration from '../../../engine/interfaces/connector-configuration.interface';
+import Connector from '../../../engine/interfaces/connector.interface';
+import EngineOptions from '../../../engine/interfaces/engine-options.interface';
+import { Domain } from '../../../engine/models/domain.model';
+import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
+import { AllowedLink } from '../../../engine/models/experiment/algorithm/nominal-parameter.model';
+import { Experiment } from '../../../engine/models/experiment/experiment.model';
+import { RawResult } from '../../../engine/models/result/raw-result.model';
 import {
   TableResult,
   TableStyle,
-} from 'src/engine/models/result/table-result.model';
-import { Variable } from 'src/engine/models/variable.model';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
-import { User } from 'src/users/models/user.model';
+} from '../../../engine/models/result/table-result.model';
+import { Variable } from '../../../engine/models/variable.model';
+import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
+import { User } from '../../../users/models/user.model';
 import {
   dataToGroups,
   dsGroup,

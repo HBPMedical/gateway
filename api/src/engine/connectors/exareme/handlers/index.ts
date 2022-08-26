@@ -1,4 +1,4 @@
-import { Domain } from 'src/engine/models/domain.model';
+import { Domain } from '../../../../engine/models/domain.model';
 import { Experiment } from '../../../../engine/models/experiment/experiment.model';
 import AnovaOneWayHandler from './algorithms/anova-one-way.handler';
 import DescriptiveHandler from './algorithms/descriptive.handler';

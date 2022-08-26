@@ -1,5 +1,5 @@
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { NominalParameter } from 'src/engine/models/experiment/algorithm/nominal-parameter.model';
+import { Algorithm } from '../../../../models/experiment/algorithm.model';
+import { NominalParameter } from '../../../../models/experiment/algorithm/nominal-parameter.model';
 import transformToAlgorithms from '.';
 
 describe('Algorithms', () => {

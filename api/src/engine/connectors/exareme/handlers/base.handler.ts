@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { Domain } from 'src/engine/models/domain.model';
+import { Domain } from '../../../models/domain.model';
 import { Experiment } from '../../../models/experiment/experiment.model';
 import ResultHandler from './result-handler.interface';
 

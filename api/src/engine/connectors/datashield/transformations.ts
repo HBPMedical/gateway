@@ -2,8 +2,8 @@
 // see : https://docs.jsonata.org/
 
 import * as jsonata from 'jsonata';
-import { Domain } from 'src/engine/models/domain.model';
-import { Group } from 'src/engine/models/group.model';
+import { Domain } from '../../../engine/models/domain.model';
+import { Group } from '../../../engine/models/group.model';
 
 export const transformToDomain = jsonata(`
 {

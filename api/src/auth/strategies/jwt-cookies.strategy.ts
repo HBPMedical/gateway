@@ -3,7 +3,7 @@ import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Strategy } from 'passport-jwt';
-import authConfig from 'src/config/auth.config';
+import authConfig from '../../config/auth.config';
 
 @Injectable()
 export class JwtCookiesStrategy extends PassportStrategy(
