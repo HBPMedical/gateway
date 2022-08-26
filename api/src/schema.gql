@@ -35,12 +35,10 @@ type Configuration {
 
   """Indicates if filters and formula are enabled"""
   hasFilters: Boolean
-  contactLink: String
   version: String!
   skipAuth: Boolean
   skipTos: Boolean
   enableSSO: Boolean
-  ontologyUrl: String
 }
 
 type Dataset {

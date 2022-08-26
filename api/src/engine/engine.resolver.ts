@@ -8,12 +8,7 @@ import { parseToBoolean } from 'src/common/utils/shared.utils';
 import authConfig from 'src/config/auth.config';
 import { Md5 } from 'ts-md5';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
-import {
-  ENGINE_CONTACT_LINK,
-  ENGINE_MODULE_OPTIONS,
-  ENGINE_ONTOLOGY_URL,
-  ENGINE_SKIP_TOS,
-} from './engine.constants';
+import { ENGINE_MODULE_OPTIONS, ENGINE_SKIP_TOS } from './engine.constants';
 import EngineService from './engine.service';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';
 import EngineOptions from './interfaces/engine-options.interface';
@@ -47,8 +42,6 @@ export class EngineResolver {
       skipTos: parseToBoolean(this.configSerivce.get(ENGINE_SKIP_TOS)),
       enableSSO: parseToBoolean(authConf.enableSSO),
       skipAuth: parseToBoolean(authConf.skipAuth, true),
-      ontologyUrl: this.configSerivce.get(ENGINE_ONTOLOGY_URL),
-      contactLink: this.configSerivce.get(ENGINE_CONTACT_LINK),
     };
 
     const version = Md5.hashStr(JSON.stringify(data));
