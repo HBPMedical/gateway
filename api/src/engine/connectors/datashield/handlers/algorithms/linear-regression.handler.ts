@@ -1,6 +1,6 @@
-import { Variable } from '../../../../models/variable.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { TableResult } from '../../../../models/result/table-result.model';
+import { Variable } from '../../../../models/variable.model';
 import BaseHandler from '../base.handler';
 
 const lookupDict = {

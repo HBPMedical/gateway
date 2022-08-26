@@ -2,7 +2,10 @@ import {
   AlertLevel,
   AlertResult,
 } from '../../../../models/result/alert-result.model';
-import { Experiment } from '../../../../models/experiment/experiment.model';
+import {
+  Experiment,
+  ExperimentStatus,
+} from '../../../../models/experiment/experiment.model';
 import BaseHandler from '../base.handler';
 
 export default class TerminalAlgorithmHandler extends BaseHandler {
@@ -14,5 +17,6 @@ export default class TerminalAlgorithmHandler extends BaseHandler {
     };
 
     experiment.results.push(alertResult);
+    experiment.status = ExperimentStatus.WARN;
   }
 }

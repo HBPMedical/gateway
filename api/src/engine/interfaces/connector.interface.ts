@@ -9,6 +9,7 @@ import { Domain } from '../models/domain.model';
 import { Algorithm } from '../models/experiment/algorithm.model';
 import {
   Experiment,
+  ExperimentStatus,
   PartialExperiment,
 } from '../models/experiment/experiment.model';
 import { ListExperiments } from '../models/experiment/list-experiments.model';
@@ -16,6 +17,10 @@ import { FilterConfiguration } from '../models/filter/filter-configuration';
 import { FormulaOperation } from '../models/formula/formula-operation.model';
 import ConnectorConfiguration from './connector-configuration.interface';
 
+export type RunResult = {
+  results: ExperimentResult[];
+  status?: ExperimentStatus;
+};
 export default interface Connector {
   /**
    * Allow specific configuration for the engine
@@ -51,7 +56,7 @@ export default interface Connector {
   runExperiment?(
     data: ExperimentCreateInput,
     req?: Request,
-  ): Promise<ExperimentResult[]>;
+  ): Promise<RunResult>;
 
   /**
    * Get a list of experiment (limited to 10 per page)

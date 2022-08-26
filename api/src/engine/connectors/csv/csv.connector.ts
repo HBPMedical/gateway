@@ -1,11 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { NotImplementedException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
-import {
-  Dictionary,
-  ExperimentResult,
-} from '../../../common/interfaces/utilities.interface';
-import Connector from '../../../engine/interfaces/connector.interface';
+import { Dictionary } from '../../../common/interfaces/utilities.interface';
+import Connector, {
+  RunResult,
+} from '../../../engine/interfaces/connector.interface';
 import EngineOptions from '../../../engine/interfaces/engine-options.interface';
 import { Domain } from '../../../engine/models/domain.model';
 import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
@@ -26,7 +25,7 @@ export default class CSVConnector implements Connector {
     throw new NotImplementedException();
   }
 
-  async runExperiment(): Promise<ExperimentResult[]> {
+  async runExperiment(): Promise<RunResult> {
     throw new NotImplementedException();
   }
 

@@ -1,7 +1,10 @@
 import { Variable } from '../../../../models/variable.model';
 
 import { AlertLevel } from '../../../../models/result/alert-result.model';
-import { Experiment } from '../../../../models/experiment/experiment.model';
+import {
+  Experiment,
+  ExperimentStatus,
+} from '../../../../models/experiment/experiment.model';
 import BaseHandler from '../base.handler';
 
 export default class ErrorAlgorithmHandler extends BaseHandler {
@@ -25,5 +28,7 @@ export default class ErrorAlgorithmHandler extends BaseHandler {
         message: error.join(' '),
       }))
       .forEach((error) => experiment.results.push(error));
+
+    experiment.status = ExperimentStatus.ERROR;
   }
 }

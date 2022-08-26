@@ -21,157 +21,6 @@ type User {
   agreeNDA: Boolean
 }
 
-type AuthenticationOutput {
-  accessToken: String!
-  refreshToken: String!
-}
-
-type Configuration {
-  connectorId: String!
-  hasGalaxy: Boolean @deprecated(reason: "Only used for legacy reason should be avoided")
-
-  """Indicates if histograms can handle grouping"""
-  hasGrouping: Boolean
-
-  """Indicates if filters and formula are enabled"""
-  hasFilters: Boolean
-  version: String!
-  skipAuth: Boolean
-  skipTos: Boolean
-  enableSSO: Boolean
-}
-
-type Dataset {
-  id: String!
-  label: String
-  isLongitudinal: Boolean
-}
-
-type Group {
-  id: String!
-  label: String
-  description: String
-  groups: [String!]
-
-  """List of variable's ids"""
-  variables: [String!]
-
-  """List of datasets avalaible, set null if all datasets allowed"""
-  datasets: [String!]
-}
-
-type Category {
-  value: String!
-  label: String
-}
-
-type Variable {
-  id: String!
-  label: String
-  type: String
-  description: String
-  enumerations: [Category!]
-  groups: [Group!]
-
-  """List of datasets avalaible, set null if all datasets allowed"""
-  datasets: [String!]
-}
-
-type Domain {
-  id: String!
-  label: String
-  description: String
-  version: String
-  groups: [Group!]!
-  variables: [Variable!]!
-  datasets: [Dataset!]!
-  rootGroup: Group!
-}
-
-type OptionValue {
-  value: String!
-  label: String!
-}
-
-type NominalParameter implements BaseParameter {
-  name: String!
-  label: String
-
-  """Small hint (description) for the end user"""
-  hint: String
-  isRequired: Boolean
-  hasMultiple: Boolean
-  defaultValue: String
-
-  """Id of the parameter"""
-  linkedTo: AllowedLink
-  allowedValues: [OptionValue!]
-}
-
-"""The supported links."""
-enum AllowedLink {
-  VARIABLE
-  COVARIABLE
-}
-
-type NumberParameter implements BaseParameter {
-  name: String!
-  label: String
-
-  """Small hint (description) for the end user"""
-  hint: String
-  isRequired: Boolean
-  hasMultiple: Boolean
-  defaultValue: String
-  min: Float
-  max: Float
-  isReal: Boolean
-}
-
-type StringParameter implements BaseParameter {
-  name: String!
-  label: String
-
-  """Small hint (description) for the end user"""
-  hint: String
-  isRequired: Boolean
-  hasMultiple: Boolean
-  defaultValue: String
-}
-
-type VariableParameter {
-  hint: String
-  isRequired: Boolean
-  hasMultiple: Boolean
-
-  """If undefined, all types are allowed"""
-  allowedTypes: [String!]
-}
-
-type Algorithm {
-  id: String!
-  parameters: [BaseParameter!]
-  variable: VariableParameter!
-  coVariable: VariableParameter
-  hasFormula: Boolean
-  type: String
-  label: String
-  description: String
-}
-
-type FilterConfiguration {
-  """List of types that can considered as number"""
-  numberTypes: [String!]
-}
-
-type FormulaOperation {
-  """Type name of the variable"""
-  variableType: String!
-
-  """List of operation available for this type"""
-  operationTypes: [String!]!
-}
-
 type ChartAxis {
   """label of the Axis"""
   label: String
@@ -372,6 +221,157 @@ type PartialExperiment {
   filterVariables: [String!]
   formula: Formula
   algorithm: AlgorithmResult
+}
+
+type AuthenticationOutput {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Configuration {
+  connectorId: String!
+  hasGalaxy: Boolean @deprecated(reason: "Only used for legacy reason should be avoided")
+
+  """Indicates if histograms can handle grouping"""
+  hasGrouping: Boolean
+
+  """Indicates if filters and formula are enabled"""
+  hasFilters: Boolean
+  version: String!
+  skipAuth: Boolean
+  skipTos: Boolean
+  enableSSO: Boolean
+}
+
+type Dataset {
+  id: String!
+  label: String
+  isLongitudinal: Boolean
+}
+
+type Group {
+  id: String!
+  label: String
+  description: String
+  groups: [String!]
+
+  """List of variable's ids"""
+  variables: [String!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
+}
+
+type Category {
+  value: String!
+  label: String
+}
+
+type Variable {
+  id: String!
+  label: String
+  type: String
+  description: String
+  enumerations: [Category!]
+  groups: [Group!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
+}
+
+type Domain {
+  id: String!
+  label: String
+  description: String
+  version: String
+  groups: [Group!]!
+  variables: [Variable!]!
+  datasets: [Dataset!]!
+  rootGroup: Group!
+}
+
+type OptionValue {
+  value: String!
+  label: String!
+}
+
+type NominalParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+
+  """Id of the parameter"""
+  linkedTo: AllowedLink
+  allowedValues: [OptionValue!]
+}
+
+"""The supported links."""
+enum AllowedLink {
+  VARIABLE
+  COVARIABLE
+}
+
+type NumberParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+  min: Float
+  max: Float
+  isReal: Boolean
+}
+
+type StringParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+}
+
+type VariableParameter {
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+
+  """If undefined, all types are allowed"""
+  allowedTypes: [String!]
+}
+
+type Algorithm {
+  id: String!
+  parameters: [BaseParameter!]
+  variable: VariableParameter!
+  coVariable: VariableParameter
+  hasFormula: Boolean
+  type: String
+  label: String
+  description: String
+}
+
+type FilterConfiguration {
+  """List of types that can considered as number"""
+  numberTypes: [String!]
+}
+
+type FormulaOperation {
+  """Type name of the variable"""
+  variableType: String!
+
+  """List of operation available for this type"""
+  operationTypes: [String!]!
 }
 
 type ListExperiments {

@@ -6,7 +6,9 @@ import { ExperimentResult } from '../../../common/interfaces/utilities.interface
 import { errorAxiosHandler } from '../../../common/utils/shared.utils';
 import EngineService from '../../../engine/engine.service';
 import ConnectorConfiguration from '../../../engine/interfaces/connector-configuration.interface';
-import Connector from '../../../engine/interfaces/connector.interface';
+import Connector, {
+  RunResult,
+} from '../../../engine/interfaces/connector.interface';
 import EngineOptions from '../../../engine/interfaces/engine-options.interface';
 import { Domain } from '../../../engine/models/domain.model';
 import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
@@ -240,7 +242,7 @@ export default class DataShieldConnector implements Connector {
   async runExperiment(
     data: ExperimentCreateInput,
     request: Request,
-  ): Promise<ExperimentResult[]> {
+  ): Promise<RunResult> {
     const user = request.user as User;
     const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
       ';',
@@ -300,7 +302,10 @@ export default class DataShieldConnector implements Connector {
       }
     }
 
-    return expResult.results;
+    return {
+      results: expResult.results,
+      status: expResult.status,
+    };
   }
 
   private async runAlgorithm(

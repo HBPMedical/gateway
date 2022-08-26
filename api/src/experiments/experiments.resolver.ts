@@ -1,7 +1,6 @@
 import { Logger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
-import { AlertLevel } from '../engine/models/result/alert-result.model';
 import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -78,14 +77,14 @@ export class ExperimentsResolver {
       return this.engineService.createExperiment(data, isTransient, req);
     }
 
-    //if the experiment is transient we wait a response before returning a response
+    //if the experiment is transient we wait a connector's response before returning a client's response
     if (isTransient) {
       const results = await this.engineService.runExperiment(data, req);
       const expTransient = this.experimentService.dataToExperiment(data, user);
       return { ...expTransient, results, status: ExperimentStatus.SUCCESS };
     }
 
-    //if not we will create an experiment in local db
+    //if not transient we will create an experiment in local db
     const experiment = await this.experimentService.create(
       data,
       user,
@@ -93,35 +92,17 @@ export class ExperimentsResolver {
     );
 
     //create an async query that will update the result when it's done
-    this.engineService
-      .runExperiment(data, req)
-      .then((results) => {
-        this.experimentService.update(
-          experiment.id,
-          {
-            results,
-            finishedAt: new Date().toISOString(),
-            status: ExperimentStatus.SUCCESS,
-          },
-          user,
-        );
-      })
-      .catch((err) => {
-        this.experimentService.update(
-          experiment.id,
-          {
-            finishedAt: new Date().toISOString(),
-            results: [
-              {
-                level: AlertLevel.ERROR,
-                message: `Error while running experiment, details '${err}'`,
-              },
-            ],
-            status: ExperimentStatus.ERROR,
-          },
-          user,
-        );
-      });
+    this.engineService.runExperiment(data, req).then((runResult) => {
+      this.experimentService.update(
+        experiment.id,
+        {
+          status: ExperimentStatus.SUCCESS, // default status
+          ...runResult,
+          finishedAt: new Date().toISOString(),
+        },
+        user,
+      );
+    });
 
     //we return the experiment before finishing the runExperiment
     return experiment;
