@@ -1,4 +1,4 @@
-import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
+import { ResultUnion } from '../../engine/models/result/common/result-union.model';
 
 export type Dictionary<T> = { [key: string]: T };
 

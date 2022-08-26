@@ -10,23 +10,23 @@ import {
 import { AxiosRequestConfig } from 'axios';
 import { Request } from 'express';
 import { firstValueFrom, map, Observable } from 'rxjs';
-import EngineService from 'src/engine/engine.service';
-import ConnectorConfiguration from 'src/engine/interfaces/connector-configuration.interface';
-import Connector from 'src/engine/interfaces/connector.interface';
-import EngineOptions from 'src/engine/interfaces/engine-options.interface';
-import { Domain } from 'src/engine/models/domain.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
+import EngineService from '../../../engine/engine.service';
+import ConnectorConfiguration from '../../../engine/interfaces/connector-configuration.interface';
+import Connector from '../../../engine/interfaces/connector.interface';
+import EngineOptions from '../../../engine/interfaces/engine-options.interface';
+import { Domain } from '../../../engine/models/domain.model';
+import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
 import {
   Experiment,
   PartialExperiment,
-} from 'src/engine/models/experiment/experiment.model';
-import { ListExperiments } from 'src/engine/models/experiment/list-experiments.model';
-import { FormulaOperation } from 'src/engine/models/formula/formula-operation.model';
-import { Group } from 'src/engine/models/group.model';
-import { Variable } from 'src/engine/models/variable.model';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
-import { ExperimentEditInput } from 'src/experiments/models/input/experiment-edit.input';
-import { User } from 'src/users/models/user.model';
+} from '../../../engine/models/experiment/experiment.model';
+import { ListExperiments } from '../../../engine/models/experiment/list-experiments.model';
+import { FormulaOperation } from '../../../engine/models/formula/formula-operation.model';
+import { Group } from '../../../engine/models/group.model';
+import { Variable } from '../../../engine/models/variable.model';
+import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
+import { ExperimentEditInput } from '../../../experiments/models/input/experiment-edit.input';
+import { User } from '../../../users/models/user.model';
 import { transformToUser } from '../datashield/transformations';
 import {
   dataToDataset,

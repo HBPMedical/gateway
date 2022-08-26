@@ -2,10 +2,9 @@ import { Inject, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import { Query, Resolver } from '@nestjs/graphql';
 import { Request } from 'express';
-import { Public } from 'src/auth/decorators/public.decorator';
-import { GlobalAuthGuard } from 'src/auth/guards/global-auth.guard';
-import { parseToBoolean } from 'src/common/utils/shared.utils';
-import authConfig from 'src/config/auth.config';
+import { GlobalAuthGuard } from '../auth/guards/global-auth.guard';
+import { parseToBoolean } from '../common/utils/shared.utils';
+import authConfig from '../config/auth.config';
 import { Md5 } from 'ts-md5';
 import { GQLRequest } from '../common/decorators/gql-request.decoractor';
 import { ENGINE_MODULE_OPTIONS, ENGINE_SKIP_TOS } from './engine.constants';
@@ -17,6 +16,7 @@ import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 import { FilterConfiguration } from './models/filter/filter-configuration';
 import { FormulaOperation } from './models/formula/formula-operation.model';
+import { Public } from '../auth/decorators/public.decorator';
 
 @UseInterceptors(ErrorsInterceptor)
 @UseGuards(GlobalAuthGuard)

@@ -1,15 +1,15 @@
 import { Logger } from '@nestjs/common';
-import { Category } from 'src/engine/models/category.model';
-import { Dataset } from 'src/engine/models/dataset.model';
-import { Domain } from 'src/engine/models/domain.model';
+import { Category } from '../../../engine/models/category.model';
+import { Dataset } from '../../../engine/models/dataset.model';
+import { Domain } from '../../../engine/models/domain.model';
 import {
   Experiment,
   ExperimentStatus,
-} from 'src/engine/models/experiment/experiment.model';
-import { Group } from 'src/engine/models/group.model';
-import { Variable } from 'src/engine/models/variable.model';
-import { AlgorithmParamInput } from 'src/experiments/models/input/algorithm-parameter.input';
-import { ExperimentCreateInput } from 'src/experiments/models/input/experiment-create.input';
+} from '../../../engine/models/experiment/experiment.model';
+import { Group } from '../../../engine/models/group.model';
+import { Variable } from '../../../engine/models/variable.model';
+import { AlgorithmParamInput } from '../../../experiments/models/input/algorithm-parameter.input';
+import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
 import handlers from './handlers';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';

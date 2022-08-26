@@ -24,7 +24,7 @@ export class UsersService {
    * @returns The user object.
    */
   async findOne(id: string): Promise<InternalUser> {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userRepository.findOneBy({ id });
 
     if (!user) throw new NotFoundException(`User cannot be found in database.`);
 

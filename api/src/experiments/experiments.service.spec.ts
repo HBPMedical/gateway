@@ -1,7 +1,7 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/users/models/user.model';
+import { User } from '../users/models/user.model';
 import { Repository } from 'typeorm';
 import { Experiment } from '../engine/models/experiment/experiment.model';
 import { ExperimentsService } from './experiments.service';
@@ -9,6 +9,7 @@ import { ExperimentCreateInput } from './models/input/experiment-create.input';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 const createMockRepository = <T = any>(): MockRepository<T> => ({
+  findOneBy: jest.fn(),
   findOne: jest.fn(),
   findAndCount: jest.fn(),
   create: jest.fn(),
@@ -48,7 +49,7 @@ describe('ExperimentsService', () => {
         const experimentId = '1';
         const expectedExperiment = {};
 
-        experimentRepository.findOne.mockReturnValue(expectedExperiment);
+        experimentRepository.findOneBy.mockReturnValue(expectedExperiment);
         const experiment = await service.findOne(experimentId);
         expect(experiment).toEqual(expectedExperiment);
       });
@@ -64,7 +65,7 @@ describe('ExperimentsService', () => {
           id: 'dummyid',
         };
 
-        experimentRepository.findOne.mockReturnValue(expectedExperiment);
+        experimentRepository.findOneBy.mockReturnValue(expectedExperiment);
 
         try {
           await service.findOne(experimentId, user);
@@ -76,7 +77,7 @@ describe('ExperimentsService', () => {
     describe('otherwise', () => {
       it('should throw the "NotFoundException"', async () => {
         const experimentId = '1';
-        experimentRepository.findOne.mockReturnValue(undefined);
+        experimentRepository.findOneBy.mockReturnValue(undefined);
 
         try {
           await service.findOne(experimentId);
@@ -165,7 +166,7 @@ describe('ExperimentsService', () => {
 
       const updateData = { name: 'test' };
 
-      experimentRepository.findOne.mockReturnValue({
+      experimentRepository.findOneBy.mockReturnValue({
         author: {
           ...user,
         },

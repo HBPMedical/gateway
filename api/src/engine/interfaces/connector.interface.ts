@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { ExperimentResult } from 'src/common/interfaces/utilities.interface';
-import { UpdateUserInput } from 'src/users/inputs/update-user.input';
+import { ExperimentResult } from '../../common/interfaces/utilities.interface';
+import { UpdateUserInput } from '../../users/inputs/update-user.input';
 import { ExperimentCreateInput } from '../../experiments/models/input/experiment-create.input';
 import { ExperimentEditInput } from '../../experiments/models/input/experiment-edit.input';
 import { User } from '../../users/models/user.model';
