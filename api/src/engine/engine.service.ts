@@ -10,7 +10,6 @@ import { ConfigType } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { ExperimentResult } from '../common/interfaces/utilities.interface';
 import cacheConfig from '../config/cache.config';
 import { ExperimentCreateInput } from '../experiments/models/input/experiment-create.input';
 import { ExperimentEditInput } from '../experiments/models/input/experiment-edit.input';
@@ -18,17 +17,19 @@ import { UpdateUserInput } from '../users/inputs/update-user.input';
 import { User } from '../users/models/user.model';
 import { ENGINE_MODULE_OPTIONS } from './engine.constants';
 import ConnectorConfiguration from './interfaces/connector-configuration.interface';
-import Connector from './interfaces/connector.interface';
+import Connector, { RunResult } from './interfaces/connector.interface';
 import EngineOptions from './interfaces/engine-options.interface';
 import { Domain } from './models/domain.model';
 import { Algorithm } from './models/experiment/algorithm.model';
 import {
   Experiment,
+  ExperimentStatus,
   PartialExperiment,
 } from './models/experiment/experiment.model';
 import { ListExperiments } from './models/experiment/list-experiments.model';
 import { FilterConfiguration } from './models/filter/filter-configuration';
 import { FormulaOperation } from './models/formula/formula-operation.model';
+import { AlertLevel } from './models/result/alert-result.model';
 import { Variable } from './models/variable.model';
 
 const DOMAINS_CACHE_KEY = 'domains';
@@ -161,9 +162,17 @@ export default class EngineService implements Connector {
   async runExperiment(
     data: ExperimentCreateInput,
     req?: Request,
-  ): Promise<ExperimentResult[]> {
+  ): Promise<RunResult> {
     if (!this.connector.runExperiment) throw new NotImplementedException();
-    return this.connector.runExperiment(data, req);
+    return this.connector.runExperiment(data, req).catch((err) => ({
+      results: [
+        {
+          level: AlertLevel.ERROR,
+          message: `Error while running experiment, details '${err}'`,
+        },
+      ],
+      status: ExperimentStatus.ERROR,
+    }));
   }
 
   async listExperiments?(

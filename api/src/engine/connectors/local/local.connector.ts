@@ -1,8 +1,7 @@
-import Connector from '../../interfaces/connector.interface';
+import { User } from '../../../users/models/user.model';
+import Connector, { RunResult } from '../../interfaces/connector.interface';
 import { Domain } from '../../models/domain.model';
 import { Algorithm } from '../../models/experiment/algorithm.model';
-import { ResultUnion } from '../../models/result/common/result-union.model';
-import { User } from '../../../users/models/user.model';
 
 export default class LocalConnector implements Connector {
   async login(): Promise<User> {
@@ -16,7 +15,7 @@ export default class LocalConnector implements Connector {
     throw new Error('Method not implemented.');
   }
 
-  async runExperiment(): Promise<Array<typeof ResultUnion>> {
+  async runExperiment(): Promise<RunResult> {
     throw new Error('Method not implemented.');
   }
 

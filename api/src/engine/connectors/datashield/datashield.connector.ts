@@ -2,20 +2,19 @@ import { HttpService } from '@nestjs/axios';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
-import {
-  ExperimentResult,
-  MIME_TYPES,
-} from '../../../common/interfaces/utilities.interface';
+import { ExperimentResult } from '../../../common/interfaces/utilities.interface';
 import { errorAxiosHandler } from '../../../common/utils/shared.utils';
 import EngineService from '../../../engine/engine.service';
 import ConnectorConfiguration from '../../../engine/interfaces/connector-configuration.interface';
-import Connector from '../../../engine/interfaces/connector.interface';
+import Connector, {
+  RunResult,
+} from '../../../engine/interfaces/connector.interface';
 import EngineOptions from '../../../engine/interfaces/engine-options.interface';
 import { Domain } from '../../../engine/models/domain.model';
 import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
 import { AllowedLink } from '../../../engine/models/experiment/algorithm/nominal-parameter.model';
 import { Experiment } from '../../../engine/models/experiment/experiment.model';
-import { RawResult } from '../../../engine/models/result/raw-result.model';
+import { AlertLevel } from '../../../engine/models/result/alert-result.model';
 import {
   TableResult,
   TableStyle,
@@ -23,6 +22,7 @@ import {
 import { Variable } from '../../../engine/models/variable.model';
 import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
 import { User } from '../../../users/models/user.model';
+import handlers from './handlers';
 import {
   dataToGroups,
   dsGroup,
@@ -120,12 +120,7 @@ export default class DataShieldConnector implements Connector {
           {
             name: 'pos-level',
             label: 'Positive level',
-            linkedTo: AllowedLink.VARIABLE,
-            isRequired: true,
-          },
-          {
-            name: 'neg-level',
-            label: 'Negative level',
+            hint: 'All other categories will be considered negative',
             linkedTo: AllowedLink.VARIABLE,
             isRequired: true,
           },
@@ -138,7 +133,7 @@ export default class DataShieldConnector implements Connector {
     variable: Variable,
     datasets: string[],
     cookie?: string,
-  ): Promise<RawResult> {
+  ): Promise<ExperimentResult> {
     const url = new URL(this.options.baseurl + `histogram`);
 
     url.searchParams.append('var', variable.id);
@@ -159,12 +154,9 @@ export default class DataShieldConnector implements Connector {
       DataShieldConnector.logger.warn('Cannot parse histogram result');
       DataShieldConnector.logger.verbose(path);
       return {
-        rawdata: {
-          data:
-            'Engine error when processing the request. Reason: ' +
-            response.data,
-          type: MIME_TYPES.ERROR,
-        },
+        level: AlertLevel.ERROR,
+        message:
+          'Engine error when processing the request. Reason: ' + response.data,
       };
     }
 
@@ -250,7 +242,7 @@ export default class DataShieldConnector implements Connector {
   async runExperiment(
     data: ExperimentCreateInput,
     request: Request,
-  ): Promise<ExperimentResult[]> {
+  ): Promise<RunResult> {
     const user = request.user as User;
     const cookie = [`sid=${user.extraFields['sid']}`, `user=${user.id}`].join(
       ';',
@@ -281,7 +273,7 @@ export default class DataShieldConnector implements Connector {
 
     switch (data.algorithm.id) {
       case 'MULTIPLE_HISTOGRAMS': {
-        expResult.results = await Promise.all<RawResult>(
+        expResult.results = await Promise.all<ExperimentResult>(
           allVariables.map((variable) =>
             this.getHistogram(variable, expResult.datasets, cookie),
           ),
@@ -304,9 +296,47 @@ export default class DataShieldConnector implements Connector {
         expResult.results = results;
         break;
       }
+      default: {
+        expResult.results = [];
+        await this.runAlgorithm(expResult, allVariables, cookie);
+      }
     }
 
-    return expResult.results;
+    return {
+      results: expResult.results,
+      status: expResult.status,
+    };
+  }
+
+  private async runAlgorithm(
+    experiment: Experiment,
+    vars: Variable[],
+    cookie?: string,
+  ) {
+    const path = new URL('/runAlgorithm', this.options.baseurl);
+
+    // Covariable and variable are inversed in Datashield API
+    const coVariable =
+      experiment.variables.length > 0 ? experiment.variables[0] : undefined;
+
+    const result = await firstValueFrom(
+      this.httpService.post(
+        path.href,
+        {
+          coVariable,
+          variables: experiment.coVariables,
+          algorithm: {
+            id: experiment.algorithm.name,
+          },
+          datasets: experiment.datasets,
+        },
+        {
+          headers: { cookie, 'Content-Type': 'application/json' },
+        },
+      ),
+    );
+
+    handlers(experiment, result.data, vars);
   }
 
   async logout(request: Request): Promise<void> {
