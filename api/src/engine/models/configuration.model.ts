@@ -25,9 +25,6 @@ export class Configuration {
   })
   hasFilters?: boolean;
 
-  @Field({ nullable: true })
-  contactLink?: string;
-
   @Field()
   version: string;
 
@@ -39,7 +36,4 @@ export class Configuration {
 
   @Field({ nullable: true, defaultValue: true })
   enableSSO?: boolean;
-
-  @Field({ nullable: true })
-  ontologyUrl?: string;
 }
