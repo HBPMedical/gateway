@@ -32,7 +32,7 @@ import { FormulaOperation } from './models/formula/formula-operation.model';
 import { Variable } from './models/variable.model';
 
 const DOMAINS_CACHE_KEY = 'domains';
-const ALGORITHMS_CACHE_KEY = 'experiments';
+const ALGORITHMS_CACHE_KEY = 'algorithms';
 const CACHE_KEYS = [DOMAINS_CACHE_KEY, ALGORITHMS_CACHE_KEY];
 
 /**
@@ -98,6 +98,8 @@ export default class EngineService implements Connector {
 
     const cached = await this.cacheManager.get<T>(key);
     if (cached) return cached;
+
+    console.log(`Cache for ${key} not found. Calling function.`);
 
     const result = await fn();
 
