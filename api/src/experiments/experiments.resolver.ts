@@ -79,9 +79,13 @@ export class ExperimentsResolver {
 
     //if the experiment is transient we wait a connector's response before returning a client's response
     if (isTransient) {
-      const results = await this.engineService.runExperiment(data, req);
+      const expResult = await this.engineService.runExperiment(data, req);
       const expTransient = this.experimentService.dataToExperiment(data, user);
-      return { ...expTransient, results, status: ExperimentStatus.SUCCESS };
+      return {
+        ...expTransient,
+        ...expResult,
+        status: expResult.status ?? ExperimentStatus.SUCCESS, // default status
+      };
     }
 
     //if not transient we will create an experiment in local db
@@ -96,8 +100,8 @@ export class ExperimentsResolver {
       this.experimentService.update(
         experiment.id,
         {
-          status: ExperimentStatus.SUCCESS, // default status
           ...runResult,
+          status: runResult.status ?? ExperimentStatus.SUCCESS, // default status
           finishedAt: new Date().toISOString(),
         },
         user,
