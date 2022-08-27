@@ -1,15 +1,13 @@
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { ExperimentResult } from '../../common/interfaces/utilities.interface';
-import { UpdateUserInput } from '../../users/inputs/update-user.input';
 import { ExperimentCreateInput } from '../../experiments/models/input/experiment-create.input';
 import { ExperimentEditInput } from '../../experiments/models/input/experiment-edit.input';
+import { UpdateUserInput } from '../../users/inputs/update-user.input';
 import { User } from '../../users/models/user.model';
 import { Domain } from '../models/domain.model';
 import { Algorithm } from '../models/experiment/algorithm.model';
 import {
   Experiment,
-  ExperimentStatus,
   PartialExperiment,
 } from '../models/experiment/experiment.model';
 import { ListExperiments } from '../models/experiment/list-experiments.model';
@@ -17,10 +15,7 @@ import { FilterConfiguration } from '../models/filter/filter-configuration';
 import { FormulaOperation } from '../models/formula/formula-operation.model';
 import ConnectorConfiguration from './connector-configuration.interface';
 
-export type RunResult = {
-  results: ExperimentResult[];
-  status?: ExperimentStatus;
-};
+export type RunResult = Pick<Experiment, 'status' | 'results'>;
 export default interface Connector {
   /**
    * Allow specific configuration for the engine
