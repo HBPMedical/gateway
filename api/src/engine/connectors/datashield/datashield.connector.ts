@@ -319,21 +319,27 @@ export default class DataShieldConnector implements Connector {
     const coVariable =
       experiment.variables.length > 0 ? experiment.variables[0] : undefined;
 
+    const expToInput = {
+      coVariable,
+      variables: experiment.coVariables,
+      algorithm: {
+        id: experiment.algorithm.name,
+      },
+      datasets: experiment.datasets,
+    };
+
+    experiment.algorithm.parameters.forEach((param) => {
+      if (!expToInput.algorithm[param.name]) {
+        // FIXME: the parameter should be added in a specific key entry (e.g. expToInput.algorithm.parameters')
+        // Should be fixed inside the Datashield API
+        expToInput.algorithm[param.name] = param.value;
+      }
+    });
+
     const result = await firstValueFrom(
-      this.httpService.post(
-        path.href,
-        {
-          coVariable,
-          variables: experiment.coVariables,
-          algorithm: {
-            id: experiment.algorithm.name,
-          },
-          datasets: experiment.datasets,
-        },
-        {
-          headers: { cookie, 'Content-Type': 'application/json' },
-        },
-      ),
+      this.httpService.post(path.href, expToInput, {
+        headers: { cookie, 'Content-Type': 'application/json' },
+      }),
     );
 
     handlers(experiment, result.data, vars);
