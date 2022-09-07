@@ -6,8 +6,8 @@ import BaseHandler from '../base.handler';
 const lookupDict = {
   Estimate: 'Estimate',
   'Std. Error': 'Std. Error',
-  'z-value': 'Z value',
-  'p-value': 'P value',
+  'z-value': 'z-value',
+  'p-value': 'p-value',
   'low0.95CI.LP': 'Low 95% CI',
   'high0.95CI.LP': 'High 95% CI',
   P_OR: 'P OR',
