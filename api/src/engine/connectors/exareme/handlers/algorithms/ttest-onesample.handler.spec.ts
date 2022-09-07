@@ -4,15 +4,16 @@ import TtestOnesampleHandler from './ttest-onesample.handler';
 
 const data = [
   {
-    n_obs: 1991,
-    t_value: 304.98272738655413,
-    p_value: 0.0,
-    df: 1990.0,
-    mean_diff: 220.17867654445,
-    se_diff: 0.7464781919192859,
-    ci_upper: 221.64263732187715,
-    ci_lower: 218.71471576702288,
-    cohens_d: 6.835017232945105,
+    n_obs: 2071.0,
+    t_stat: 443.6944404266344,
+    df: 2070.0,
+    std: 0.2960348288198221,
+    p: 0.0,
+    mean_diff: 2.886268614196039,
+    se_diff: 0.006505081766228009,
+    ci_upper: 2.886676576375429,
+    ci_lower: 2.885860652016649,
+    cohens_d: -9.749760275513832,
   },
 ];
 

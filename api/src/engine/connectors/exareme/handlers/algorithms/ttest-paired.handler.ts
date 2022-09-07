@@ -8,11 +8,11 @@ import {
 import BaseHandler from '../base.handler';
 
 const lookupDict = {
-  t_stat: 'Statistic',
+  t_stat: 'T-value',
   p: 'P-value',
   df: 'Degrees of freedom',
   mean_diff: 'Mean difference',
-  se_diff: 'Standard error of difference',
+  se_diff: 'Standard error difference',
   ci_lower: 'Lower 95% confidence interval',
   ci_upper: 'Upper 95% confidence interval',
   cohens_d: "Cohen's d",

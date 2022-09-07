@@ -8,9 +8,9 @@ import {
 import BaseHandler from '../base.handler';
 
 const lookupDict = {
-  t_value: 'T-value',
+  t_stat: 't-value',
   n_obs: 'Number of observations',
-  p: 'P-value',
+  p: 'p-value',
   df: 'Degrees of freedom',
   mean_diff: 'Mean difference',
   se_diff: 'Standard error of difference',
@@ -35,7 +35,7 @@ export default class TtestOnesampleHandler extends BaseHandler {
     return (
       data &&
       data[0] &&
-      data[0]['t_value'] &&
+      data[0]['t_stat'] &&
       algoId.toLowerCase() === TtestOnesampleHandler.ALGO_NAME
     );
   }
@@ -43,11 +43,11 @@ export default class TtestOnesampleHandler extends BaseHandler {
   private getTable(data: any): TableResult {
     const tableModel: TableResult = {
       name: 'Results',
-      tableStyle: TableStyle.NORMAL,
+      tableStyle: TableStyle.DEFAULT,
       headers: ['name', 'value'].map((name) => ({ name, type: 'string' })),
       data: [
         'n_obs',
-        't_value',
+        't_stat',
         'p',
         'df',
         'mean_diff',
