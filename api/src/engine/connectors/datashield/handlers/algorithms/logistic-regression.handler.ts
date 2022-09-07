@@ -6,10 +6,13 @@ import BaseHandler from '../base.handler';
 const lookupDict = {
   Estimate: 'Estimate',
   'Std. Error': 'Std. Error',
-  'z-value': 'z-value',
-  'p-value': 'p-value',
-  'low0.95CI': 'Low 95% CI',
-  'high0.95CI': 'High 95% CI',
+  'z-value': 'Z value',
+  'p-value': 'P value',
+  'low0.95CI.LP': 'Low 95% CI',
+  'high0.95CI.LP': 'High 95% CI',
+  P_OR: 'P OR',
+  'low0.95CI.P_OR': 'Low 95% CI P_OR',
+  'high0.95CI.P_OR': 'High 95% CI P OR',
   _row: '',
   iter: 'Iteration(s)',
   Nvalid: 'Valid observations',
@@ -23,21 +26,25 @@ const properties = [
   'Std. Error',
   'z-value',
   'p-value',
-  'low0.95CI',
-  'high0.95CI',
+  'low0.95CI.LP',
+  'high0.95CI.LP',
+  // 'P_OR', // What is P_OR? Not defined in the ds' documentation
+  // 'low0.95CI.P_OR',
+  // 'high0.95CI.P_OR',
 ];
 
 const summaryProps = ['iter', 'Nvalid', 'Ntotal', 'df'];
 
-export default class LinearRegressionHandler extends BaseHandler {
+export default class LogisticRegressionHandler extends BaseHandler {
   canHandle(algorithm: string, data: any): boolean {
     return (
-      algorithm.toLowerCase() === 'linear-regression' && data['coefficients']
+      algorithm.toLowerCase() === 'logistic-regression' &&
+      !!data['coefficients']
     );
   }
 
   getSummaryTable(data: any): TableResult {
-    const summaryTable: TableResult = {
+    return {
       name: 'Summary',
       headers: [
         { name: 'Name', type: 'string' },
@@ -45,11 +52,9 @@ export default class LinearRegressionHandler extends BaseHandler {
       ],
       data: summaryProps.map((prop) => [lookupDict[prop], data[prop]]),
     };
-
-    return summaryTable;
   }
 
-  private getTableResult(data: any, vars: Variable[]): TableResult {
+  getTableResult(data: unknown, vars: Variable[]): TableResult {
     return {
       name: 'Results',
       headers: properties.map((name) => ({
@@ -69,9 +74,9 @@ export default class LinearRegressionHandler extends BaseHandler {
       return this.next?.handle(experiment, data, vars);
 
     const tableResult = this.getTableResult(data, vars);
-    const summaryResult = this.getSummaryTable(data);
+    const summaryTable = this.getSummaryTable(data);
 
-    if (summaryResult) experiment.results.push(summaryResult);
+    if (summaryTable) experiment.results.push(summaryTable);
     if (tableResult) experiment.results.push(tableResult);
   }
 }
