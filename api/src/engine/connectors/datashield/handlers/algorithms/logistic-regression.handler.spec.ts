@@ -1,4 +1,5 @@
 import { Experiment } from '../../../../models/experiment/experiment.model';
+import { TableResult } from '../../../../models/result/table-result.model';
 import LogisticRegressionHandler from './logistic-regression.handler';
 
 const data = {
@@ -79,12 +80,23 @@ const createExperiment = (): Experiment => ({
 
 describe('Logistic Regression Handler', () => {
   describe('Normal usage', () => {
-    it('should return the correct results', () => {
+    it('should return two TableResult', () => {
       const experiment = createExperiment();
       const handler = new LogisticRegressionHandler();
       handler.handle(experiment, data, []);
 
-      expect(experiment.results).toHaveLength(1);
+      expect(experiment.results).toHaveLength(2);
+
+      const summary = experiment.results[0] as TableResult;
+      const coefs = experiment.results[1] as TableResult;
+
+      expect(coefs.headers.length).toBeGreaterThan(0);
+      expect(coefs.data.length).toBeGreaterThan(0);
+      expect(coefs.data.some((row) => row.some((cell) => !cell)));
+
+      expect(summary.headers.length).toBe(2);
+      expect(summary.data.length).toBeGreaterThan(0);
+      expect(summary.data.some((row) => !row[0] || !row[1])).toBeFalsy();
     });
   });
 });

@@ -260,6 +260,10 @@ export default class DataShieldConnector implements Connector {
       datasets: data.datasets,
       algorithm: {
         name: data.algorithm.id,
+        parameters: data.algorithm.parameters.map((p) => ({
+          name: p.id,
+          value: p.value,
+        })),
       },
     };
 
@@ -320,15 +324,15 @@ export default class DataShieldConnector implements Connector {
       experiment.variables.length > 0 ? experiment.variables[0] : undefined;
 
     const expToInput = {
-      coVariable,
-      variables: experiment.coVariables,
       algorithm: {
         id: experiment.algorithm.name,
+        coVariable,
+        variables: experiment.coVariables,
       },
       datasets: experiment.datasets,
     };
 
-    experiment.algorithm.parameters.forEach((param) => {
+    experiment.algorithm.parameters?.forEach((param) => {
       if (!expToInput.algorithm[param.name]) {
         // FIXME: the parameter should be added in a specific key entry (e.g. expToInput.algorithm.parameters')
         // Should be fixed inside the Datashield API

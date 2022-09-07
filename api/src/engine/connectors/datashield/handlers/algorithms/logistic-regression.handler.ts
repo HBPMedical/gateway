@@ -9,7 +9,7 @@ const lookupDict = {
   'z-value': 'Z value',
   'p-value': 'P value',
   'low0.95CI.LP': 'Low 95% CI',
-  'high0.95CI': 'High 95% CI',
+  'high0.95CI.LP': 'High 95% CI',
   P_OR: 'P OR',
   'low0.95CI.P_OR': 'Low 95% CI P_OR',
   'high0.95CI.P_OR': 'High 95% CI P OR',
@@ -28,9 +28,9 @@ const properties = [
   'p-value',
   'low0.95CI.LP',
   'high0.95CI.LP',
-  'P_OR',
-  'low0.95CI.P_OR',
-  'high0.95CI.P_OR',
+  // 'P_OR', // What is P_OR? Not defined in the ds' documentation
+  // 'low0.95CI.P_OR',
+  // 'high0.95CI.P_OR',
 ];
 
 const summaryProps = ['iter', 'Nvalid', 'Ntotal', 'df'];
@@ -38,7 +38,8 @@ const summaryProps = ['iter', 'Nvalid', 'Ntotal', 'df'];
 export default class LogisticRegressionHandler extends BaseHandler {
   canHandle(algorithm: string, data: any): boolean {
     return (
-      algorithm.toLowerCase() === 'logistic-regression' && data['coefficients']
+      algorithm.toLowerCase() === 'logistic-regression' &&
+      !!data['coefficients']
     );
   }
 
@@ -75,9 +76,7 @@ export default class LogisticRegressionHandler extends BaseHandler {
     const tableResult = this.getTableResult(data, vars);
     const summaryTable = this.getSummaryTable(data);
 
-    if (tableResult) experiment.results.push(tableResult);
     if (summaryTable) experiment.results.push(summaryTable);
-
-    this.next?.handle(experiment, data, vars);
+    if (tableResult) experiment.results.push(tableResult);
   }
 }
