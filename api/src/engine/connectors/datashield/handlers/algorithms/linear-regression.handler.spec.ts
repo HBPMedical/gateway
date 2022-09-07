@@ -87,22 +87,25 @@ describe('linear regression result handler', () => {
   });
 
   describe('Handle', () => {
-    it('should output a tableResult', () => {
+    it('should output two TableResult', () => {
       linearHandler.handle(experiment, data, vars);
 
-      expect(experiment.results).toHaveLength(1);
+      expect(experiment.results).toHaveLength(2);
 
-      const result = experiment.results[0] as TableResult;
+      const summary = experiment.results[0] as TableResult;
+      const coefs = experiment.results[1] as TableResult;
 
-      expect(result.headers).toHaveLength(7);
+      expect(coefs.headers).toHaveLength(7);
       data.coefficients.forEach((coef, index) => {
-        expect(result.data[index][1]).toBe(coef.Estimate);
-        expect(result.data[index][2]).toBe(coef['Std. Error']);
-        expect(result.data[index][3]).toBe(coef['z-value']);
-        expect(result.data[index][4]).toBe(coef['p-value']);
-        expect(result.data[index][5]).toBe(coef['low0.95CI']);
-        expect(result.data[index][6]).toBe(coef['high0.95CI']);
+        expect(coefs.data[index][1]).toBe(coef.Estimate);
+        expect(coefs.data[index][2]).toBe(coef['Std. Error']);
+        expect(coefs.data[index][3]).toBe(coef['z-value']);
+        expect(coefs.data[index][4]).toBe(coef['p-value']);
+        expect(coefs.data[index][5]).toBe(coef['low0.95CI']);
+        expect(coefs.data[index][6]).toBe(coef['high0.95CI']);
       });
+
+      expect(summary.data.some((row) => !row[0] || !row[1])).toBeFalsy();
     });
   });
 });

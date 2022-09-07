@@ -11,6 +11,10 @@ const lookupDict = {
   'low0.95CI': 'Low 95% CI',
   'high0.95CI': 'High 95% CI',
   _row: '',
+  iter: 'Iteration(s)',
+  Nvalid: 'Valid observations',
+  Ntotal: 'Total observations',
+  df: 'Degrees of freedom',
 };
 
 const properties = [
@@ -69,7 +73,5 @@ export default class LinearRegressionHandler extends BaseHandler {
 
     if (summaryResult) experiment.results.push(summaryResult);
     if (tableResult) experiment.results.push(tableResult);
-
-    this.next?.handle(experiment, data, vars);
   }
 }
