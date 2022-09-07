@@ -12,7 +12,6 @@ export enum ExperimentStatus {
   INIT = 'init',
   PENDING = 'pending',
   SUCCESS = 'success',
-  WARN = 'warn',
   ERROR = 'error',
 }
 

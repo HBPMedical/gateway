@@ -17,6 +17,6 @@ export default class TerminalAlgorithmHandler extends BaseHandler {
     };
 
     experiment.results.push(alertResult);
-    experiment.status = ExperimentStatus.WARN;
+    experiment.status = ExperimentStatus.ERROR;
   }
 }
