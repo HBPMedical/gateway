@@ -1,5 +1,6 @@
 import { Variable } from 'src/engine/models/variable.model';
 import { Experiment } from '../../../../engine/models/experiment/experiment.model';
+import DescriptiveHandler from './algorithms/descriptive.handler';
 import ErrorAlgorithmHandler from './algorithms/error-algorithm.handler';
 import LinearRegressionHandler from './algorithms/linear-regression.handler';
 import LogisticRegressionHandler from './algorithms/logistic-regression.handler';
@@ -8,6 +9,7 @@ import TerminalAlgorithmHandler from './algorithms/terminal-algorithm.handler';
 const start = new ErrorAlgorithmHandler();
 
 start
+  .setNext(new DescriptiveHandler())
   .setNext(new LinearRegressionHandler())
   .setNext(new LogisticRegressionHandler())
   .setNext(new TerminalAlgorithmHandler());

@@ -15,10 +15,6 @@ import { Algorithm } from '../../../engine/models/experiment/algorithm.model';
 import { AllowedLink } from '../../../engine/models/experiment/algorithm/nominal-parameter.model';
 import { Experiment } from '../../../engine/models/experiment/experiment.model';
 import { AlertLevel } from '../../../engine/models/result/alert-result.model';
-import {
-  TableResult,
-  TableStyle,
-} from '../../../engine/models/result/table-result.model';
 import { Variable } from '../../../engine/models/variable.model';
 import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
 import { User } from '../../../users/models/user.model';
@@ -28,8 +24,6 @@ import {
   dsGroup,
   transformToDomain,
   transformToHisto,
-  transformToTable,
-  transformToTableNominal,
   transfoToHistoNominal as transformToHistoNominal,
 } from './transformations';
 
@@ -184,59 +178,30 @@ export default class DataShieldConnector implements Connector {
   }
 
   async getDescriptiveStats(
-    variable: Variable,
-    datasets: string[],
-    cookie?: string,
-  ): Promise<TableResult> {
-    const url = new URL(this.options.baseurl + 'quantiles');
+    experiment: Experiment,
+    vars: Variable[],
+    cookie: string,
+  ) {
+    const url = new URL(this.options.baseurl + 'descriptivestats');
+    const { variables, coVariables, datasets } = experiment;
 
-    url.searchParams.append('var', variable.id);
-    url.searchParams.append('type', 'split');
-    url.searchParams.append('cohorts', datasets.join(','));
+    const inputData = {
+      variables,
+      covariables: coVariables,
+      datasets,
+    };
 
     const path = url.href;
 
-    const response = await firstValueFrom(
-      this.httpService.get(path, {
+    const { data } = await firstValueFrom(
+      this.httpService.post(path, inputData, {
         headers: {
           cookie,
         },
       }),
     );
 
-    const title = variable.label ?? variable.id;
-    const data = { ...response.data, title };
-
-    const table = (
-      variable.enumerations
-        ? transformToTableNominal.evaluate(data)
-        : transformToTable.evaluate(data)
-    ) as TableResult;
-
-    if (
-      table &&
-      table.headers &&
-      variable.type === 'nominal' &&
-      variable.enumerations
-    ) {
-      table.headers = table.headers.map((header) => {
-        const category = variable.enumerations.find(
-          (v) => v.value === header.name,
-        );
-
-        if (!category || !category.label) return header;
-
-        return {
-          ...header,
-          name: category.label,
-        };
-      });
-    }
-
-    return {
-      ...table,
-      tableStyle: TableStyle.DEFAULT,
-    };
+    handlers(experiment, data, vars);
   }
 
   async runExperiment(
@@ -258,6 +223,7 @@ export default class DataShieldConnector implements Connector {
       name: data.name,
       domain: data.domain,
       datasets: data.datasets,
+      results: [],
       algorithm: {
         name: data.algorithm.id,
         parameters: data.algorithm.parameters.map((p) => ({
@@ -285,23 +251,10 @@ export default class DataShieldConnector implements Connector {
         break;
       }
       case 'DESCRIPTIVE_STATS': {
-        // Cannot be done in parallel because Datashield API has an issue with parallel request (response mismatching)
-        const results = [];
-        for (const variable of allVariables) {
-          const result = await this.getDescriptiveStats(
-            variable,
-            expResult.datasets,
-            cookie,
-          );
-
-          results.push(result);
-        }
-
-        expResult.results = results;
+        await this.getDescriptiveStats(expResult, allVariables, cookie);
         break;
       }
       default: {
-        expResult.results = [];
         await this.runAlgorithm(expResult, allVariables, cookie);
       }
     }
@@ -334,7 +287,7 @@ export default class DataShieldConnector implements Connector {
 
     experiment.algorithm.parameters?.forEach((param) => {
       if (!expToInput.algorithm[param.name]) {
-        // FIXME: the parameter should be added in a specific key entry (e.g. expToInput.algorithm.parameters')
+        // FIXME: Parameters should be added in a specific key entry (e.g. expToInput.algorithm.parameters')
         // Should be fixed inside the Datashield API
         expToInput.algorithm[param.name] = param.value;
       }
