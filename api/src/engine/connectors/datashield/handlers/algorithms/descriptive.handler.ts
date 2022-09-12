@@ -1,5 +1,9 @@
 import * as jsonata from 'jsonata';
 import { Experiment } from '../../../../models/experiment/experiment.model';
+import {
+  AlertLevel,
+  AlertResult,
+} from '../../../../models/result/alert-result.model';
 import { Variable } from '../../../../models/variable.model';
 import BaseHandler from '../base.handler';
 
@@ -31,9 +35,11 @@ const transformToDescriptiveStats = jsonata(`
       }
   };
 
-  $append(quants.$each(function($v, $k) {
-      $type($v) = "array" ? $histoNumber($v, $k) : $histoNominal($v, $k)
-  }), heatmaps.{
+  $append(quants.$each(function($v, $k) {(
+      $t := $type($v);
+      $t = "array" ? $histoNumber($v, $k) : ($t = "object" ? $histoNominal($v, $k) : undefined)
+  )}), heatmaps.(
+    $.'1' ? {
       "name": '',
       "xAxis": {
           "label": $clearLabel($.xlab),
@@ -44,13 +50,15 @@ const transformToDescriptiveStats = jsonata(`
           "categories": $.y
       },
       "matrix": $transposeMat($.'1')
-  })
-)[]
+  } : []))
+)
 `);
 
 transformToDescriptiveStats.registerFunction(
   'transposeMat',
   (matrix) => {
+    if (!matrix) return [[]];
+
     const invMatrix = [];
 
     for (let i = 0; i < matrix[0].length; i++) {
@@ -76,12 +84,40 @@ export default class DescriptiveHandler extends BaseHandler {
     );
   }
 
+  getErrors(data: unknown): AlertResult[] {
+    const errors = [];
+    if (
+      data['heatmaps'] &&
+      data['heatmaps'][0] &&
+      typeof data['heatmaps'][0][0] === 'string'
+    ) {
+      errors.push({
+        message: 'Heatmaps error: ' + data['heatmaps'][0][0],
+        level: AlertLevel.ERROR,
+      });
+    }
+
+    if (data['quants']) {
+      for (const [key, value] of Object.entries(data['quants'])) {
+        if (typeof value === 'string') {
+          errors.push({
+            message: `Table '${key}' error: ` + value,
+            level: AlertLevel.ERROR,
+          });
+        }
+      }
+    }
+
+    return errors;
+  }
+
   handle(experiment: Experiment, data: unknown, vars: Variable[]): void {
     if (!this.canHandle(experiment.algorithm.name, data))
       return this.next?.handle(experiment, data, vars);
 
     const results = transformToDescriptiveStats.evaluate(data);
+    const errors = this.getErrors(data);
 
-    experiment.results.push(...results);
+    experiment.results.push(...errors, ...results);
   }
 }
