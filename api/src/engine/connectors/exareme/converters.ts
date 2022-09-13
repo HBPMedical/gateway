@@ -66,10 +66,7 @@ const algoParamInputToData = (param: AlgorithmParamInput) => {
   };
 };
 
-export const experimentInputToData = (
-  data: ExperimentCreateInput,
-  domains?: Domain[],
-) => {
+const getFormula = (data: ExperimentCreateInput) => {
   const formula =
     ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
       single:
@@ -84,6 +81,68 @@ export const experimentInputToData = (
     }) ||
     null;
 
+  return formula
+    ? [
+        {
+          name: 'formula',
+          value: JSON.stringify(formula),
+        },
+      ]
+    : [];
+};
+
+const getVariables = (data: ExperimentCreateInput) => {
+  if (!data.variables) return undefined;
+
+  let variables = data.variables.join(',');
+
+  if (data.algorithm.id === 'TTEST_PAIRED') {
+    const varCount = data.variables.length;
+    variables = data.variables
+      ?.reduce((vectors: string, v, i) => {
+        if ((i + 1) % 2 === 0) return `${vectors}${v},`;
+        if (varCount === i + 1) return `${vectors}${v}-${data.variables[0]}`;
+        return `${vectors}${v}-`;
+      }, '')
+      .replace(/,$/, '');
+  }
+
+  return {
+    name: 'y',
+    label: 'y',
+    value: variables,
+  };
+};
+
+const getCoVariables = (
+  data: ExperimentCreateInput,
+  design: { value: string },
+) => {
+  if (!data.coVariables || data.coVariables.length === 0) return undefined;
+  let separator = ',';
+
+  const excludes = [
+    'Multiple Histograms',
+    'CART',
+    'ID3',
+    'Naive Bayes Training',
+  ];
+
+  if (design && !excludes.includes(data.algorithm.id)) {
+    separator = design.value === 'additive' ? '+' : '*';
+  }
+
+  return {
+    name: 'x',
+    label: 'x',
+    value: data.coVariables.join(separator),
+  };
+};
+
+export const experimentInputToData = (
+  data: ExperimentCreateInput,
+  domains?: Domain[],
+) => {
   const domain = domains?.find((d) => d.id === data.domain);
 
   const params = {
@@ -106,14 +165,7 @@ export const experimentInputToData = (
             ? `${data.domain}:${domain.version}`
             : data.domain,
         },
-        ...(formula
-          ? [
-              {
-                name: 'formula',
-                value: JSON.stringify(formula),
-              },
-            ]
-          : []),
+        ...getFormula(data),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
       name: data.algorithm.id,
@@ -121,52 +173,16 @@ export const experimentInputToData = (
     name: data.name,
   };
 
-  if (data.coVariables && data.coVariables.length) {
-    let separator = ',';
-
-    const design = params.algorithm.parameters.find((p) => p.name === 'design');
-    const excludes = [
-      'Multiple Histograms',
-      'CART',
-      'ID3',
-      'Naive Bayes Training',
-    ];
-
-    if (design && !excludes.includes(data.algorithm.id)) {
-      separator = design.value === 'additive' ? '+' : '*';
-    }
-
-    params.algorithm.parameters.push({
-      name: 'x',
-      label: 'x',
-      value: data.coVariables.join(separator),
-    });
+  if (data.algorithm.id === 'DESCRIPTIVE_STATS' && data.coVariables) {
+    data.variables.push(...data.coVariables);
+    data.coVariables = [];
   }
 
-  if (data.variables) {
-    let variables = data.variables.join(',');
+  const design = params.algorithm.parameters.find((p) => p.name === 'design');
 
-    if (data.algorithm.id === 'TTEST_PAIRED') {
-      const varCount = data.variables.length;
-      variables = data.variables
-        ?.reduce(
-          (vectors: string, v, i) =>
-            (i + 1) % 2 === 0
-              ? `${vectors}${v},`
-              : varCount === i + 1
-              ? `${vectors}${v}-${data.variables[0]}`
-              : `${vectors}${v}-`,
-          '',
-        )
-        .replace(/,$/, '');
-    }
-
-    params.algorithm.parameters.push({
-      name: 'y',
-      label: 'y',
-      value: variables,
-    });
-  }
+  [getVariables(data), getCoVariables(data, design)]
+    .filter((p) => p)
+    .forEach((p) => params.algorithm.parameters.push(p));
 
   return params;
 };
