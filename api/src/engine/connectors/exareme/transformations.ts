@@ -101,9 +101,7 @@ dataToHeatmap.registerFunction(
       matrix[elem.y][elem.x] = elem.value;
     });
 
-    matrix.reverse();
-
-    return matrix;
+    return matrix.reverse();
   },
   '<a<o>:a<a<n>>',
 );
