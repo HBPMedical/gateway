@@ -123,10 +123,10 @@ export default class LinearRegressionHandler extends BaseHandler {
 
     const improvedData = JSON.parse(jsonData);
 
-    const model = this.getModel(improvedData);
-    if (model) experiment.results.push(model);
-
     const coefs = this.getCoefficients(improvedData);
     if (coefs) experiment.results.push(coefs);
+
+    const model = this.getModel(improvedData);
+    if (model) experiment.results.push(model);
   }
 }
