@@ -273,14 +273,14 @@ export default class DataShieldConnector implements Connector {
     const path = new URL('/runAlgorithm', this.options.baseurl);
 
     // Covariable and variable are inversed in Datashield API
-    const coVariable =
+    const variable =
       experiment.variables.length > 0 ? experiment.variables[0] : undefined;
 
     const expToInput = {
       algorithm: {
         id: experiment.algorithm.name,
-        coVariable,
-        variables: experiment.coVariables,
+        variable,
+        covariables: experiment.coVariables,
       },
       datasets: experiment.datasets,
     };
@@ -293,13 +293,13 @@ export default class DataShieldConnector implements Connector {
       }
     });
 
-    const result = await firstValueFrom(
+    const { data } = await firstValueFrom(
       this.httpService.post(path.href, expToInput, {
         headers: { cookie, 'Content-Type': 'application/json' },
       }),
     );
 
-    handlers(experiment, result.data, vars);
+    handlers(experiment, data, vars);
   }
 
   async logout(request: Request): Promise<void> {
