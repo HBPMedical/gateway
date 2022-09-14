@@ -1,4 +1,5 @@
 import { ConfigModule } from '@nestjs/config';
+import { DataSource } from 'typeorm';
 import dbConfiguration from './src/config/db.config';
 
 ConfigModule.forRoot({
@@ -12,9 +13,10 @@ const ormconfig = {
   entities: ['dist/**/*.entity.js', 'dist/**/*.model.js'],
   migrations: ['dist/migrations/*{.ts,.js}'],
   migrationsRun: false,
-  cli: {
-    migrationsDir: 'src/migrations',
-  },
 };
 
-export default ormconfig;
+const connSource = new DataSource(ormconfig);
+
+connSource.initialize();
+
+export default connSource;
