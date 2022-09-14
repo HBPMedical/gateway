@@ -46,7 +46,6 @@ export default class LogisticRegressionHandler extends BaseHandler {
         'n_obs',
         'df_resid',
         'df_model',
-        'df_model',
         'r_squared_mcf',
         'r_squared_cs',
         'll0',
@@ -113,10 +112,10 @@ export default class LogisticRegressionHandler extends BaseHandler {
 
     const improvedData = JSON.parse(jsonData);
 
-    const model = this.getModel(improvedData);
-    if (model) experiment.results.push(model);
-
     const coefs = this.getCoefficients(improvedData);
     if (coefs) experiment.results.push(coefs);
+
+    const model = this.getModel(improvedData);
+    if (model) experiment.results.push(model);
   }
 }
