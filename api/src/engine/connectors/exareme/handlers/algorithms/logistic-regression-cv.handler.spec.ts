@@ -81,10 +81,10 @@ describe('Logistic regression CV result handler', () => {
   });
 
   describe('handle', () => {
-    it('should return exactly 4 results', () => {
+    it('should return exactly 3 results', () => {
       logisticCVHandler.handle(experiment, data, domain);
 
-      expect(experiment.results).toHaveLength(4);
+      expect(experiment.results).toHaveLength(3);
     });
   });
 });
