@@ -1,34 +1,21 @@
-import { MIME_TYPES } from 'src/common/interfaces/utilities.interface';
-import { Category } from 'src/engine/models/category.model';
-import { Dataset } from 'src/engine/models/dataset.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { AlgorithmParamInput } from 'src/engine/models/experiment/input/algorithm-parameter.input';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
-import { Group } from 'src/engine/models/group.model';
-import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
+import { Logger } from '@nestjs/common';
+import { Category } from '../../../engine/models/category.model';
+import { Dataset } from '../../../engine/models/dataset.model';
+import { Domain } from '../../../engine/models/domain.model';
 import {
-  GroupResult,
-  GroupsResult,
-} from 'src/engine/models/result/groups-result.model';
-import { HeatMapResult } from 'src/engine/models/result/heat-map-result.model';
-import { LineChartResult } from 'src/engine/models/result/line-chart-result.model';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
-import { Variable } from 'src/engine/models/variable.model';
+  Experiment,
+  ExperimentStatus,
+} from '../../../engine/models/experiment/experiment.model';
+import { Group } from '../../../engine/models/group.model';
+import { Variable } from '../../../engine/models/variable.model';
+import { AlgorithmParamInput } from '../../../experiments/models/input/algorithm-parameter.input';
+import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
+import handlers from './handlers';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
-import { ResultChartExperiment } from './interfaces/experiment/result-chart-experiment.interface';
-import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
-import {
-  dataROCToLineResult,
-  dataToHeatmap,
-  descriptiveModelToTables,
-  descriptiveSingleToTables,
-  transformToAlgorithms,
-  transformToExperiment,
-} from './transformations';
+import { transformToExperiment } from './transformations';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -38,14 +25,14 @@ export const dataToGroup = (data: Hierarchy): Group => {
       ? data.groups.map(dataToGroup).map((group) => group.id)
       : [],
     variables: data.variables
-      ? data.variables.map((data: VariableEntity) => data.code)
+      ? data.variables.map((v: VariableEntity) => v.code)
       : [],
   };
 };
 
 export const dataToCategory = (data: Entity): Category => {
   return {
-    id: data.code,
+    value: data.code,
     label: data.label,
   };
 };
@@ -79,7 +66,7 @@ const algoParamInputToData = (param: AlgorithmParamInput) => {
   };
 };
 
-export const experimentInputToData = (data: ExperimentCreateInput) => {
+const getFormula = (data: ExperimentCreateInput) => {
   const formula =
     ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
       single:
@@ -94,6 +81,70 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     }) ||
     null;
 
+  return formula
+    ? [
+        {
+          name: 'formula',
+          value: JSON.stringify(formula),
+        },
+      ]
+    : [];
+};
+
+const getVariables = (data: ExperimentCreateInput) => {
+  if (!data.variables) return undefined;
+
+  let variables = data.variables.join(',');
+
+  if (data.algorithm.id === 'TTEST_PAIRED') {
+    const varCount = data.variables.length;
+    variables = data.variables
+      ?.reduce((vectors: string, v, i) => {
+        if ((i + 1) % 2 === 0) return `${vectors}${v},`;
+        if (varCount === i + 1) return `${vectors}${v}-${data.variables[0]}`;
+        return `${vectors}${v}-`;
+      }, '')
+      .replace(/,$/, '');
+  }
+
+  return {
+    name: 'y',
+    label: 'y',
+    value: variables,
+  };
+};
+
+const getCoVariables = (
+  data: ExperimentCreateInput,
+  design: { value: string },
+) => {
+  if (!data.coVariables || data.coVariables.length === 0) return undefined;
+  let separator = ',';
+
+  const excludes = [
+    'Multiple Histograms',
+    'CART',
+    'ID3',
+    'Naive Bayes Training',
+  ];
+
+  if (design && !excludes.includes(data.algorithm.id)) {
+    separator = design.value === 'additive' ? '+' : '*';
+  }
+
+  return {
+    name: 'x',
+    label: 'x',
+    value: data.coVariables.join(separator),
+  };
+};
+
+export const experimentInputToData = (
+  data: ExperimentCreateInput,
+  domains?: Domain[],
+) => {
+  const domain = domains?.find((d) => d.id === data.domain);
+
   const params = {
     algorithm: {
       parameters: [
@@ -105,21 +156,16 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
         {
           name: 'filter',
           label: 'filter',
-          value: data.filter,
+          value: data.filter ?? '',
         },
         {
           name: 'pathology',
           label: 'pathology',
-          value: data.domain,
+          value: domain.version
+            ? `${data.domain}:${domain.version}`
+            : data.domain,
         },
-        ...(formula
-          ? [
-              {
-                name: 'formula',
-                value: JSON.stringify(formula),
-              },
-            ]
-          : []),
+        ...getFormula(data),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
       name: data.algorithm.id,
@@ -127,83 +173,24 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     name: data.name,
   };
 
-  if (data.coVariables && data.coVariables.length) {
-    let separator = ',';
-
-    const design = params.algorithm.parameters.find((p) => p.name === 'design');
-    const excludes = [
-      'Multiple Histograms',
-      'CART',
-      'ID3',
-      'Naive Bayes Training',
-    ];
-
-    if (design && !excludes.includes(data.algorithm.id)) {
-      separator = design.value === 'additive' ? '+' : '*';
-    }
-
-    params.algorithm.parameters.push({
-      name: 'x',
-      label: 'x',
-      value: data.coVariables.join(separator),
-    });
+  if (data.algorithm.id === 'DESCRIPTIVE_STATS' && data.coVariables) {
+    data.variables.push(...data.coVariables);
+    data.coVariables = [];
   }
 
-  if (data.variables) {
-    let variables = data.variables.join(',');
+  const design = params.algorithm.parameters.find((p) => p.name === 'design');
 
-    if (data.algorithm.id === 'TTEST_PAIRED') {
-      const varCount = data.variables.length;
-      variables = data.variables
-        ?.reduce(
-          (vectors: string, v, i) =>
-            (i + 1) % 2 === 0
-              ? `${vectors}${v},`
-              : varCount === i + 1
-              ? `${vectors}${v}-${data.variables[0]}`
-              : `${vectors}${v}-`,
-          '',
-        )
-        .replace(/,$/, '');
-    }
-
-    params.algorithm.parameters.push({
-      name: 'y',
-      label: 'y',
-      value: variables,
-    });
-  }
+  [getVariables(data), getCoVariables(data, design)]
+    .filter((p) => p)
+    .forEach((p) => params.algorithm.parameters.push(p));
 
   return params;
 };
 
-export const descriptiveDataToTableResult = (
-  data: ResultExperiment,
-): GroupsResult[] => {
-  const result = new GroupsResult();
-
-  result.groups = [
-    new GroupResult({
-      name: 'Variables',
-      description: 'Descriptive statistics for the variables of interest.',
-      results: descriptiveSingleToTables.evaluate(data),
-    }),
-  ];
-
-  result.groups.push(
-    new GroupResult({
-      name: 'Model',
-      description:
-        'Intersection table for the variables of interest as it appears in the experiment.',
-      results: descriptiveModelToTables.evaluate(data),
-    }),
-  );
-
-  return [result];
-};
-
 export const dataToExperiment = (
   data: ExperimentData,
+  logger: Logger,
+  domains?: Domain[],
 ): Experiment | undefined => {
   try {
     const expTransform = transformToExperiment.evaluate(data);
@@ -213,85 +200,52 @@ export const dataToExperiment = (
       results: [],
     };
 
-    exp.results = data.result
-      ? data.result
-          .map((result) => dataToResult(result, exp.algorithm.id))
-          .flat()
-      : [];
+    const domain = domains?.find((d) => d.id === exp.domain);
+
+    if (data && data.result && data.result.length)
+      handlers(exp, data.result, domain);
+
+    const allVariables = exp.filterVariables || [];
+
+    // add filter variables
+    const extractVariablesFromFilter = (filter: any): any =>
+      filter.rules.forEach((r: any) => {
+        if (r.rules) {
+          extractVariablesFromFilter(r);
+        }
+        if (r.id) {
+          allVariables.push(r.id);
+        }
+      });
+
+    if (exp && exp.filter) {
+      extractVariablesFromFilter(JSON.parse(exp.filter));
+    }
+
+    exp.filterVariables = Array.from(new Set(allVariables));
 
     return exp;
   } catch (e) {
+    logger.error('Error parsing experiment', data.uuid);
+    logger.debug(e);
     return {
       id: data.uuid,
       name: data.name,
-      status: 'error',
+      status: ExperimentStatus.ERROR,
       variables: [],
       domain: data['domain'] ?? '',
+      results: [
+        {
+          rawdata: {
+            type: 'text/plain+error',
+            data: 'Error when parsing experiment data from the Engine',
+          },
+        },
+      ],
       datasets: [],
       algorithm: {
-        id: 'unknown',
+        name: 'unknown',
       },
     };
-  }
-};
-
-export const dataToAlgorithms = (data: string): Algorithm[] => {
-  return transformToAlgorithms.evaluate(data);
-};
-
-export const dataToRaw = (
-  algo: string,
-  result: ResultExperiment,
-): RawResult[] => {
-  let data = result;
-
-  if (algo === 'CART') {
-    data = { ...data, type: MIME_TYPES.JSONBTREE };
-  }
-
-  return [
-    {
-      rawdata: data,
-    },
-  ];
-};
-
-export const dataToResult = (
-  result: ResultExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (result.type.toLowerCase()) {
-    case 'application/json':
-      return dataJSONtoResult(result, algo);
-    case 'application/vnd.highcharts+json':
-      return dataHighchartToResult(result as ResultChartExperiment, algo);
-    default:
-      return dataToRaw(algo, result);
-  }
-};
-
-export const dataJSONtoResult = (
-  result: ResultExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (algo.toLowerCase()) {
-    case 'descriptive_stats':
-      return descriptiveDataToTableResult(result);
-    default:
-      return dataToRaw(algo, result);
-  }
-};
-
-export const dataHighchartToResult = (
-  result: ResultChartExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (result.data.chart.type) {
-    case 'heatmap':
-      return [dataToHeatmap.evaluate(result) as HeatMapResult];
-    case 'area':
-      return [dataROCToLineResult.evaluate(result) as LineChartResult];
-    default:
-      return dataToRaw(algo, result);
   }
 };

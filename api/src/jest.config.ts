@@ -14,6 +14,7 @@ export default async (): Promise<Config.InitialOptions> => {
 
   return {
     moduleFileExtensions: ['js', 'json', 'ts'],
+    slowTestThreshold: 30,
     testPathIgnorePatterns: dirs,
     rootDir: 'src',
     testRegex: '.*\\.spec\\.ts$',

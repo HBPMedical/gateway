@@ -12,6 +12,6 @@ export class ListExperiments {
   @Field({ nullable: true })
   totalExperiments?: number;
 
-  @Field(() => [Experiment])
+  @Field(() => [Experiment], { nullable: true, defaultValue: [] })
   experiments: Experiment[];
 }

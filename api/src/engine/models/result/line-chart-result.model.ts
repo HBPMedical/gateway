@@ -51,4 +51,7 @@ export class LineChartResult extends Result {
 
   @Field(() => [LineResult])
   lines: LineResult[];
+
+  @Field({ nullable: true, defaultValue: false })
+  hasBisector?: boolean;
 }
