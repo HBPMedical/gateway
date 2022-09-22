@@ -20,7 +20,7 @@ const lookupDict = {
 const NUMBER_PRECISION = 4;
 
 export default class TTestPairedHandler extends BaseHandler {
-  public static readonly ALGO_NAME = 'paired_ttest';
+  public static readonly ALGO_NAME = 'ttest_paired';
 
   private canHandle(algoName: string, data: any) {
     return (

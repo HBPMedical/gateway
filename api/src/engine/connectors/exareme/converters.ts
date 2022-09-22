@@ -94,23 +94,10 @@ const getFormula = (data: ExperimentCreateInput) => {
 const getVariables = (data: ExperimentCreateInput) => {
   if (!data.variables) return undefined;
 
-  let variables = data.variables.join(',');
-
-  if (data.algorithm.id === 'TTEST_PAIRED') {
-    const varCount = data.variables.length;
-    variables = data.variables
-      ?.reduce((vectors: string, v, i) => {
-        if ((i + 1) % 2 === 0) return `${vectors}${v},`;
-        if (varCount === i + 1) return `${vectors}${v}-${data.variables[0]}`;
-        return `${vectors}${v}-`;
-      }, '')
-      .replace(/,$/, '');
-  }
-
   return {
     name: 'y',
     label: 'y',
-    value: variables,
+    value: data.variables.join(','),
   };
 };
 
