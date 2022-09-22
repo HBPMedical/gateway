@@ -24,11 +24,11 @@ EBRAINS is committed to the safe, transparent and confidential collection and pr
 
 Besides the law applicable to these Terms &amp; Conditions, the MIP and data available on the MIP are also subject to European legislations and regulations as well as to the ethical principles of Horizon 2020, the EU Framework programme for research and innovation ([https://ec.europa.eu/programmes/horizon2020/](https://ec.europa.eu/programmes/horizon2020/)).
 
-The Medical Informatics Platform is a privacy-preserving platform that complies with the European regulation, based on Privacy By Design and by Default. The reference text is the REGULATION (EU) 2016/679 OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL of 27 April 2016, on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (General Data Protection Regulation, henceforth &#39;GDPR&#39;).
+The Medical Informatics Platform is a privacy-preserving platform, compliant with the Swiss and European laws and regulations pertaining to data protection and research ethics, and is based on Privacy By Design and by Default. The reference text is the REGULATION (EU) 2016/679 OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL of 27 April 2016, on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (General Data Protection Regulation, henceforth &#39;GDPR&#39;).
 
 1. **Operation of the MIP**
 
-    The MIP is provided and operated by the Centre Hospitalier Universitaire Vaudois located in Lausanne (hereinafter described as &quot;CHUV&quot;), as coordinator of the Medical Informatics Platform.
+    The MIP is provided and operated by the Centre Hospitalier Universitaire Vaudois located in Lausanne (hereinafter described as &quot;CHUV&quot;), as Product Owner of the Medical Informatics Platform.
 
 1. **Scope**
 
@@ -52,7 +52,7 @@ The Medical Informatics Platform is a privacy-preserving platform that complies 
     10. **EBRAINS** is the HBP legacy as a sustainable European Research Infrastructure, that was launched in 2020 during HBP SGA3, the HBP`s last specific grant agreement.
     11. **HBP Agreements** mean the agreements concluded in respect of the HBP, such as FP7 Grant Agreement no. 604102, the Consortium Agreement under the FP7 Grant Agreement no. 604102, the Framework Partnership Agreement no. 650003, and their subsequent agreements.
     12. **HBP** is the Human Brain Project under the FET Integrated Project (FP7 Grant Agreement no. 604102, i.e. its ramp-up phase), and any following continuation of the project under Horizon 2020.
-    13. **MIP** is the name given to the Medical Informatics Platform developed by the HBP. MIP Technical Documentation is [available here](https://github.com/HBPMedical/mip-docs).
+    13. **MIP** is the name given to the Medical Informatics Platform developed by the HBP. MIP Technical Documentation is available at [https://github.com/HBPMedical/mip-docs](https://github.com/HBPMedical/mip-docs).
     14. **Personal Data** is defined as any information relating to an identified or identifiable natural or legal person, including institutions. An identifiable person is a person who can be identified, directly or indirectly, by reference to an identification number or factors specific to his or her physical, physiological, mental, economic, cultural or social identity. Personal Data does not include publicly available information that has not been combined with non- Personal Data, nor does it include information that has been anonymised.
 
 1. **Access to the MIP**
@@ -119,17 +119,18 @@ The Medical Informatics Platform is a privacy-preserving platform that complies 
     The following additional limitations apply to the use of the Data Sets by the Data Users:
 
     1. Data Users may receive access to de-identified or aggregated Data Sets and in such cases, Data Users shall not attempt to establish the identity of, or attempt to contact any of the Data Subjects;
-    2. Data Users shall not carry out any calculations, operations or transactions that may interrupt, destroy or restrict the functionality of the operation of the MIP or of any program, computer or means of telecommunications;
-    3. Data Users shall not circumvent, disable, or otherwise manipulate any of the MIP&#39;s security features or any features preventing or restricting the use or copying of the content that is available via MIP.
-    4. Data Users shall not use the Data Sets for high-risk activities such as the operation of nuclear facilities, air traffic control, or life support systems, where the use or failure of the services could lead to death, personal injury, or environmental damage.
-    5. Data Users shall not use the MIP as a clinical diagnostic tool. The MIP was not designed as a clinical diagnostic software.
-    6. Data User shall not provide false or misleading information in the User account details,
-    7. Data User shall not allow anyone else to use the MIP on his behalf or in his place. Data Users commit to require from anyone of their team who utilizes the Data Sets, or anyone with whom they share the Data Sets, to accept and comply with these Terms &amp; Conditions; and
-    8. Data User shall not use the MIP if we have temporarily suspended his right of use, or forbidden to continue using it,
-    9. Data User shall not misuse, modify, interfere with, hack or disrupt the MIP, intercept messages,
-    10. Data User shall not infiltrate the MIP with viruses, trojans, worms, logic bombs or anything else that might harm the MIP or any other user of the MIP,
-    11. Data User shall not extract data from the MIP except as permitted under these Terms &amp; Conditions,
-    12. Data User shall not act in any unlawful or illegal manner. Data Users commit to comply with any additional applicable law, or any rules and regulations imposed by their institutions and their institutional review board in accessing and using the MIP and the Data Sets.
+    1. Data Users shall not carry out any calculations, operations or transactions that may interrupt, destroy or restrict the functionality of the operation of the MIP or of any program, computer or means of telecommunications;
+    1. Data Users shall not circumvent, disable, or otherwise manipulate any of the MIP&#39;s security features or any features preventing or restricting the use or copying of the content that is available via MIP.
+    1. Data Users shall not use the Data Sets for high-risk activities such as the operation of nuclear facilities, air traffic control, or life support systems, where the use or failure of the services could lead to death, personal injury, or environmental damage.
+    1. **Data Users shall not use the MIP as a clinical diagnostic tool**. The use of the platform, including, but not limited to its services, tools, methodologies, systems and software, is restricted to agreed-upon research projects. The service, in parts or in full, including potential copies, forks, deployments, and derivatives, in any shape or form, is not endorsed by the CHUV, ATHENA RC and AUEB (the main institutions involved in the development of the MIP) to be fit for clinical use, or employed in a medical context. No aspect of the platform and its use shall directly influence, inspire, or otherwise affect patient diagnostics and prognostics.
+    1. Data Users shall not use the MIP as a clinical diagnostic tool. The MIP was not designed as a clinical diagnostic software.
+    1. Data User shall not provide false or misleading information in the User account details,
+    1. Data User shall not allow anyone else to use the MIP on his behalf or in his place. Data Users commit to require from anyone of their team who utilizes the Data Sets, or anyone with whom they share the Data Sets, to accept and comply with these Terms &amp; Conditions; and
+    1. Data User shall not use the MIP if we have temporarily suspended his right of use, or forbidden to continue using it,
+    1. Data User shall not misuse, modify, interfere with, hack or disrupt the MIP, intercept messages,
+    1. Data User shall not infiltrate the MIP with viruses, trojans, worms, logic bombs or anything else that might harm the MIP or any other user of the MIP,
+    1. Data User shall not extract data from the MIP except as permitted under these Terms &amp; Conditions,
+    1. Data User shall not act in any unlawful or illegal manner. Data Users commit to comply with any additional applicable law, or any rules and regulations imposed by their institutions and their institutional review board in accessing and using the MIP and the Data Sets.
 
 1. **Citations**
 
