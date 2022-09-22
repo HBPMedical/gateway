@@ -1,3 +1,10 @@
+# [1.1.0-beta.7](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.6...1.1.0-beta.7) (2022-09-22)
+
+
+### Bug Fixes
+
+* **exareme2:** Issue with paired t-test ([e8f84b7](https://gitlab.com/sibmip/gateway/commit/e8f84b7648986914e387f5969f30213435210dcc))
+
 # [1.1.0-beta.6](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.5...1.1.0-beta.6) (2022-09-21)
 
 
