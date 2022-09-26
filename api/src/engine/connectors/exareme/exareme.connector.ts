@@ -87,7 +87,7 @@ export default class ExaremeConnector implements Connector {
   ): Promise<Experiment> {
     const domains = await this.engineService.getDomains(request);
 
-    const form = experimentInputToData(data, domains);
+    const form = experimentInputToData(data);
 
     const path =
       this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
@@ -184,8 +184,8 @@ export default class ExaremeConnector implements Connector {
           const groups = this.flattenGroups(d.metadataHierarchy);
 
           return {
-            id: d.code,
-            label: d.label,
+            id: `${d.code}:${d.version}`,
+            label: d.version ? `${d.code} ${d.version}` : d.code,
             version: d.version,
             groups: groups,
             rootGroup: dataToGroup(d.metadataHierarchy),
