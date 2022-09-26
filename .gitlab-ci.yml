@@ -1,24 +1,66 @@
-image: docker:20
-services:
-  - docker:20-dind
-
 stages:
+  - test
   - build
   - release
-  - deploy
 
-variables:
-  CONTAINER_BASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+services:
+  - docker:dind
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-build:
-  stage: build
-  script:
-    - docker build -t $CONTAINER_BASE_IMAGE ./api
-    - docker push $CONTAINER_BASE_IMAGE
+test:
+  image: node:16.14-alpine
+  stage: test
   only:
+    refs:
     - main
+    - rc
+    - beta
     - develop
-    - /^release-.*$/
+    # This matches maintenance branches
+    - /^(([0-9]+)\.)?([0-9]+)\.x/
+    # This matches pre-releases
+    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+  before_script: []
+  script: 
+    - cd ./api
+    - npm ci --development
+    - npm run test
+
+build:
+  image: docker:dind
+  stage: build
+  only:
+    refs:
+    - main
+    - rc
+    - beta
+    - develop
+    # This matches maintenance branches
+    - /^(([0-9]+)\.)?([0-9]+)\.x/
+    # This matches pre-releases
+    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+  script:
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH:pipeline-$CI_PIPELINE_ID ./api --build-arg JWT_SECRET=$JWT_SECRET
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH:pipeline-$CI_PIPELINE_ID
+
+release:
+  image: docker:dind
+  stage: release
+  only:
+    refs:
+    - main
+    - rc
+    - beta
+    # This matches maintenance branches
+    - /^(([0-9]+)\.)?([0-9]+)\.x/
+    # This matches pre-releases
+    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
+  script:
+    - apk add --no-cache nodejs npm py3-pip python3 git
+    - docker pull $CI_REGISTRY/$CI_PROJECT_PATH:pipeline-$CI_PIPELINE_ID
+    - docker tag $CI_REGISTRY/$CI_PROJECT_PATH:pipeline-$CI_PIPELINE_ID gateway:latest
+    - cd ./api
+    - npm install @semantic-release/gitlab @semantic-release/changelog @eclass/semantic-release-docker
+    - npx semantic-release

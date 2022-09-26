@@ -1,63 +1,44 @@
-import { HttpModule, HttpService } from '@nestjs/axios';
-import { DynamicModule, Global, Logger, Module } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
-import { ENGINE_MODULE_OPTIONS, ENGINE_SERVICE } from './engine.constants';
+import { HttpModule } from '@nestjs/axios';
+import { CacheModule, DynamicModule, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ENGINE_MODULE_OPTIONS } from './engine.constants';
 import { EngineController } from './engine.controller';
-import { IEngineOptions, IEngineService } from './engine.interfaces';
 import { EngineResolver } from './engine.resolver';
+import EngineService from './engine.service';
+import EngineOptions from './interfaces/engine-options.interface';
 
-@Global()
 @Module({})
 export class EngineModule {
-  private static readonly logger = new Logger(EngineModule.name);
-
-  static async forRootAsync(options: IEngineOptions): Promise<DynamicModule> {
+  static forRoot(options?: Partial<EngineOptions>): DynamicModule {
     const optionsProvider = {
       provide: ENGINE_MODULE_OPTIONS,
-      useValue: options,
-    };
-
-    const engineProvider = {
-      provide: ENGINE_SERVICE,
-      useFactory: async (httpService: HttpService, req: Request) => {
-        return await this.createEngineConnection(options, httpService, req);
+      useValue: {
+        ...options,
+        type: options?.type.toLowerCase(),
       },
-      inject: [HttpService, REQUEST],
     };
 
     return {
+      global: true,
       module: EngineModule,
       imports: [
         HttpModule,
-        GraphQLModule.forRoot({
-          autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        CacheModule.registerAsync({
+          imports: [ConfigModule],
+          useFactory: async (configService: ConfigService) => {
+            const config = configService.get('cache');
+            return {
+              isGlobal: true,
+              ttl: config.ttl,
+              max: config.max,
+            };
+          },
+          inject: [ConfigService],
         }),
       ],
-      providers: [optionsProvider, engineProvider, EngineResolver],
+      providers: [optionsProvider, EngineService, EngineResolver],
       controllers: [EngineController],
-      exports: [optionsProvider, engineProvider],
+      exports: [optionsProvider, EngineService],
     };
-  }
-
-  private static async createEngineConnection(
-    options: IEngineOptions,
-    httpService: HttpService,
-    req: Request,
-  ): Promise<IEngineService> {
-    try {
-      const service = await import(
-        `./connectors/${options.type}/main.connector`
-      );
-      const engine = new service.default(options, httpService, req);
-
-      return engine;
-    } catch {
-      this.logger.error(
-        `There is a problem with the connector '${options.type}'`,
-      );
-      process.exit(); // We can't continue without an engine, shutdown the process...
-    }
   }
 }

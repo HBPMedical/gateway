@@ -2,59 +2,31 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Category {
-  id: String!
-  label: String
-}
-
-type Group {
-  id: String!
-  label: String
-  description: String
-  groups: [String!]
-
-  """List of variable's ids"""
-  variables: [String!]
-}
-
-type Variable {
-  id: String!
-  label: String
-  type: String
-  description: String
-  enumerations: [Category!]
-  groups: [Group!]
-}
-
-type Domain {
-  id: String!
-  label: String
-  description: String
-  groups: [Group!]!
-  variables: [Variable!]!
-  datasets: [Category!]!
-  rootGroup: Group!
-}
-
-type AlgorithmParameter {
+interface BaseParameter {
   name: String!
-  value: [String!]
   label: String
-  description: String
-  defaultValue: String
-  isMultiple: Boolean
+
+  """Small hint (description) for the end user"""
+  hint: String
   isRequired: Boolean
-  min: String
-  max: String
-  type: String
+  hasMultiple: Boolean
+  defaultValue: String
 }
 
-type Algorithm {
-  name: String!
-  parameters: [AlgorithmParameter!]
+type User {
+  id: String!
+  username: String!
+  fullname: String
+  email: String
+  agreeNDA: Boolean
+}
+
+type ChartAxis {
+  """label of the Axis"""
   label: String
-  type: String
-  description: String
+
+  """label of each element on this Axis"""
+  categories: [String!]
 }
 
 type GroupResult {
@@ -63,16 +35,22 @@ type GroupResult {
   results: [ResultUnion!]!
 }
 
-union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult
+union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult | MeanChartResult | AlertResult
 
 type TableResult {
   name: String!
   data: [[String!]!]!
   headers: [Header!]!
+  tableStyle: TableStyle
+}
+
+enum TableStyle {
+  DEFAULT
+  NORMAL
 }
 
 type RawResult {
-  rawdata: JSON!
+  rawdata: JSON
 }
 
 """
@@ -86,9 +64,16 @@ type GroupsResult {
 
 type HeatMapResult {
   name: String!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
   matrix: [[Float!]!]!
-  xAxis: ChartAxis!
-  yAxis: ChartAxis!
+  heatMapStyle: HeatMapStyle
+}
+
+"""Type of display."""
+enum HeatMapStyle {
+  NORMAL
+  BUBBLE
 }
 
 type LineChartResult {
@@ -96,11 +81,39 @@ type LineChartResult {
   xAxis: ChartAxis
   yAxis: ChartAxis
   lines: [LineResult!]!
+  hasBisector: Boolean
 }
 
-type ChartAxis {
-  label: String
-  categories: [String!]
+type BarChartResult {
+  name: String!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
+
+  """List of bar's value"""
+  barValues: [Float!]!
+  hasConnectedBars: Boolean
+}
+
+type MeanChartResult {
+  name: String!
+  xAxis: ChartAxis
+  yAxis: ChartAxis
+
+  """List of points with confidence information: min, mean, max"""
+  pointCIs: [PointCI!]!
+}
+
+type AlertResult {
+  title: String
+  message: String!
+  level: AlertLevel
+}
+
+enum AlertLevel {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
 }
 
 type ExtraLineInfo {
@@ -121,65 +134,280 @@ enum LineType {
   DASHED
 }
 
+type PointCI {
+  min: Float
+  mean: Float!
+  max: Float
+}
+
 type Header {
   name: String!
   type: String!
 }
 
+type Author {
+  username: String
+  fullname: String
+}
+
+type Transformation {
+  """Variable's id on which to apply the transformation"""
+  id: String!
+
+  """Transformation to apply"""
+  operation: String!
+}
+
+type Formula {
+  transformations: [Transformation!]
+  interactions: [[String!]!]
+}
+
+type ParamValue {
+  name: String!
+  value: String!
+}
+
+type AlgorithmResult {
+  name: String!
+  parameters: [ParamValue!]
+}
+
 type Experiment {
-  uuid: String
-  author: String
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  id: String!
+  name: String!
+  author: Author
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
-  status: String
+  status: ExperimentStatus
   shared: Boolean!
   results: [ResultUnion!]
   datasets: [String!]!
   filter: String
   domain: String!
   variables: [String!]!
-  algorithm: Algorithm!
-  name: String!
+  coVariables: [String!]
+  filterVariables: [String!]
+  formula: Formula
+  algorithm: AlgorithmResult!
+}
+
+enum ExperimentStatus {
+  INIT
+  PENDING
+  SUCCESS
+  ERROR
 }
 
 type PartialExperiment {
-  uuid: String
-  author: String
-  createdAt: Float
-  updateAt: Float
-  finishedAt: Float
+  id: String
+  name: String
+  author: Author
+  createdAt: String
+  updateAt: String
+  finishedAt: String
   viewed: Boolean
-  status: String
+  status: ExperimentStatus
   shared: Boolean
   results: [ResultUnion!]
   datasets: [String!]
   filter: String
   domain: String
   variables: [String!]
-  algorithm: Algorithm
-  name: String
+  coVariables: [String!]
+  filterVariables: [String!]
+  formula: Formula
+  algorithm: AlgorithmResult
+}
+
+type AuthenticationOutput {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Configuration {
+  connectorId: String!
+  hasGalaxy: Boolean @deprecated(reason: "Only used for legacy reason should be avoided")
+
+  """Indicates if histograms can handle grouping"""
+  hasGrouping: Boolean
+
+  """Indicates if filters and formula are enabled"""
+  hasFilters: Boolean
+  version: String!
+  skipAuth: Boolean
+  skipTos: Boolean
+  enableSSO: Boolean
+}
+
+type Dataset {
+  id: String!
+  label: String
+  isLongitudinal: Boolean
+}
+
+type Group {
+  id: String!
+  label: String
+  description: String
+  groups: [String!]
+
+  """List of variable's ids"""
+  variables: [String!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
+}
+
+type Category {
+  value: String!
+  label: String
+}
+
+type Variable {
+  id: String!
+  label: String
+  type: String
+  description: String
+  enumerations: [Category!]
+  groups: [Group!]
+
+  """List of datasets avalaible, set null if all datasets allowed"""
+  datasets: [String!]
+}
+
+type Domain {
+  id: String!
+  label: String
+  description: String
+  version: String
+  groups: [Group!]!
+  variables: [Variable!]!
+  datasets: [Dataset!]!
+  rootGroup: Group!
+}
+
+type OptionValue {
+  value: String!
+  label: String!
+}
+
+type NominalParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+
+  """Id of the parameter"""
+  linkedTo: AllowedLink
+  allowedValues: [OptionValue!]
+}
+
+"""The supported links."""
+enum AllowedLink {
+  VARIABLE
+  COVARIABLE
+}
+
+type NumberParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+  min: Float
+  max: Float
+  isReal: Boolean
+}
+
+type StringParameter implements BaseParameter {
+  name: String!
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+  defaultValue: String
+}
+
+type VariableParameter {
+  hint: String
+  isRequired: Boolean
+  hasMultiple: Boolean
+
+  """If undefined, all types are allowed"""
+  allowedTypes: [String!]
+}
+
+type Algorithm {
+  id: String!
+  parameters: [BaseParameter!]
+  variable: VariableParameter!
+  coVariable: VariableParameter
+  hasFormula: Boolean
+  type: String
+  label: String
+  description: String
+}
+
+type FilterConfiguration {
+  """List of types that can considered as number"""
+  numberTypes: [String!]
+}
+
+type FormulaOperation {
+  """Type name of the variable"""
+  variableType: String!
+
+  """List of operation available for this type"""
+  operationTypes: [String!]!
 }
 
 type ListExperiments {
   currentPage: Float
   totalPages: Float
   totalExperiments: Float
-  experiments: [Experiment!]!
+  experiments: [Experiment!]
 }
 
 type Query {
-  domains(ids: [String!] = []): [Domain!]!
-  experiments(name: String = "", page: Float = 0): ListExperiments!
-  expriment(uuid: String!): Experiment!
+  configuration: Configuration!
+  domains: [Domain!]!
   algorithms: [Algorithm!]!
+  formula: [FormulaOperation!]!
+  filter: FilterConfiguration!
+  user: User!
+  experimentList(page: Float = 0, name: String = ""): ListExperiments!
+  experiment(id: String!): Experiment!
 }
 
 type Mutation {
-  createExperiment(isTransient: Boolean = false, data: ExperimentCreateInput!): Experiment!
-  editExperiment(data: ExperimentEditInput!, uuid: String!): Experiment!
-  removeExperiment(uuid: String!): PartialExperiment!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  login(variables: AuthenticationInput!): AuthenticationOutput!
+  refresh(refreshToken: String!): AuthenticationOutput!
+  logout: Boolean!
+  createExperiment(data: ExperimentCreateInput!, isTransient: Boolean = false): Experiment!
+  editExperiment(id: String!, data: ExperimentEditInput!): Experiment!
+  removeExperiment(id: String!): PartialExperiment!
+}
+
+input UpdateUserInput {
+  agreeNDA: Boolean!
+}
+
+input AuthenticationInput {
+  username: String!
+  password: String!
 }
 
 input ExperimentCreateInput {
@@ -187,6 +415,7 @@ input ExperimentCreateInput {
   filter: String
   domain: String!
   variables: [String!]!
+  coVariables: [String!] = []
   algorithm: AlgorithmInput!
   name: String!
   transformations: [FormulaTransformation!]
@@ -194,22 +423,23 @@ input ExperimentCreateInput {
 }
 
 input AlgorithmInput {
-  name: String!
+  id: String!
   parameters: [AlgorithmParamInput!] = []
-  type: String!
+  type: String
 }
 
 input AlgorithmParamInput {
-  name: String!
-  value: [String!]!
+  id: String!
+  value: String!
 }
 
 input FormulaTransformation {
-  name: String!
+  id: String!
   operation: String!
 }
 
 input ExperimentEditInput {
   name: String
+  shared: Boolean
   viewed: Boolean
 }

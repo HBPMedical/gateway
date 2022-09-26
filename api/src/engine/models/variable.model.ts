@@ -1,10 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Category } from './category.model';
-import { Entity } from './entity.model';
+import { BaseModel } from './entity.model';
 import { Group } from './group.model';
 
 @ObjectType()
-export class Variable extends Entity {
+export class Variable extends BaseModel {
   @Field({ nullable: true })
   type?: string;
 
@@ -16,4 +16,10 @@ export class Variable extends Entity {
 
   @Field(() => [Group], { nullable: true, defaultValue: [] })
   groups?: Group[];
+
+  @Field(() => [String], {
+    description: 'List of datasets avalaible, set null if all datasets allowed',
+    nullable: true,
+  })
+  datasets?: string[];
 }

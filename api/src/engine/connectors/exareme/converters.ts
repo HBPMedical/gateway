@@ -1,27 +1,21 @@
-import { Category } from 'src/engine/models/category.model';
-import { AlgorithmParameter } from 'src/engine/models/experiment/algorithm-parameter.model';
-import { Algorithm } from 'src/engine/models/experiment/algorithm.model';
-import { Experiment } from 'src/engine/models/experiment/experiment.model';
-import { ExperimentCreateInput } from 'src/engine/models/experiment/input/experiment-create.input';
-import { Group } from 'src/engine/models/group.model';
-import { ResultUnion } from 'src/engine/models/result/common/result-union.model';
+import { Logger } from '@nestjs/common';
+import { Category } from '../../../engine/models/category.model';
+import { Dataset } from '../../../engine/models/dataset.model';
+import { Domain } from '../../../engine/models/domain.model';
 import {
-  GroupResult,
-  GroupsResult,
-} from 'src/engine/models/result/groups-result.model';
-import { RawResult } from 'src/engine/models/result/raw-result.model';
-import { Variable } from 'src/engine/models/variable.model';
+  Experiment,
+  ExperimentStatus,
+} from '../../../engine/models/experiment/experiment.model';
+import { Group } from '../../../engine/models/group.model';
+import { Variable } from '../../../engine/models/variable.model';
+import { AlgorithmParamInput } from '../../../experiments/models/input/algorithm-parameter.input';
+import { ExperimentCreateInput } from '../../../experiments/models/input/experiment-create.input';
+import handlers from './handlers';
 import { Entity } from './interfaces/entity.interface';
 import { ExperimentData } from './interfaces/experiment/experiment.interface';
-import { ResultExperiment } from './interfaces/experiment/result-experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
-import {
-  descriptiveModelToTables,
-  descriptiveSingleToTables,
-  transformToAlgorithms,
-  transformToExperiment,
-} from './transformations';
+import { transformToExperiment } from './transformations';
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -31,15 +25,23 @@ export const dataToGroup = (data: Hierarchy): Group => {
       ? data.groups.map(dataToGroup).map((group) => group.id)
       : [],
     variables: data.variables
-      ? data.variables.map((data: VariableEntity) => data.code)
+      ? data.variables.map((v: VariableEntity) => v.code)
       : [],
   };
 };
 
 export const dataToCategory = (data: Entity): Category => {
   return {
+    value: data.code,
+    label: data.label,
+  };
+};
+
+export const dataToDataset = (data: Entity): Dataset => {
+  return {
     id: data.code,
     label: data.label,
+    isLongitudinal: !!data.code.toLowerCase().includes('longitudinal'),
   };
 };
 
@@ -56,20 +58,20 @@ export const dataToVariable = (data: VariableEntity): Variable => {
   };
 };
 
-const algoParamInputToData = (param: AlgorithmParameter) => {
+const algoParamInputToData = (param: AlgorithmParamInput) => {
   return {
-    name: param.name,
-    label: param.name,
-    value: param.value.join(','),
+    name: param.id,
+    label: param.id,
+    value: param.value,
   };
 };
 
-export const experimentInputToData = (data: ExperimentCreateInput) => {
+const getFormula = (data: ExperimentCreateInput) => {
   const formula =
     ((data.transformations?.length > 0 || data.interactions?.length > 0) && {
       single:
         data.transformations?.map((t) => ({
-          var_name: t.name,
+          var_name: t.id,
           unary_operation: t.operation,
         })) || [],
       interactions:
@@ -79,7 +81,53 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     }) ||
     null;
 
+  return formula
+    ? [
+        {
+          name: 'formula',
+          value: JSON.stringify(formula),
+        },
+      ]
+    : [];
+};
+
+const getVariables = (data: ExperimentCreateInput) => {
+  if (!data.variables) return undefined;
+
   return {
+    name: 'y',
+    label: 'y',
+    value: data.variables.join(','),
+  };
+};
+
+const getCoVariables = (
+  data: ExperimentCreateInput,
+  design: { value: string },
+) => {
+  if (!data.coVariables || data.coVariables.length === 0) return undefined;
+  let separator = ',';
+
+  const excludes = [
+    'Multiple Histograms',
+    'CART',
+    'ID3',
+    'Naive Bayes Training',
+  ];
+
+  if (design && !excludes.includes(data.algorithm.id)) {
+    separator = design.value === 'additive' ? '+' : '*';
+  }
+
+  return {
+    name: 'x',
+    label: 'x',
+    value: data.coVariables.join(separator),
+  };
+};
+
+export const experimentInputToData = (data: ExperimentCreateInput) => {
+  const params = {
     algorithm: {
       parameters: [
         {
@@ -90,108 +138,94 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
         {
           name: 'filter',
           label: 'filter',
-          value: data.filter,
+          value: data.filter ?? '',
         },
         {
           name: 'pathology',
           label: 'pathology',
           value: data.domain,
         },
-        {
-          name: 'y',
-          label: 'y',
-          value: data.variables.join(','),
-        },
-        ...(formula
-          ? [
-              {
-                name: 'formula',
-                value: JSON.stringify(formula),
-              },
-            ]
-          : []),
+        ...getFormula(data),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
       type: data.algorithm.type ?? 'string',
-      name: data.algorithm.name,
+      name: data.algorithm.id,
     },
     name: data.name,
   };
-};
 
-export const descriptiveDataToTableResult = (
-  data: ResultExperiment,
-): GroupsResult[] => {
-  const result = new GroupsResult();
-
-  result.groups = [
-    new GroupResult({
-      name: 'Variables',
-      description: 'Descriptive statistics for the variables of interest.',
-      results: descriptiveSingleToTables.evaluate(data),
-    }),
-  ];
-
-  result.groups.push(
-    new GroupResult({
-      name: 'Model',
-      description:
-        'Intersection table for the variables of interest as it appears in the experiment.',
-      results: descriptiveModelToTables.evaluate(data),
-    }),
-  );
-
-  return [result];
-};
-
-export const dataToExperiment = (data: ExperimentData): Experiment => {
-  const expTransform = transformToExperiment.evaluate(data);
-
-  const exp: Experiment = {
-    ...expTransform,
-    results: [],
-  };
-
-  exp.results = data.result
-    ? data.result
-        .map((result) => dataToResult(result, exp.algorithm.name))
-        .flat()
-    : [];
-
-  return exp;
-};
-
-export const dataToAlgorithms = (data: string): Algorithm[] => {
-  return transformToAlgorithms.evaluate(data);
-};
-
-export const dataToRaw = (result: ResultExperiment): RawResult[] => {
-  return [
-    {
-      rawdata: result.data,
-    },
-  ];
-};
-
-export const dataToResult = (
-  result: ResultExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (result.type.toLowerCase()) {
-    case 'application/json':
-      return dataJSONtoResult(result, algo);
-    default:
-      return dataToRaw(result);
+  if (data.algorithm.id === 'DESCRIPTIVE_STATS' && data.coVariables) {
+    data.variables.push(...data.coVariables);
+    data.coVariables = [];
   }
+
+  const design = params.algorithm.parameters.find((p) => p.name === 'design');
+
+  [getVariables(data), getCoVariables(data, design)]
+    .filter((p) => p)
+    .forEach((p) => params.algorithm.parameters.push(p));
+
+  return params;
 };
 
-export const dataJSONtoResult = (
-  result: ResultExperiment,
-  algo: string,
-): Array<typeof ResultUnion> => {
-  switch (algo.toLowerCase()) {
-    case 'descriptive_stats':
-      return descriptiveDataToTableResult(result);
-    default:
-      return [];
+export const dataToExperiment = (
+  data: ExperimentData,
+  logger: Logger,
+  domains?: Domain[],
+): Experiment | undefined => {
+  try {
+    const expTransform = transformToExperiment.evaluate(data);
+
+    const exp: Experiment = {
+      ...expTransform,
+      results: [],
+    };
+
+    const domain = domains?.find((d) => d.id === exp.domain);
+
+    if (data && data.result && data.result.length)
+      handlers(exp, data.result, domain);
+
+    const allVariables = exp.filterVariables || [];
+
+    // add filter variables
+    const extractVariablesFromFilter = (filter: any): any =>
+      filter.rules.forEach((r: any) => {
+        if (r.rules) {
+          extractVariablesFromFilter(r);
+        }
+        if (r.id) {
+          allVariables.push(r.id);
+        }
+      });
+
+    if (exp && exp.filter) {
+      extractVariablesFromFilter(JSON.parse(exp.filter));
+    }
+
+    exp.filterVariables = Array.from(new Set(allVariables));
+
+    return exp;
+  } catch (e) {
+    logger.error('Error parsing experiment', data.uuid);
+    logger.debug(e);
+    return {
+      id: data.uuid,
+      name: data.name,
+      status: ExperimentStatus.ERROR,
+      variables: [],
+      domain: data['domain'] ?? '',
+      results: [
+        {
+          rawdata: {
+            type: 'text/plain+error',
+            data: 'Error when parsing experiment data from the Engine',
+          },
+        },
+      ],
+      datasets: [],
+      algorithm: {
+        name: 'unknown',
+      },
+    };
   }
 };

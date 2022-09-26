@@ -7,6 +7,6 @@ import { Result } from './common/result.model';
 
 @ObjectType()
 export class RawResult extends Result {
-  @Field(() => GraphQLJSON)
-  rawdata: unknown;
+  @Field(() => GraphQLJSON, { nullable: true, defaultValue: '' })
+  rawdata?: unknown;
 }
