@@ -29,15 +29,19 @@ const isNumberPrecision = (value: any, name: string) => {
 };
 
 export default class TtestOnesampleHandler extends BaseHandler {
-  public static readonly ALGO_NAME = 'ttest_onesample';
+  public static readonly ALGO_NAME: string = 'ttest_onesample';
 
   private canHandle(algoId: string, data: any) {
     return (
       data &&
       data[0] &&
       data[0]['t_stat'] &&
-      algoId.toLowerCase() === TtestOnesampleHandler.ALGO_NAME
+      algoId.toLowerCase() === this.ALGO_NAME
     );
+  }
+
+  public get ALGO_NAME() {
+    return TtestOnesampleHandler.ALGO_NAME;
   }
 
   private getTable(data: any): TableResult {
