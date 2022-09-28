@@ -1,3 +1,10 @@
+## [1.2.1](https://gitlab.com/sibmip/gateway/compare/1.2.0...1.2.1) (2022-09-28)
+
+
+### Bug Fixes
+
+* **exareme2:** T-test indep was disabled ([f90d91d](https://gitlab.com/sibmip/gateway/commit/f90d91d80d36bf69f322e63cfde7cc61e155f0b8))
+
 # [1.2.0](https://gitlab.com/sibmip/gateway/compare/1.1.0...1.2.0) (2022-09-28)
 
 
