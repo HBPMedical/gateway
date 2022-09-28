@@ -1,11 +1,18 @@
-# [1.1.0-beta.7](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.6...1.1.0-beta.7) (2022-09-22)
+## [1.2.1](https://gitlab.com/sibmip/gateway/compare/1.2.0...1.2.1) (2022-09-28)
 
 
 ### Bug Fixes
 
-* **exareme2:** Issue with paired t-test ([e8f84b7](https://gitlab.com/sibmip/gateway/commit/e8f84b7648986914e387f5969f30213435210dcc))
+* **exareme2:** T-test indep was disabled ([f90d91d](https://gitlab.com/sibmip/gateway/commit/f90d91d80d36bf69f322e63cfde7cc61e155f0b8))
 
-# [1.1.0-beta.6](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.5...1.1.0-beta.6) (2022-09-21)
+# [1.2.0](https://gitlab.com/sibmip/gateway/compare/1.1.0...1.2.0) (2022-09-28)
+
+
+### Features
+
+* **exareme2:** T-test independent integration ([9893173](https://gitlab.com/sibmip/gateway/commit/98931734674eb0d66613cb27283e67dc207280ab))
+
+# [1.1.0](https://gitlab.com/sibmip/gateway/compare/1.0.2...1.1.0) (2022-09-26)
 
 
 ### Bug Fixes
@@ -14,21 +21,27 @@
 * Add errors catcher for external API calls ([b394bf0](https://gitlab.com/sibmip/gateway/commit/b394bf011f605715bf04e532f32d246cb0989081))
 * Add LICENSE file ([dc24614](https://gitlab.com/sibmip/gateway/commit/dc246147ef9dddf6de537029eedfe03db50304d0))
 * Add summary table to linear regression ([ca5a723](https://gitlab.com/sibmip/gateway/commit/ca5a72332a7872291f2cdd088709d62c606ff1b2))
+* Algorithm parameter value type is now string ([cd8545c](https://gitlab.com/sibmip/gateway/commit/cd8545cb1a4452843b028a50a4c25e1a3f36278c))
 * **assets:** Retrieve protocol url behind proxy ([35cdb10](https://gitlab.com/sibmip/gateway/commit/35cdb10345e2ed2198474ad4cfcbb06c9c5504cc))
 * Axios and node mismatch type on headers ([f641296](https://gitlab.com/sibmip/gateway/commit/f641296da3a3b100910c08542bbc6b0c659451ac))
+* Catch convert problem jsonata (datashield) ([11dda61](https://gitlab.com/sibmip/gateway/commit/11dda61b41198e7e40d0f86f177eacb1a79da61d))
+* Catch convert problem jsonata (exareme) ([c330b3f](https://gitlab.com/sibmip/gateway/commit/c330b3fb176c6038e3b5425c99d49b3a099026a3))
 * Change status path name ([9857f06](https://gitlab.com/sibmip/gateway/commit/9857f06ce383c759a0ae148a37381bedc0e58f70))
+* **csv:** Root variables not added ([7f8f76d](https://gitlab.com/sibmip/gateway/commit/7f8f76d284123e8e347cdf8f195d473f40a04f8d))
 * Datashield variables transformation update ([173b4ce](https://gitlab.com/sibmip/gateway/commit/173b4ce061a2c908b983a4694f4348b05a6b0d40))
 * **datashield:** Fix issue with types after merge conflict ([378c4fc](https://gitlab.com/sibmip/gateway/commit/378c4fc19f8f40a9ee9ffcbb703b2e7134315a7f))
 * **datashield:** Issue with table style ([95b6dc8](https://gitlab.com/sibmip/gateway/commit/95b6dc83145668243d010784eee6ce7273822a3a))
 * Define specific Postgres version ([57093ed](https://gitlab.com/sibmip/gateway/commit/57093ed8e9e7a4fb0d2e2a48b7ff0f172fae8b97))
-* empty headers from graphql ([b51f0a9](https://gitlab.com/sibmip/gateway/commit/b51f0a91661fa201838527bc81b986653f7ac5a9))
+* Devops: docker push to hbpmip repo ([cb287dc](https://gitlab.com/sibmip/gateway/commit/cb287dc1422b3de382976c4675c24b4fecd97910))
 * Engine interface login return parameters ([11f5a7d](https://gitlab.com/sibmip/gateway/commit/11f5a7d3de22f7d63bdc4e6798eea2a4a4ed1d94))
 * ESLint no-unused-vars false positive issue ([80ca037](https://gitlab.com/sibmip/gateway/commit/80ca0376554ea6434395999101db60a89a062c77))
 * **exareme2:** Anova labels and round numbers ([1192214](https://gitlab.com/sibmip/gateway/commit/11922141d141faec136c7b73c93a472e98e1e4a9))
 * **exareme2:** Fix pearson next call missing property ([19fe3e2](https://gitlab.com/sibmip/gateway/commit/19fe3e2c98dcab613b357c0ea00149eef0724c1c))
 * **exareme2:** Issue with Anova handling condition ([2195136](https://gitlab.com/sibmip/gateway/commit/2195136bb9a3dfcef4f906f361e7f88ed6b51507))
 * **exareme2:** Issue with Logistic regression (exareme) ([d993da8](https://gitlab.com/sibmip/gateway/commit/d993da855ddc0cf22344a48e414224811f01376a))
+* **exareme2:** Issue with paired t-test ([e8f84b7](https://gitlab.com/sibmip/gateway/commit/e8f84b7648986914e387f5969f30213435210dcc))
 * **exareme2:** Pearson add table, remove heatmap ([c30a041](https://gitlab.com/sibmip/gateway/commit/c30a04118eeed70ff930042f7913d554d4d7bf48))
+* **exareme2:** Remove fix on pathology id (version) ([7e9dab9](https://gitlab.com/sibmip/gateway/commit/7e9dab9086f25880263cb26e75571dbf0cea9f54))
 * **exareme:** Descriptive issue with var and coVar ([beaac84](https://gitlab.com/sibmip/gateway/commit/beaac84bf693ad9b2cd16f683b6b26a8bdc59290))
 * **exareme:** Headers empty, catch parsing errors ([a98b658](https://gitlab.com/sibmip/gateway/commit/a98b65813f3992b7e5cf775733a11de92b850166))
 * **exareme:** Issue user update result transform ([c761b05](https://gitlab.com/sibmip/gateway/commit/c761b0554b411fe266af9dfc4d1ee23a155c4cc5))
@@ -38,21 +51,30 @@
 * **exareme:** Swap tab order in linear reg handler ([4e62ebc](https://gitlab.com/sibmip/gateway/commit/4e62ebc5a815b74272da2eceddc692793c17d670))
 * **exareme:** Swap tab order logistic reg ([e3697b9](https://gitlab.com/sibmip/gateway/commit/e3697b92beee38b5119868b9317c8ef6bb2d9537))
 * Exclude from tests input and model files ([b5c6653](https://gitlab.com/sibmip/gateway/commit/b5c665396abdde82631e4c296bd5952af756c3b5))
+* Group id fix for csv connector ([01ccfbc](https://gitlab.com/sibmip/gateway/commit/01ccfbcc56f5e402d938bcb19f4db6c5c6e89e8b))
+* Handle parameters exceptions (exareme) ([ee65a87](https://gitlab.com/sibmip/gateway/commit/ee65a872f8cac1d2145bab9840155d1460a1dafe))
 * Issue runexperiment sticks in pending ([278be39](https://gitlab.com/sibmip/gateway/commit/278be393bbaf5638a8e492921c09738daa83b0e2))
+* Issue throwing connector's errors ([ebb7cf6](https://gitlab.com/sibmip/gateway/commit/ebb7cf6732882598e2cfa56b73bc2e358b662d7a))
 * Issue update user return old user data ([c1314ee](https://gitlab.com/sibmip/gateway/commit/c1314ee5fea02ba62df49836dd35778361bf1953))
 * Issue with 'has' function in engine service ([acf0ee1](https://gitlab.com/sibmip/gateway/commit/acf0ee15a3f1d51531ca046e1480f73994eccc10))
 * Issue with algorithm cache key ([b1c8eb3](https://gitlab.com/sibmip/gateway/commit/b1c8eb3a03911f9447b9d04c173b41bce932e29b))
+* Issue with package-lock.json after rebase ([5c6b251](https://gitlab.com/sibmip/gateway/commit/5c6b251736a0f53924bd696364887f233e3c646e))
+* Issue with tests (exareme algorithms) ([afebfb9](https://gitlab.com/sibmip/gateway/commit/afebfb962b7380dc11582eaa41808224f9a96aa5))
 * Logout issue when user can not be retrieve ([1bc2892](https://gitlab.com/sibmip/gateway/commit/1bc28929c6e880a5b05a885c6dfe35b909170118))
 * Method FindOne is replaced by FindOneBy ([79bb095](https://gitlab.com/sibmip/gateway/commit/79bb0953bd960780d124c8add4c9239eef161c60))
 * Mispelling and exareme2 result's schema change ([d6d9d58](https://gitlab.com/sibmip/gateway/commit/d6d9d580e15e058a847d055db4280785d80eb163))
 * Missing algorithm in list ([9fed5bc](https://gitlab.com/sibmip/gateway/commit/9fed5bc6647ab6a3fb54cfeee7cfe3c821c7a543))
 * Missing assets folder in dockerfile ([15238b5](https://gitlab.com/sibmip/gateway/commit/15238b5ef4ae8cdbe99390c06df0ded5a5d1ae53))
+* Parameters formula & transfo now optionals ([af4a74a](https://gitlab.com/sibmip/gateway/commit/af4a74ac3b6f60419fde32677ace80d36fdd5352))
+* Prevent error on empty experiment's filter value ([21d14c6](https://gitlab.com/sibmip/gateway/commit/21d14c658428d6d46ed3eb467bf9d21231fa3394))
 * Prevent local file inclusion exploit ([6f14b65](https://gitlab.com/sibmip/gateway/commit/6f14b653a570ae58c1c6c8a807caa685bddb0774))
+* Remove 'v' from tag format ([20b3194](https://gitlab.com/sibmip/gateway/commit/20b3194af563d4416e2dab1b7973c2f703bc0e3a))
 * Remove license from readme ([5e024d3](https://gitlab.com/sibmip/gateway/commit/5e024d3f0f7fb9c502d1d5f715b3a6c389ec0666))
 * Remove Ontology and datacatalogue urls ([560f3d6](https://gitlab.com/sibmip/gateway/commit/560f3d6e25631c043cf56d88472f7e648035be5f))
 * Remove unused readme ([33fcbaa](https://gitlab.com/sibmip/gateway/commit/33fcbaaa3dc558835ca1969d8b39e2d61336e292))
 * Remove unused status ([e122b46](https://gitlab.com/sibmip/gateway/commit/e122b46527c13d45aa0b9539b6d3f56b65f5b9ac))
-* security problem with headers injections ([8a748d7](https://gitlab.com/sibmip/gateway/commit/8a748d7743ae1ad74fdf4da54ca606a0f4f5bde8))
+* semantic release workflow ([5820e1b](https://gitlab.com/sibmip/gateway/commit/5820e1ba748ae8aeca1156c26656f1bcea0fbfa8))
+* Testing configuration (jest) wrong place ([1a51e02](https://gitlab.com/sibmip/gateway/commit/1a51e02f666ef8cceb8f723df1165531b0b1ae34))
 * Transformation issue when array instead of single value ([531ec01](https://gitlab.com/sibmip/gateway/commit/531ec01a8c49c3f6af52ac7f2018ef13fe09ff31))
 * Typeorm issue with entity name (user) ([74dd87e](https://gitlab.com/sibmip/gateway/commit/74dd87ec608a3a0790af64892c6a0749c138689b))
 * **typeorm:** Config issue after Typeorm update ([b2a76fc](https://gitlab.com/sibmip/gateway/commit/b2a76fc6dccefb41fdd74da2a72097d75514819e))
@@ -60,17 +82,30 @@
 * Update dockerfile with new node version ([183aca9](https://gitlab.com/sibmip/gateway/commit/183aca978a5814a8b3caded536a3262c0cc6ffd2))
 * User automatically extended in the request  ([5050798](https://gitlab.com/sibmip/gateway/commit/5050798e4da49b5ab883fee43a765e47723ebda3))
 * User's cache reset after logout ([1dc6ba8](https://gitlab.com/sibmip/gateway/commit/1dc6ba86c86d238f36ab4390c58a8af082542be4))
+* wrong docker image name in ci ([6fd73b6](https://gitlab.com/sibmip/gateway/commit/6fd73b690ade2f49e4a7cd08cc74eb7315140d3c))
 
 
 ### Features
 
+* Add algorithm workflow (galaxy) exception ([da6bd2f](https://gitlab.com/sibmip/gateway/commit/da6bd2f68a51d76519265768d0807168c0250b29))
 * Add auth module to manage external login ([df7d7f1](https://gitlab.com/sibmip/gateway/commit/df7d7f160e3c9dc39fbfca066c95d3cf4f9b14b0))
 * Add branding and configuration for connectors ([08d8a53](https://gitlab.com/sibmip/gateway/commit/08d8a53fbc884e25b144d2f544836a4e67ea8232))
+* Add connector logs with HttpService Module ([bdc445e](https://gitlab.com/sibmip/gateway/commit/bdc445e7b089dd74b1fa4dcf957651349737ef34))
+* Add documentation to the project repo ([3ad9f7b](https://gitlab.com/sibmip/gateway/commit/3ad9f7b95951bd57d862c195d81cfaa2bea13e05))
+* Add formula into experiment model ([46aa7d1](https://gitlab.com/sibmip/gateway/commit/46aa7d1216706dfeece085344e6b3de3ba53b08b))
+* Add formula transform experiment (exareme) ([58d5a14](https://gitlab.com/sibmip/gateway/commit/58d5a14dee1d41805b4ffc27e50aa5165cfbe036))
+* Add LICENSE ([4a8876b](https://gitlab.com/sibmip/gateway/commit/4a8876b006562b2f2515c712bedd1ff10b7b085e))
+* add longitudinal info on datasets ([bafbb7d](https://gitlab.com/sibmip/gateway/commit/bafbb7df5a25494781ee5c73a24ba31c39b2003c))
 * Add optional filter and formula ([c96b6fd](https://gitlab.com/sibmip/gateway/commit/c96b6fd7f7c99fb2fe1d4b9eace5b256d8ed23c2))
+* Add release process in gitlab pipeline ([f9dd6b6](https://gitlab.com/sibmip/gateway/commit/f9dd6b643770e70d3adb44b54a611d5db9bf74a6))
 * Add secret JWT token to Gitlab CI ([ce8caee](https://gitlab.com/sibmip/gateway/commit/ce8caeebd1e901067819f1feb28698643b36923a))
+* Add semantic backmerge for GitFlow compatibility ([6c9491d](https://gitlab.com/sibmip/gateway/commit/6c9491dab59cc707216f5f9eac839d1ad672a975))
+* Add Semantic Release ([ef59b3e](https://gitlab.com/sibmip/gateway/commit/ef59b3eec78e93ca9df88f17c4c5b87e235d3fde))
+* Add semantic-release ([cee1e25](https://gitlab.com/sibmip/gateway/commit/cee1e251f8508af78d42416d5958920403097a0f))
 * Added configurable log levels ([873d9fc](https://gitlab.com/sibmip/gateway/commit/873d9fcee3bf0c17c471ab2b762496b79d0a4ee7))
 * Algorithms support through GraphQL ([58c9214](https://gitlab.com/sibmip/gateway/commit/58c92148e8bd4d15956236cfcded66d292c58897))
 * Allow both user update (gateway and engine) ([8ccef49](https://gitlab.com/sibmip/gateway/commit/8ccef49088effe6b6b5a5e8a0c63e30a7dfc2f1a))
+* datashield domain (datasets) integration ([cc58c20](https://gitlab.com/sibmip/gateway/commit/cc58c200137cd802cddda52d64997535cfe17c33))
 * **datashield:** Add datasets filter on histogram and quantiles ([4a35910](https://gitlab.com/sibmip/gateway/commit/4a35910dbd42f46aac8864db5aa3730514a8e761))
 * **datashield:** Add logout ([d8f77d4](https://gitlab.com/sibmip/gateway/commit/d8f77d4cfeccbe8e0f68f45f87c0550382b9caaa))
 * **datashield:** Descriptive algorithm integration ([bbae397](https://gitlab.com/sibmip/gateway/commit/bbae397b76a8849fb00d957f3b2dc8048f7a2dac))
@@ -88,6 +123,7 @@
 * **exareme:** Linear Regression (CV) integrated ([d46ce3e](https://gitlab.com/sibmip/gateway/commit/d46ce3e797e64ccb60823269a5a18677c106df0b))
 * **exareme:** Logistic regression integration ([2bc8631](https://gitlab.com/sibmip/gateway/commit/2bc86316d4337c520f8038cbfef54326162509c0))
 * **exareme:** Terms of Service update ([30e9845](https://gitlab.com/sibmip/gateway/commit/30e9845833f8e2a10cfb262cb38dc4a649c1bbf6))
+* **exareme:** Update Terms of Service ([f314826](https://gitlab.com/sibmip/gateway/commit/f31482625d03b73943595a16118aa48ce6e5d133))
 * **GrahpQL:** Filter and formula fields available ([f7d14cb](https://gitlab.com/sibmip/gateway/commit/f7d14cb944e9f95d0a7b7f63794933689c103389))
 * Line chart viz integration ([f1092fe](https://gitlab.com/sibmip/gateway/commit/f1092fede014866416dcb7d9e85a41a14682e8e4))
 * Logisitc regression integration ([743b6d0](https://gitlab.com/sibmip/gateway/commit/743b6d01d876076af7ff87d2f4b3a92de088484f))
@@ -99,68 +135,3 @@
 * Update Apollo server to last version ([868c72c](https://gitlab.com/sibmip/gateway/commit/868c72c64c8976ae7addb1ae781c0160392278da))
 * Update dependencies ([311a0a8](https://gitlab.com/sibmip/gateway/commit/311a0a86a08b56ed171f6de008160e7fd73427d6))
 * Updated nestjs GraphQL dependency ([5e45304](https://gitlab.com/sibmip/gateway/commit/5e453040c1db5b00ac236ea61b06a5e4f754e232))
-
-# [1.1.0-beta.5](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.4...1.1.0-beta.5) (2022-02-11)
-
-
-### Bug Fixes
-
-* **csv:** Root variables not added ([7f8f76d](https://gitlab.com/sibmip/gateway/commit/7f8f76d284123e8e347cdf8f195d473f40a04f8d))
-* Testing configuration (jest) wrong place ([1a51e02](https://gitlab.com/sibmip/gateway/commit/1a51e02f666ef8cceb8f723df1165531b0b1ae34))
-
-# [1.1.0-beta.4](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.3...1.1.0-beta.4) (2022-02-07)
-
-
-### Bug Fixes
-
-* Group id fix for csv connector ([01ccfbc](https://gitlab.com/sibmip/gateway/commit/01ccfbcc56f5e402d938bcb19f4db6c5c6e89e8b))
-* Issue throwing connector's errors ([ebb7cf6](https://gitlab.com/sibmip/gateway/commit/ebb7cf6732882598e2cfa56b73bc2e358b662d7a))
-
-# [1.1.0-beta.3](https://gitlab.com/sibmip/gateway/compare/1.1.0-beta.2...1.1.0-beta.3) (2022-02-01)
-
-
-### Features
-
-* Add semantic backmerge for GitFlow compatibility ([6c9491d](https://gitlab.com/sibmip/gateway/commit/6c9491dab59cc707216f5f9eac839d1ad672a975))
-
-# [1.1.0-beta.2](https://gitlab.com/sibmip/gateway/compare/v1.1.0-beta.1...1.1.0-beta.2) (2022-02-01)
-
-
-### Bug Fixes
-
-* Algorithm parameter value type is now string ([cd8545c](https://gitlab.com/sibmip/gateway/commit/cd8545cb1a4452843b028a50a4c25e1a3f36278c))
-* Catch convert problem jsonata (datashield) ([11dda61](https://gitlab.com/sibmip/gateway/commit/11dda61b41198e7e40d0f86f177eacb1a79da61d))
-* Catch convert problem jsonata (exareme) ([c330b3f](https://gitlab.com/sibmip/gateway/commit/c330b3fb176c6038e3b5425c99d49b3a099026a3))
-* Handle parameters exceptions (exareme) ([ee65a87](https://gitlab.com/sibmip/gateway/commit/ee65a872f8cac1d2145bab9840155d1460a1dafe))
-* Issue with package-lock.json after rebase ([5c6b251](https://gitlab.com/sibmip/gateway/commit/5c6b251736a0f53924bd696364887f233e3c646e))
-* Issue with tests (exareme algorithms) ([afebfb9](https://gitlab.com/sibmip/gateway/commit/afebfb962b7380dc11582eaa41808224f9a96aa5))
-* Parameters formula & transfo now optionals ([af4a74a](https://gitlab.com/sibmip/gateway/commit/af4a74ac3b6f60419fde32677ace80d36fdd5352))
-* Prevent error on empty experiment's filter value ([21d14c6](https://gitlab.com/sibmip/gateway/commit/21d14c658428d6d46ed3eb467bf9d21231fa3394))
-* Remove 'v' from tag format ([20b3194](https://gitlab.com/sibmip/gateway/commit/20b3194af563d4416e2dab1b7973c2f703bc0e3a))
-
-
-### Features
-
-* Add algorithm workflow (galaxy) exception ([da6bd2f](https://gitlab.com/sibmip/gateway/commit/da6bd2f68a51d76519265768d0807168c0250b29))
-* Add connector logs with HttpService Module ([bdc445e](https://gitlab.com/sibmip/gateway/commit/bdc445e7b089dd74b1fa4dcf957651349737ef34))
-* Add formula into experiment model ([46aa7d1](https://gitlab.com/sibmip/gateway/commit/46aa7d1216706dfeece085344e6b3de3ba53b08b))
-* Add formula transform experiment (exareme) ([58d5a14](https://gitlab.com/sibmip/gateway/commit/58d5a14dee1d41805b4ffc27e50aa5165cfbe036))
-* add longitudinal info on datasets ([bafbb7d](https://gitlab.com/sibmip/gateway/commit/bafbb7df5a25494781ee5c73a24ba31c39b2003c))
-* datashield domain (datasets) integration ([cc58c20](https://gitlab.com/sibmip/gateway/commit/cc58c200137cd802cddda52d64997535cfe17c33))
-
-# [1.1.0-beta.1](https://gitlab.com/sibmip/gateway/compare/v1.0.1...v1.1.0-beta.1) (2021-12-23)
-
-
-### Bug Fixes
-
-* Devops: docker push to hbpmip repo ([cb287dc](https://gitlab.com/sibmip/gateway/commit/cb287dc1422b3de382976c4675c24b4fecd97910))
-* semantic release workflow ([5820e1b](https://gitlab.com/sibmip/gateway/commit/5820e1ba748ae8aeca1156c26656f1bcea0fbfa8))
-* wrong docker image name in ci ([6fd73b6](https://gitlab.com/sibmip/gateway/commit/6fd73b690ade2f49e4a7cd08cc74eb7315140d3c))
-
-
-### Features
-
-* Add documentation to the project repo ([3ad9f7b](https://gitlab.com/sibmip/gateway/commit/3ad9f7b95951bd57d862c195d81cfaa2bea13e05))
-* Add release process in gitlab pipeline ([f9dd6b6](https://gitlab.com/sibmip/gateway/commit/f9dd6b643770e70d3adb44b54a611d5db9bf74a6))
-* Add Semantic Release ([ef59b3e](https://gitlab.com/sibmip/gateway/commit/ef59b3eec78e93ca9df88f17c4c5b87e235d3fde))
-* Add semantic-release ([cee1e25](https://gitlab.com/sibmip/gateway/commit/cee1e251f8508af78d42416d5958920403097a0f))

@@ -126,12 +126,7 @@ const getCoVariables = (
   };
 };
 
-export const experimentInputToData = (
-  data: ExperimentCreateInput,
-  domains?: Domain[],
-) => {
-  const domain = domains?.find((d) => d.id === data.domain);
-
+export const experimentInputToData = (data: ExperimentCreateInput) => {
   const params = {
     algorithm: {
       parameters: [
@@ -148,9 +143,7 @@ export const experimentInputToData = (
         {
           name: 'pathology',
           label: 'pathology',
-          value: domain.version
-            ? `${data.domain}:${domain.version}`
-            : data.domain,
+          value: data.domain,
         },
         ...getFormula(data),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
