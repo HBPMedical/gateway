@@ -59,12 +59,14 @@ export default class TtestOnesampleHandler extends BaseHandler {
         'ci_lower',
         'ci_upper',
         'cohens_d',
-      ].map((name) => [
-        lookupDict[name],
-        isNumberPrecision(data[name], name)
-          ? data[name].toPrecision(NUMBER_PRECISION)
-          : data[name],
-      ]),
+      ]
+        .filter((name) => data[name] !== undefined)
+        .map((name) => [
+          lookupDict[name],
+          isNumberPrecision(data[name], name)
+            ? data[name].toPrecision(NUMBER_PRECISION)
+            : data[name],
+        ]),
     };
 
     return tableModel;

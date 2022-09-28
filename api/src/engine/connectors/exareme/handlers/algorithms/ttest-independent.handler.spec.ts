@@ -3,15 +3,14 @@ import TtestIndependentHandler from './ttest-independent.handler';
 
 const data = [
   {
-    n_obs: 2592,
-    t_stat: 134.30687412180572,
-    p: 1.0,
-    df: 2590,
-    mean_diff: 2.649063055555556,
-    se_diff: 0.01972395733931731,
-    ci_upper: 2.6815226463968456,
-    ci_lower: -Infinity,
-    cohens_d: 5.276072302860936,
+    t_stat: 167.79155102952237,
+    df: 4140.0,
+    p: 0.0,
+    mean_diff: 2.6412097730564965,
+    se_diff: 0.015741017690406738,
+    ci_upper: 2.6421969013992093,
+    ci_lower: 2.6402226447137838,
+    cohens_d: 5.214288266060559,
   },
 ];
 
