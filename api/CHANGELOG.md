@@ -1,3 +1,10 @@
+# [1.2.0](https://gitlab.com/sibmip/gateway/compare/1.1.0...1.2.0) (2022-09-28)
+
+
+### Features
+
+* **exareme2:** T-test independent integration ([9893173](https://gitlab.com/sibmip/gateway/commit/98931734674eb0d66613cb27283e67dc207280ab))
+
 # [1.1.0](https://gitlab.com/sibmip/gateway/compare/1.0.2...1.1.0) (2022-09-26)
 
 
