@@ -65,12 +65,12 @@ describe('UsersService', () => {
     });
   });
 
-  describe('updateUser', () => {
-    it('should return an updated user', async () => {
+  describe('saveUser', () => {
+    it('should return an  user', async () => {
       const expectedUser = { ...user, ...updateData };
       usersRepository.save.mockResolvedValue(expectedUser);
 
-      const result = await service.update('idThatExist', updateData);
+      const result = await service.save('idThatExist', updateData);
 
       expect(result).toStrictEqual(expectedUser);
     });

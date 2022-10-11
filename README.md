@@ -1,6 +1,6 @@
 # 🏠 Home
 
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release) [![pipeline status](https://gitlab.com/sibmip/gateway/badges/main/pipeline.svg)](https://gitlab.com/sibmip/gateway/-/commits/main)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release) [![pipeline status](https://gitlab.com/sibmip/gateway/badges/main/pipeline.svg)](https://gitlab.com/sibmip/gateway/-/commits/main) [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![DockerHub](https://img.shields.io/badge/docker-hbpmip%2Fgateway-008bb8.svg)](https://hub.docker.com/r/hbpmip/gateway/)
 
 ## Introduction
 
