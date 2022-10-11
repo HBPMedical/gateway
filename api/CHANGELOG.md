@@ -1,3 +1,10 @@
+## [1.2.2-beta.1](https://gitlab.com/sibmip/gateway/compare/1.2.1...1.2.2-beta.1) (2022-10-11)
+
+
+### Bug Fixes
+
+* Logout was always creating a DB record ([873ea93](https://gitlab.com/sibmip/gateway/commit/873ea9380a01ca7710db876d064492113b6d5587))
+
 ## [1.2.1](https://gitlab.com/sibmip/gateway/compare/1.2.0...1.2.1) (2022-09-28)
 
 
