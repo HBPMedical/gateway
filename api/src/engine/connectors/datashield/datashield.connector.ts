@@ -340,7 +340,7 @@ export default class DataShieldConnector implements Connector {
     return [dsDomain];
   }
 
-  async isUserConnected(user: User): Promise<boolean> {
+  async isSessionValid(user: User): Promise<boolean> {
     const sid = user && user.extraFields && user.extraFields['sid'];
 
     if (!sid) return false;

@@ -80,9 +80,9 @@ export default class EngineService implements Connector {
     return this.connector.getConfiguration?.() ?? {};
   }
 
-  isUserConnected(user: User): Promise<boolean> {
-    if (!this.connector.isUserConnected) throw new NotImplementedException();
-    return this.connector.isUserConnected(user);
+  isSessionValid(user: User): Promise<boolean> {
+    if (!this.connector.isSessionValid) throw new NotImplementedException();
+    return this.connector.isSessionValid(user);
   }
 
   /**

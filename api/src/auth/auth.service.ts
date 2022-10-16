@@ -88,7 +88,16 @@ export class AuthService {
         this.getRefreshTokenOptions(),
       );
 
-      this.engineService.isUserConnected(payload.context); //check if user is connected
+      //check if user is connected
+      const isConnected = await this.engineService.isSessionValid(
+        payload.context,
+      );
+
+      console.log('isConnected', isConnected);
+      if (!isConnected) {
+        console.log('User need to reconnect');
+        throw new UnauthorizedException('User need to reconnect');
+      }
 
       const user = await this.usersService.findOne(payload.context.id);
       const isMatchingTokens =
@@ -100,6 +109,7 @@ export class AuthService {
       }
       return this.login(payload.context);
     } catch (error) {
+      console.log(error);
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
