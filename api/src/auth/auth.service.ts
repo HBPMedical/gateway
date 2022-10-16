@@ -87,6 +87,9 @@ export class AuthService {
         refreshToken,
         this.getRefreshTokenOptions(),
       );
+
+      this.engineService.isUserConnected(payload.context); //check if user is connected
+
       const user = await this.usersService.findOne(payload.context.id);
       const isMatchingTokens =
         user.refreshToken === (await this.getHash(refreshToken));

@@ -272,14 +272,10 @@ export default class DataShieldConnector implements Connector {
   ) {
     const path = new URL('/runAlgorithm', this.options.baseurl);
 
-    // Covariable and variable are inversed in Datashield API
-    const variable =
-      experiment.variables.length > 0 ? experiment.variables[0] : undefined;
-
     const expToInput = {
       algorithm: {
         id: experiment.algorithm.name,
-        variable,
+        variables: experiment.variables,
         covariables: experiment.coVariables,
       },
       datasets: experiment.datasets,
@@ -342,6 +338,33 @@ export default class DataShieldConnector implements Connector {
 
     dataToGroups(dsDomain, groups);
     return [dsDomain];
+  }
+
+  async isUserConnected(user: User): Promise<boolean> {
+    const sid = user && user.extraFields && user.extraFields['sid'];
+
+    if (!sid) return false;
+
+    try {
+      const cookies = [`sid=${user.extraFields['sid']}`, `user=${user.id}`];
+      const path = this.options.baseurl + 'getvars';
+
+      const response = await firstValueFrom(
+        this.httpService.get(path, {
+          headers: {
+            cookie: cookies.join(';'),
+          },
+        }),
+      );
+      console.log('status', response.status);
+      return true;
+    } catch (err) {
+      DataShieldConnector.logger.warn(
+        `User ${user.id} is not connected to Datashield`,
+      );
+      DataShieldConnector.logger.warn(err);
+      return false;
+    }
   }
 
   async getActiveUser(req: Request): Promise<User> {
