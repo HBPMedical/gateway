@@ -5,6 +5,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotImplementedException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { Cache } from 'cache-manager';
@@ -77,6 +78,11 @@ export default class EngineService implements Connector {
 
   getConfiguration(): ConnectorConfiguration {
     return this.connector.getConfiguration?.() ?? {};
+  }
+
+  isUserConnected(user: User): Promise<boolean> {
+    if (!this.connector.isUserConnected) throw new NotImplementedException();
+    return this.connector.isUserConnected(user);
   }
 
   /**
@@ -162,15 +168,22 @@ export default class EngineService implements Connector {
     req?: Request,
   ): Promise<RunResult> {
     if (!this.connector.runExperiment) throw new NotImplementedException();
-    return this.connector.runExperiment(data, req).catch((err) => ({
-      results: [
-        {
-          level: AlertLevel.ERROR,
-          message: `Error while running experiment, details '${err}'`,
-        },
-      ],
-      status: ExperimentStatus.ERROR,
-    }));
+    return this.connector.runExperiment(data, req).catch((err) => {
+      if (err.status === 401 || err.response?.status === 401) {
+        throw new UnauthorizedException(
+          'Experiment cannot be run because of a bad authentication',
+        );
+      }
+      return {
+        results: [
+          {
+            level: AlertLevel.ERROR,
+            message: `Error while running experiment, details '${err}'`,
+          },
+        ],
+        status: ExperimentStatus.ERROR,
+      };
+    });
   }
 
   async listExperiments?(
