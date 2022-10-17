@@ -349,20 +349,20 @@ export default class DataShieldConnector implements Connector {
       const cookies = [`sid=${user.extraFields['sid']}`, `user=${user.id}`];
       const path = this.options.baseurl + 'getvars';
 
-      const response = await firstValueFrom(
+      await firstValueFrom(
         this.httpService.get(path, {
           headers: {
             cookie: cookies.join(';'),
           },
         }),
       );
-      console.log('status', response.status);
+
       return true;
     } catch (err) {
-      DataShieldConnector.logger.warn(
+      DataShieldConnector.logger.verbose(
         `User ${user.id} is not connected to Datashield`,
       );
-      DataShieldConnector.logger.warn(err);
+      DataShieldConnector.logger.debug(err);
       return false;
     }
   }

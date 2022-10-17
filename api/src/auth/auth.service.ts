@@ -93,9 +93,7 @@ export class AuthService {
         payload.context,
       );
 
-      console.log('isConnected', isConnected);
       if (!isConnected) {
-        console.log('User need to reconnect');
         throw new UnauthorizedException('User need to reconnect');
       }
 
@@ -109,8 +107,8 @@ export class AuthService {
       }
       return this.login(payload.context);
     } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException('Invalid refresh token');
+      const msg = error.message ?? 'Invalid refresh token';
+      throw new UnauthorizedException(msg);
     }
   }
 
