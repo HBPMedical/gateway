@@ -10,15 +10,14 @@ description: >-
 
 #### General
 
-| name               | type    | default                         | description                                                                                                                                                                  |
-| ------------------ | ------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ENGINE\_TYPE       | string  | exareme                         | Define the connector that should be used : **`exareme, datashield, csv, local`**.                                                                                            |
-| ENGINE\_BASE\_URL  | string  | http://127.0.0.1:8080/services/ | Specify the endpoint for the data source. The parameter will be provided for the connector.                                                                                  |
-| TOS\_SKIP          | boolean | false                           | Allow to skip the `terms of services` (this parameter is provided to the frontend)                                                                                           |
-| GATEWAY\_PORT      | number  | 8081                            | Indicate the port that should be used by the gateway                                                                                                                         |
-| NODE\_ENV          | string  | dev                             | Value can be `prod` or `dev`                                                                                                                                                 |
-| LOG\_LEVEL         | number  | 1 in production, 4 otherwise    | <p>Values in range [1;4] <br>1: 'warn', 'error'<br>2: 'warn', 'error', 'log'</p><p>3: 'warn', 'error', 'log', 'verbose'<br>4: 'warn', 'error', 'log', 'verbose', 'debug'</p> |
-| BASE\_URL\_CONTEXT | string  | null                            | Define context of the gateway. E.g. `api` if the api is under `http://127.0.0.1/api/`                                                                                        |
+| name               | type    | default                         | description                                                                                 |
+| ------------------ | ------- | ------------------------------- | ------------------------------------------------------------------------------------------- |
+| ENGINE\_TYPE       | string  | exareme                         | Define the connector that should be used : **`exareme, datashield, csv, local`**.           |
+| ENGINE\_BASE\_URL  | string  | http://127.0.0.1:8080/services/ | Specify the endpoint for the data source. The parameter will be provided for the connector. |
+| TOS\_SKIP          | boolean | false                           | Allow to skip the `terms of services` (this parameter is provided to the frontend)          |
+| GATEWAY\_PORT      | number  | 8081                            | Indicate the port that should be used by the gateway                                        |
+| NODE\_ENV          | string  | dev                             | Value can be `prod` or `dev`                                                                |
+| BASE\_URL\_CONTEXT | string  | null                            | Define context of the gateway. E.g. `api` if the api is under `http://127.0.0.1/api/`       |
 
 #### Authentication
 
