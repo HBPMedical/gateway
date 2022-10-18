@@ -23,6 +23,12 @@ export default interface Connector {
   getConfiguration?(): ConnectorConfiguration;
 
   /**
+   * Tell if the session is still valid
+   * @param user User to check
+   */
+  isSessionValid?(user: User): Promise<boolean>;
+
+  /**
    * Get the list of domains along with a list of variables
    * @param req - Request - this is the request object from the HTTP request.
    */
