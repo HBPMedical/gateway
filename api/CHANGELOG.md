@@ -1,3 +1,10 @@
+## [1.2.2-beta.2](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.1...1.2.2-beta.2) (2022-10-18)
+
+
+### Bug Fixes
+
+* **Datashield:** issue with jwt ([e5114ef](https://gitlab.com/sibmip/gateway/commit/e5114ef9ae9447fbda7f37c9ccaa2b8d043f44e8))
+
 ## [1.2.2-beta.1](https://gitlab.com/sibmip/gateway/compare/1.2.1...1.2.2-beta.1) (2022-10-11)
 
 
