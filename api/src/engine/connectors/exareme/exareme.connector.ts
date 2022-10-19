@@ -77,7 +77,12 @@ export default class ExaremeConnector implements Connector {
   async logout(request: Request) {
     const path = `${this.options.baseurl}logout`;
 
-    await firstValueFrom(this.get(request, path));
+    await firstValueFrom(
+      this.get(request, path, {
+        maxRedirects: 0,
+        validateStatus: (status) => status >= 200 && status <= 302,
+      }),
+    );
   }
 
   async createExperiment(
