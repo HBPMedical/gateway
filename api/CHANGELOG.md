@@ -1,3 +1,11 @@
+## [1.2.2-beta.4](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.3...1.2.2-beta.4) (2022-10-19)
+
+
+### Bug Fixes
+
+* **exareme:** Issue with logout response status from portalbackend ([c49a30d](https://gitlab.com/sibmip/gateway/commit/c49a30d921b7cc3a1bcebc0cdbf773c818957645))
+* **exareme:** Limit redirection from portalbackend ([e3a11f4](https://gitlab.com/sibmip/gateway/commit/e3a11f42d3fad693a9672f58e4096d4c11343c99))
+
 ## [1.2.2-beta.3](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.2...1.2.2-beta.3) (2022-10-19)
 
 
