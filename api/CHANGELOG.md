@@ -1,3 +1,10 @@
+## [1.2.2-beta.5](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.4...1.2.2-beta.5) (2022-10-19)
+
+
+### Bug Fixes
+
+* **exareme:** Redirect issue with activeUser and domains ([11f0a61](https://gitlab.com/sibmip/gateway/commit/11f0a61164d4926f01aa9d5e9ac16ef16470240b))
+
 ## [1.2.2-beta.4](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.3...1.2.2-beta.4) (2022-10-19)
 
 
