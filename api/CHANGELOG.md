@@ -1,3 +1,10 @@
+## [1.2.2-beta.3](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.2...1.2.2-beta.3) (2022-10-19)
+
+
+### Bug Fixes
+
+* Issue when logging out ([110b31a](https://gitlab.com/sibmip/gateway/commit/110b31ac56675dfbbdc25b02d2d2db4b669ac0d5))
+
 ## [1.2.2-beta.2](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.1...1.2.2-beta.2) (2022-10-18)
 
 
