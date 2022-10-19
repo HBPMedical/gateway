@@ -1,3 +1,16 @@
+## [1.2.2](https://gitlab.com/sibmip/gateway/compare/1.2.1...1.2.2) (2022-10-19)
+
+
+### Bug Fixes
+
+* **Datashield:** issue with jwt ([e5114ef](https://gitlab.com/sibmip/gateway/commit/e5114ef9ae9447fbda7f37c9ccaa2b8d043f44e8))
+* **exareme:** Issue with logout response status from portalbackend ([c49a30d](https://gitlab.com/sibmip/gateway/commit/c49a30d921b7cc3a1bcebc0cdbf773c818957645))
+* **exareme:** Limit redirection from portalbackend ([e3a11f4](https://gitlab.com/sibmip/gateway/commit/e3a11f42d3fad693a9672f58e4096d4c11343c99))
+* **exareme:** Redirect issue with activeUser and domains ([11f0a61](https://gitlab.com/sibmip/gateway/commit/11f0a61164d4926f01aa9d5e9ac16ef16470240b))
+* Issue when logging out ([110b31a](https://gitlab.com/sibmip/gateway/commit/110b31ac56675dfbbdc25b02d2d2db4b669ac0d5))
+* Issue with Promise activeUser ([ba6e871](https://gitlab.com/sibmip/gateway/commit/ba6e8719106b7a283d898a76105eddfaa7fc1d98))
+* Logout was always creating a DB record ([873ea93](https://gitlab.com/sibmip/gateway/commit/873ea9380a01ca7710db876d064492113b6d5587))
+
 ## [1.2.2-beta.6](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.5...1.2.2-beta.6) (2022-10-19)
 
 
