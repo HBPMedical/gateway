@@ -182,7 +182,11 @@ export default class ExaremeConnector implements Connector {
     const path = this.options.baseurl + 'pathologies';
 
     try {
-      const data = await firstValueFrom(this.get<Pathology[]>(request, path));
+      const data = await firstValueFrom(
+        this.get<Pathology[]>(request, path, {
+          maxRedirects: 1,
+        }),
+      );
 
       return (
         data?.data.map((d): Domain => {
@@ -211,7 +215,11 @@ export default class ExaremeConnector implements Connector {
 
   async getActiveUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser';
-    const response = await firstValueFrom(this.get<string>(request, path));
+    const response = await firstValueFrom(
+      this.get<string>(request, path, {
+        maxRedirects: 1,
+      }),
+    );
 
     try {
       return transformToUser.evaluate(response.data);
