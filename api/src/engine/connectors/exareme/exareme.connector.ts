@@ -129,7 +129,11 @@ export default class ExaremeConnector implements Connector {
   async getAlgorithms(request: Request): Promise<Algorithm[]> {
     const path = this.options.baseurl + 'algorithms';
 
-    const resultAPI = await firstValueFrom(this.get<string>(request, path));
+    const resultAPI = await firstValueFrom(
+      this.get<string>(request, path, {
+        maxRedirects: 0,
+      }),
+    );
 
     return transformToAlgorithms.evaluate(resultAPI.data);
   }
@@ -184,7 +188,7 @@ export default class ExaremeConnector implements Connector {
     try {
       const data = await firstValueFrom(
         this.get<Pathology[]>(request, path, {
-          maxRedirects: 1,
+          maxRedirects: 0,
         }),
       );
 
@@ -217,7 +221,7 @@ export default class ExaremeConnector implements Connector {
     const path = this.options.baseurl + 'activeUser';
     const response = await firstValueFrom(
       this.get<string>(request, path, {
-        maxRedirects: 1,
+        maxRedirects: 0,
       }),
     );
 
