@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { User } from './models/user.model';
 
@@ -37,7 +37,18 @@ export class UsersService {
    * @param {UserDataUpdate} data - update params
    * @returns The updated user.
    */
-  async update(id: string, data: UserDataUpdate): Promise<InternalUser> {
+  async update(id: string, data: UserDataUpdate): Promise<UpdateResult> {
+    return this.userRepository.update({ id }, data);
+  }
+
+  /**
+   * Saves user in the database.
+   * If user does not exist in the database then inserts, otherwise updates.
+   * @param {string} id - The id of the user to update.
+   * @param {UserDataUpdate} data - update params
+   * @returns The updated user.
+   */
+  async save(id: string, data: UserDataUpdate): Promise<InternalUser> {
     const updateData = {
       id,
       ...data,

@@ -55,7 +55,7 @@ export class AuthService {
 
     const hashRefresh = await this.getHash(refreshToken);
 
-    this.usersService.update(user.id, {
+    this.usersService.save(user.id, {
       refreshToken: hashRefresh,
     });
 
@@ -71,8 +71,8 @@ export class AuthService {
    */
   async logout(user: User): Promise<void> {
     try {
-      if (user.id)
-        await this.usersService.update(user.id, { refreshToken: null });
+      if (!user || !user.id) return;
+      await this.usersService.update(user.id, { refreshToken: null });
     } catch (err) {
       //user not found or others errors
       AuthService.logger.debug('Error while logging out user', err);
@@ -87,6 +87,16 @@ export class AuthService {
         refreshToken,
         this.getRefreshTokenOptions(),
       );
+
+      //check if user is connected
+      const isConnected = await this.engineService.isSessionValid(
+        payload.context,
+      );
+
+      if (!isConnected) {
+        throw new UnauthorizedException('User need to reconnect');
+      }
+
       const user = await this.usersService.findOne(payload.context.id);
       const isMatchingTokens =
         user.refreshToken === (await this.getHash(refreshToken));
@@ -97,7 +107,8 @@ export class AuthService {
       }
       return this.login(payload.context);
     } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
+      const msg = error.message ?? 'Invalid refresh token';
+      throw new UnauthorizedException(msg);
     }
   }
 

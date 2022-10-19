@@ -12,7 +12,7 @@ export class EngineStrategy extends PassportStrategy(Strategy, 'engine') {
 
   async validate(req: Request) {
     if (!this.engineService.has('getActiveUser')) return false;
-    const user = this.engineService.getActiveUser(req);
+    const user = await this.engineService.getActiveUser(req);
 
     return user ?? false;
   }

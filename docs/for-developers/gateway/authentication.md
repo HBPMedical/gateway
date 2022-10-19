@@ -48,9 +48,9 @@ This field can be used by the connector to store information related to the user
 
 The real login system is delegated to the connector by using the `login` method in the interface.
 
-{% code title="engine.interface.ts" %}
+{% code title="connector.interface.ts" %}
 ```typescript
-export interface IEngineService {
+export interface Connector {
   // ...
   
   /**
@@ -77,9 +77,9 @@ When the login is performed, this function should return a `User` object and can
 
 The same mechanism is applied to the logout system using the method logout from the engine.
 
-{% code title="engine.interface.ts" %}
+{% code title="connector.interface.ts" %}
 ```typescript
-export interface IEngineService {
+export interface Connector {
   // ...
   
   logout?(req: Request
@@ -89,4 +89,38 @@ export interface IEngineService {
 }
 ```
 {% endcode %}
+
+#### Session validation
+
+Whenever a Frontend required a refreshToken, the gateway should tell if the user is still connected to the engine. For this, your connector should implements the function **isSessionValid**.&#x20;
+
+{% code title="connector.interface.ts" %}
+```typescript
+export interface Connector {
+  // ...
+  
+  isSessionValid?(user: User): Promise<boolean>;
+
+  // ...
+}
+```
+{% endcode %}
+
+This function should ensure that the user can still access the engine with the current token.
+
+#### How to get the user&#x20;
+
+Whether you use the local login or a 3rd party system, there is a unique way to access the user inside the Gateway. This method through the request :&#x20;
+
+```typescript
+request.user
+```
+
+This request's attribute is feed by strategy policies defined in the Gateway. Currently the following strategies are applied&#x20;
+
+1. JWT cookies
+2. JWT bearer
+3. Engine (use the connector to retrieve the user)
+
+Even if the `AUTH_SKIP` is defined you should be able to retrieve the user through the request.
 

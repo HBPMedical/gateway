@@ -92,9 +92,9 @@ export class AuthResolver {
     if (user) {
       this.logger.verbose(`${user.username} logged out`);
       try {
-        if (this.engineService.has('logout')) {
+        if (this.engineService.has('logout'))
           await this.engineService.logout(req);
-        }
+
         this.authService.logout(user);
       } catch (e) {
         this.logger.warn(

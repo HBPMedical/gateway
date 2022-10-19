@@ -77,7 +77,12 @@ export default class ExaremeConnector implements Connector {
   async logout(request: Request) {
     const path = `${this.options.baseurl}logout`;
 
-    await firstValueFrom(this.get(request, path));
+    await firstValueFrom(
+      this.get(request, path, {
+        maxRedirects: 0,
+        validateStatus: (status) => status >= 200 && status <= 302,
+      }),
+    );
   }
 
   async createExperiment(
@@ -124,7 +129,11 @@ export default class ExaremeConnector implements Connector {
   async getAlgorithms(request: Request): Promise<Algorithm[]> {
     const path = this.options.baseurl + 'algorithms';
 
-    const resultAPI = await firstValueFrom(this.get<string>(request, path));
+    const resultAPI = await firstValueFrom(
+      this.get<string>(request, path, {
+        maxRedirects: 0,
+      }),
+    );
 
     return transformToAlgorithms.evaluate(resultAPI.data);
   }
@@ -177,7 +186,11 @@ export default class ExaremeConnector implements Connector {
     const path = this.options.baseurl + 'pathologies';
 
     try {
-      const data = await firstValueFrom(this.get<Pathology[]>(request, path));
+      const data = await firstValueFrom(
+        this.get<Pathology[]>(request, path, {
+          maxRedirects: 0,
+        }),
+      );
 
       return (
         data?.data.map((d): Domain => {
@@ -206,7 +219,11 @@ export default class ExaremeConnector implements Connector {
 
   async getActiveUser(request: Request): Promise<User> {
     const path = this.options.baseurl + 'activeUser';
-    const response = await firstValueFrom(this.get<string>(request, path));
+    const response = await firstValueFrom(
+      this.get<string>(request, path, {
+        maxRedirects: 0,
+      }),
+    );
 
     try {
       return transformToUser.evaluate(response.data);

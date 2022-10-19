@@ -55,8 +55,8 @@ import { AppService } from './app.service';
       useFactory: (config: ConfigService) => ({
         ...config.get('database'),
         migrations: ['dist/migrations/*{.ts,.js}'],
-        migrationsRun: process.env.NODE_ENV !== 'dev',
-        synchronize: process.env.NODE_ENV === 'dev',
+        migrationsRun: process.env.NODE_ENV !== 'development',
+        synchronize: process.env.NODE_ENV === 'development',
         autoLoadEntities: true,
       }),
     }),
