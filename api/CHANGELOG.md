@@ -1,3 +1,10 @@
+## [1.2.2-beta.6](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.5...1.2.2-beta.6) (2022-10-19)
+
+
+### Bug Fixes
+
+* Issue with Promise activeUser ([ba6e871](https://gitlab.com/sibmip/gateway/commit/ba6e8719106b7a283d898a76105eddfaa7fc1d98))
+
 ## [1.2.2-beta.5](https://gitlab.com/sibmip/gateway/compare/1.2.2-beta.4...1.2.2-beta.5) (2022-10-19)
 
 
