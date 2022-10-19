@@ -246,7 +246,7 @@ export default class EngineService implements Connector {
   async logout(req: Request): Promise<void> {
     await this.clearCache(req);
 
-    if (this.connector.logout) this.connector.logout(req);
+    if (this.connector.logout) return this.connector.logout(req);
   }
 
   /**
