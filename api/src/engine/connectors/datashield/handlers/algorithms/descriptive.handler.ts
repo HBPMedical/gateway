@@ -42,11 +42,11 @@ const transformToDescriptiveStats = jsonata(`
     $.'1' ? {
       "name": '',
       "xAxis": {
-          "label": $clearLabel($.xlab),
+          "label": $clearLabel($.xlab[0]),
           "categories": $.x
       },
       "yAxis": {
-          "label": $clearLabel($.ylab),
+          "label": $clearLabel($.ylab[0]),
           "categories": $.y
       },
       "matrix": $transposeMat($.'1')
