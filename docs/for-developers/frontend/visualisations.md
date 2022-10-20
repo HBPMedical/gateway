@@ -1,6 +1,6 @@
-# 📊 Visualisations
+# 📖 Storybook
 
-To see the different possible visualisations in the frontend we have integrated [storybook.js](https://storybook.js.org) directly in the frontend.
+To see the different possible visualisations in the frontend we have integrated [storybook.js](https://storybook.js.org/) directly in the frontend.
 
 Start the storybook by launching this command in the frontend folder
 

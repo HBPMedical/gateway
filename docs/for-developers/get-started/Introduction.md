@@ -6,7 +6,7 @@ description: Introduction for developers
 
 The MIP is mainly composed by 3 components
 
-![](<../.gitbook/assets/components.drawio (1).png>)
+![](<../../.gitbook/assets/components.drawio (1).png>)
 
 * **Frontend** : user interface (React.js)
 * **Gateway** : middleware used to abstract calls from an engine (Nest.js and GraphQL)
@@ -16,7 +16,7 @@ The MIP is mainly composed by 3 components
 
 The Frontend and the Gateway are closely related and their communication are abstracted from the engine. This abstraction is performed by the Gateway.
 
-![](../.gitbook/assets/overview.png)
+![](../../.gitbook/assets/overview.png)
 
 The Gateway is in charge of communications with various engines, it could make simple calls and pass it to the Frontend or make any transformations needed in order to fit the need in the Frontend.
 
@@ -51,7 +51,7 @@ The code above is an example of a connector.
 
 ### Visualizations
 
-![](<../.gitbook/assets/visualizations (1).png>)
+![](<../../.gitbook/assets/visualizations (1).png>)
 
 With the Frontend we will introduce a new way to deal with visualizations. Previously the visualizations were completely manage by the engine. As a part of abstraction from a specific engine we want to be able to delegate this task to the visualization components.
 

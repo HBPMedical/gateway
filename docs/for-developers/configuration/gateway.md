@@ -21,14 +21,16 @@ description: >-
 
 #### Authentication
 
-| name                          | type    | default  | description                                                                                                                                       |
-| ----------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| AUTH\_SKIP                    | boolean | false    | Allow to skip authentication. Warn: all routes will be accessible without authentication.                                                         |
-| AUTH\_JWT\_SECRET             | string  | N/A      | Secret that should be used to generate JWT token                                                                                                  |
-| AUTH\_JWT\_TOKEN\_EXPIRES\_IN | string  | '2d'     | <p>JWT token time to live.</p><p>Expressed in seconds or a string describing a time span <a href="https://github.com/vercel/ms">vercel/ms</a></p> |
-| AUTH\_COOKIE\_SAME\_SITE      | string  | 'strict' | Specify the cookie same site option. Value can be  `lax`, `strict` or `none`                                                                      |
-| AUTH\_COOKIE\_SECURE          | boolean | true     | Specify the cookie secure option. Should be set to true if same site is not set to `strict`.                                                      |
-| AUTH\_ENABLE\_SSO             | boolean | false    | Enable SSO login process, this variable will be provided to the frontend in order to perform the login.                                           |
+| name                                   | type    | default  | description                                                                                                                                           |
+| -------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AUTH\_SKIP                             | boolean | false    | Allow to skip authentication. Warn: all routes will be accessible without authentication.                                                             |
+| AUTH\_JWT\_SECRET                      | string  | N/A      | Secret that should be used to generate JWT                                                                                                            |
+| AUTH\_JWT\_REFRESH\_SECRET             | string  | N/A      | Secret that should be used to generate Refresh Token                                                                                                  |
+| AUTH\_JWT\_TOKEN\_EXPIRES\_IN          | string  | '1h'     | <p>JWT time to live.</p><p>Expressed in seconds or a string describing a time span <a href="https://github.com/vercel/ms">vercel/ms</a></p>           |
+| AUTH\_JWT\_REFRESH\_TOKEN\_EXPIRES\_IN |         | '2d'     | <p>Refresh token time to live.</p><p>Expressed in seconds or a string describing a time span <a href="https://github.com/vercel/ms">vercel/ms</a></p> |
+| AUTH\_COOKIE\_SAME\_SITE               | string  | 'strict' | Specify the cookie same site option. Value can be `lax`, `strict` or `none`                                                                           |
+| AUTH\_COOKIE\_SECURE                   | boolean | true     | Specify the cookie secure option. Should be set to true if same site is not set to `strict`.                                                          |
+| AUTH\_ENABLE\_SSO                      | boolean | false    | Enable SSO login process, this variable will be provided to the frontend in order to perform the login.                                               |
 
 #### Database
 
@@ -49,6 +51,16 @@ Matomo is an open source alternative to Google Analytics. The gateway provide th
 | MATOMO\_ENABLED  | boolean             | false     | Enable or disable Matomo                                                                            |
 | MATOMO\_URL      | string \| undefined | undefined | Base url for matomo scripts and data reporting. This parameter is `required` if Matomo is `enabled` |
 | MATOMO\_SITE\_ID | string \| undefined | undefined | Matomo Website ID. This parameter is required if `Matomo` is `enabled`.                             |
+
+#### Cache
+
+The Gateway offers the possibility to cache some of the most used queries (domains and algorithms queries). This cache use In-Memory data store.
+
+| name              | type    | default | description                                            |
+| ----------------- | ------- | ------- | ------------------------------------------------------ |
+| CACHE\_ENABLED    | boolean | true    | Enable or disable the cache                            |
+| CACHE\_TTL        | number  | 1800    | Define (in seconds) time to live for cached elements.  |
+| CACHE\_MAX\_ITEMS | number  | 100     | Max items that can be cached at the same time          |
 
 ### Overwrite parameters
 

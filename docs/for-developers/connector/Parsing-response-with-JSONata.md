@@ -23,7 +23,7 @@ It makes the transformation really easy to do, more readable and thus maintainab
 
 File _transformation.ts_
 
-```ts
+```typescript
 import * as jsonata from 'jsonata';
 
 export const expression = jsonata(`
@@ -33,7 +33,7 @@ export const expression = jsonata(`
 
 File _converter.ts_
 
-```ts
+```typescript
 import { expression } from './transformations';
 
 const data = `
