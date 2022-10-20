@@ -1,3 +1,10 @@
+## [1.2.3](https://gitlab.com/sibmip/gateway/compare/1.2.2...1.2.3) (2022-10-20)
+
+
+### Bug Fixes
+
+* **datashield:** Issue with nested labels in descriptive stats ([01adfa3](https://gitlab.com/sibmip/gateway/commit/01adfa33237505031113c6593c2334d650bb25bc))
+
 ## [1.2.2](https://gitlab.com/sibmip/gateway/compare/1.2.1...1.2.2) (2022-10-19)
 
 
