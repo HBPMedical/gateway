@@ -1,4 +1,5 @@
 import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
+import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Domain } from '../../../../models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import {
@@ -90,7 +91,7 @@ $fn := function($o, $prefix) {
 )
 `);
 
-  descriptiveDataToTableResult(data: ResultExperiment): GroupsResult {
+  descriptiveDataToTableResult1(data: ResultExperiment): GroupsResult {
     const result = new GroupsResult();
 
     result.groups = [
@@ -113,6 +114,66 @@ $fn := function($o, $prefix) {
     return result;
   }
 
+  static readonly descriptiveToTable = (stats: any[]): TableResult[] => {
+    const datasets: string[] = Array.from(new Set(stats.map(d => d.dataset)))
+    const variables: string[] = Array.from(new Set(stats.map(d => d.variable)))
+
+    const columns = (variable) => {
+      const stat = stats.filter((s) => s.variable === variable)
+      const data = key => stat.map(d => d.data[key] || '')
+      const modalities = Array.from(new Set(data('counts').flatMap(c => Object.keys(c))))
+
+      return ([
+        [variable, ...data('num_total')],
+        ['Datapoints', ...data('num_dtps')],
+        ['NA', ...data('num_na')],
+        ...(modalities.length > 0 ?
+          modalities.map(m => [m, ...stat.map(d => d.data.counts[m] || '')]) :
+          [['SE', ...data('std')],
+          ['mean', ...data('mean')],
+          ['min', ...data('num_dtps')],
+          ['Q1', ...data('q1')],
+          ['Q2', ...data('q2')],
+          ['Q3', ...data('q3')],
+          ['max', ...data('max')]]
+        )
+      ])
+    }
+
+    return variables.map(variable => ({
+      headers: [
+        { name: "", type: "string" },
+        ...datasets.map(d => ({ name: d, type: 'string ' }))
+      ],
+      data: columns(variable),
+      name: '',
+      tableStyle: 1
+    }))
+  }
+
+  descriptiveDataToTableResult2(data: ResultExperiment): GroupsResult {
+    const result = new GroupsResult()
+
+    result.groups = [
+      new GroupResult({
+        name: 'Variables',
+        description: 'Descriptive statistics for the variables of interest.',
+        results: DescriptiveHandler.descriptiveToTable(data['variable_based']),
+      }),
+    ]
+
+    result.groups.push(
+      new GroupResult({
+        name: 'Model',
+        description:
+          'Intersection table for the variables of interest as it appears in the experiment.',
+        results: DescriptiveHandler.descriptiveToTable(data['model_based']),
+      }),
+    )
+
+    return result
+  }
+
   handle(exp: Experiment, data: unknown, domain?: Domain): void {
     if (exp.algorithm.name.toLowerCase() !== 'descriptive_stats')
       return super.handle(exp, data, domain);
@@ -120,10 +181,15 @@ $fn := function($o, $prefix) {
     const inputs = data as ResultExperiment[];
 
     if (inputs && Array.isArray(inputs)) {
-      inputs
+      const exareme1 = inputs
         .filter((input) => input.type === 'application/json')
-        .map((input) => this.descriptiveDataToTableResult(input))
-        .forEach((input) => exp.results.push(input));
+
+      if (exareme1.length > 0)
+        exareme1.map((input) => this.descriptiveDataToTableResult1(input))
+          .forEach((input) => exp.results.push(input));
+      else
+        inputs.map((input) => this.descriptiveDataToTableResult2(input))
+          .forEach((input) => exp.results.push(input));
     }
   }
 }
