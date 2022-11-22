@@ -9,6 +9,12 @@ import {
 import { ResultExperiment } from '../../interfaces/experiment/result-experiment.interface';
 import BaseHandler from '../base.handler';
 
+interface Stat {
+  dataset: string;
+  variable: string;
+  data: Record<string, string> | null;
+}
+
 export default class DescriptiveHandler extends BaseHandler {
   private static readonly headerDescriptive = `
 $fnum := function($x) { $type($x) = 'number' ? $round($number($x),3) : $x };
@@ -114,45 +120,59 @@ $fn := function($o, $prefix) {
     return result;
   }
 
-  static readonly descriptiveToTable = (stats: any[]): TableResult[] => {
-    const datasets: string[] = Array.from(new Set(stats.map(d => d.dataset)))
-    const variables: string[] = Array.from(new Set(stats.map(d => d.variable)))
+  static readonly descriptiveToTable = (stats: Stat[]): TableResult[] => {
+    const datasets: string[] = Array.from(new Set(stats.map((d) => d.dataset)));
+    const variables: string[] = Array.from(
+      new Set(stats.map((d) => d.variable)),
+    );
 
     const columns = (variable) => {
-      const stat = stats.filter((s) => s.variable === variable)
-      const data = key => stat.map(d => d.data[key] || '')
-      const modalities = Array.from(new Set(data('counts').flatMap(c => Object.keys(c))))
+      const stat = stats.filter((s) => s.variable === variable);
+      const data = (key) =>
+        stat.map((d) =>
+          d.data === null ? 'No Enough Data' : d.data[key] || '',
+        );
+      const modalities = Array.from(
+        new Set(data('counts').flatMap((c) => Object.keys(c))),
+      );
+      const notEnoughData = stat.map((d) => d.data).includes(null);
 
-      return ([
-        [variable, ...data('num_total')],
-        ['Datapoints', ...data('num_dtps')],
-        ['NA', ...data('num_na')],
-        ...(modalities.length > 0 ?
-          modalities.map(m => [m, ...stat.map(d => d.data.counts[m] || '')]) :
-          [['SE', ...data('std')],
-          ['mean', ...data('mean')],
-          ['min', ...data('num_dtps')],
-          ['Q1', ...data('q1')],
-          ['Q2', ...data('q2')],
-          ['Q3', ...data('q3')],
-          ['max', ...data('max')]]
-        )
-      ])
-    }
+      return (
+        (notEnoughData && [[variable, ...data('num_total')]]) || [
+          [variable, ...data('num_total')],
+          ['Datapoints', ...data('num_dtps')],
+          ['NA', ...data('num_na')],
+          ...(modalities.length > 0
+            ? modalities.map((m) => [
+                m,
+                ...stat.map((d) => d.data.counts[m] || ''),
+              ])
+            : [
+                ['SE', ...data('std')],
+                ['mean', ...data('mean')],
+                ['min', ...data('num_dtps')],
+                ['Q1', ...data('q1')],
+                ['Q2', ...data('q2')],
+                ['Q3', ...data('q3')],
+                ['max', ...data('max')],
+              ]),
+        ]
+      );
+    };
 
-    return variables.map(variable => ({
+    return variables.map((variable) => ({
       headers: [
-        { name: "", type: "string" },
-        ...datasets.map(d => ({ name: d, type: 'string ' }))
+        { name: '', type: 'string' },
+        ...datasets.map((d) => ({ name: d, type: 'string ' })),
       ],
       data: columns(variable),
       name: '',
-      tableStyle: 1
-    }))
-  }
+      tableStyle: 1,
+    }));
+  };
 
   descriptiveDataToTableResult2(data: ResultExperiment): GroupsResult {
-    const result = new GroupsResult()
+    const result = new GroupsResult();
 
     result.groups = [
       new GroupResult({
@@ -160,7 +180,7 @@ $fn := function($o, $prefix) {
         description: 'Descriptive statistics for the variables of interest.',
         results: DescriptiveHandler.descriptiveToTable(data['variable_based']),
       }),
-    ]
+    ];
 
     result.groups.push(
       new GroupResult({
@@ -169,9 +189,9 @@ $fn := function($o, $prefix) {
           'Intersection table for the variables of interest as it appears in the experiment.',
         results: DescriptiveHandler.descriptiveToTable(data['model_based']),
       }),
-    )
+    );
 
-    return result
+    return result;
   }
 
   handle(exp: Experiment, data: unknown, domain?: Domain): void {
@@ -179,16 +199,20 @@ $fn := function($o, $prefix) {
       return super.handle(exp, data, domain);
 
     const inputs = data as ResultExperiment[];
+    console.log(JSON.stringify(inputs, null, 2));
 
     if (inputs && Array.isArray(inputs)) {
-      const exareme1 = inputs
-        .filter((input) => input.type === 'application/json')
+      const exareme1 = inputs.filter(
+        (input) => input.type === 'application/json',
+      );
 
       if (exareme1.length > 0)
-        exareme1.map((input) => this.descriptiveDataToTableResult1(input))
+        exareme1
+          .map((input) => this.descriptiveDataToTableResult1(input))
           .forEach((input) => exp.results.push(input));
       else
-        inputs.map((input) => this.descriptiveDataToTableResult2(input))
+        inputs
+          .map((input) => this.descriptiveDataToTableResult2(input))
           .forEach((input) => exp.results.push(input));
     }
   }
