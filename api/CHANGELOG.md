@@ -1,3 +1,15 @@
+# [1.3.0](https://gitlab.com/sibmip/gateway/compare/1.2.3...1.3.0) (2022-11-22)
+
+
+### Bug Fixes
+
+* **exareme2:** Descriptive stats error handlings ([9dd1a94](https://gitlab.com/sibmip/gateway/commit/9dd1a94507ca08d10b021bd8cfebacfa8f0a5ffe))
+
+
+### Features
+
+* **exareme2:** Handler for Exareme 2 Descriptive Stats ([2278f44](https://gitlab.com/sibmip/gateway/commit/2278f44c33709992c193401cc49462c9ae461e26))
+
 ## [1.2.3](https://gitlab.com/sibmip/gateway/compare/1.2.2...1.2.3) (2022-10-20)
 
 
