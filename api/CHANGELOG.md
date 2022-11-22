@@ -1,3 +1,10 @@
+## [1.3.1](https://gitlab.com/sibmip/gateway/compare/1.3.0...1.3.1) (2022-11-22)
+
+
+### Bug Fixes
+
+* **exareme2:** test for descriptive stats ([a16b9cd](https://gitlab.com/sibmip/gateway/commit/a16b9cd469262c7137cdb11e7192f06f7746c20d))
+
 # [1.3.0](https://gitlab.com/sibmip/gateway/compare/1.2.3...1.3.0) (2022-11-22)
 
 
