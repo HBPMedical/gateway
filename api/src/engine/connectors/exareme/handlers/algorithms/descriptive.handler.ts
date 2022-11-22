@@ -16,6 +16,8 @@ interface Stat {
 }
 
 export default class DescriptiveHandler extends BaseHandler {
+  public static readonly ALGO_NAME = 'DESCRIPTIVE_STATS';
+
   private static readonly headerDescriptive = `
 $fnum := function($x) { $type($x) = 'number' ? $round($number($x),3) : $x };
 
@@ -199,7 +201,6 @@ $fn := function($o, $prefix) {
       return super.handle(exp, data, domain);
 
     const inputs = data as ResultExperiment[];
-    console.log(JSON.stringify(inputs, null, 2));
 
     if (inputs && Array.isArray(inputs)) {
       const exareme1 = inputs.filter(
