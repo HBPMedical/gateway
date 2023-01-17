@@ -47,7 +47,7 @@ export default class LogisticRegressionCVHandler extends BaseHandler {
   private canHandle(experiment: Experiment, data: unknown): boolean {
     return (
       experiment.algorithm.name.toLowerCase() ===
-        LogisticRegressionCVHandler.ALGO_NAME &&
+      LogisticRegressionCVHandler.ALGO_NAME &&
       !!data &&
       !!data[0] &&
       !!data[0]['summary']
@@ -61,10 +61,7 @@ export default class LogisticRegressionCVHandler extends BaseHandler {
         name: lookupDict[key],
         type: 'string',
       })),
-      data: data.summary['row_names'].map((key: any, i: number) => {
-        // could be optimized
-        return [key, ...keys.map((k) => data['summary'][k][i])];
-      }),
+      data: data.summary['row_names'].map((key: any, i: number) => [key, ...keys.map((k) => `${data['summary'][k][i]}`)])
     };
   }
 
@@ -131,6 +128,8 @@ export default class LogisticRegressionCVHandler extends BaseHandler {
       this.getROC(improvedData),
     ];
 
-    results.filter((r) => !!r).forEach((r) => experiment.results.push(r));
+    results.filter((r) => !!r).forEach((r) => {
+      experiment.results.push(r);
+    });
   }
 }

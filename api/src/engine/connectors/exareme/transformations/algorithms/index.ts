@@ -9,7 +9,7 @@ const transformToAlgorithms = jsonata(`
     $checkVal:= function($val) { $val ? $val : undefined};
     $excludedParams:= ['centers', 'formula'];
     $includes:= ['ANOVA_ONEWAY','ANOVA','LINEAR_REGRESSION',
-    'LOGISTIC_REGRESSION','TTEST_INDEPENDENT','TTEST_PAIRED',
+    'LOGISTIC_REGRESSION', 'LOGISTIC_REGRESSION_CV','TTEST_INDEPENDENT','TTEST_PAIRED',
     'PEARSON','ID3','KMEANS','NAIVE_BAYES',
     'TTEST_ONESAMPLE','PCA','CALIBRATION_BELT','CART',
     'KAPLAN_MEIER','THREE_C', 'ONE_WAY_ANOVA', 'PEARSON_CORRELATION', 'LINEAR_REGRESSION_CV', 'TTEST_ONESAMPLE', 'PAIRED_TTEST'];
