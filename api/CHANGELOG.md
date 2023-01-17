@@ -1,3 +1,15 @@
+# [1.4.0-beta.1](https://gitlab.com/sibmip/gateway/compare/1.3.0...1.4.0-beta.1) (2023-01-17)
+
+
+### Bug Fixes
+
+* **exareme2:** test for descriptive stats ([a16b9cd](https://gitlab.com/sibmip/gateway/commit/a16b9cd469262c7137cdb11e7192f06f7746c20d))
+
+
+### Features
+
+* Logistic Regression handler ([e6eb047](https://gitlab.com/sibmip/gateway/commit/e6eb0474491315adf3e91b3a94a0e1f4d196c20d))
+
 # [1.3.0](https://gitlab.com/sibmip/gateway/compare/1.2.3...1.3.0) (2022-11-22)
 
 
