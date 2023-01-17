@@ -4,6 +4,7 @@ import AnovaOneWayHandler from './algorithms/anova-one-way.handler';
 import DescriptiveHandler from './algorithms/descriptive.handler';
 import LinearRegressionCVHandler from './algorithms/linear-regression-cv.handler';
 import LinearRegressionHandler from './algorithms/linear-regression.handler';
+import LogisticRegressionCVHandler from './algorithms/logistic-regression-cv.handler';
 import LogisticRegressionHandler from './algorithms/logistic-regression.handler';
 import PCAHandler from './algorithms/PCA.handler';
 import PearsonHandler from './algorithms/pearson.handler';
@@ -21,6 +22,7 @@ start
   .setNext(new LinearRegressionHandler())
   .setNext(new LinearRegressionCVHandler())
   .setNext(new LogisticRegressionHandler())
+  .setNext(new LogisticRegressionCVHandler())
   .setNext(new TTestPairedHandler())
   .setNext(new TtestOnesampleHandler())
   .setNext(new TtestIndependentHandler())
