@@ -1,3 +1,10 @@
+# [1.4.0-beta.2](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.1...1.4.0-beta.2) (2023-01-17)
+
+
+### Bug Fixes
+
+* enabled LR Cross-Validation, Cast numbers -> strings ([bac2951](https://gitlab.com/sibmip/gateway/commit/bac2951f608076e6863a418d62f1d9ab0b27964f))
+
 # [1.4.0-beta.1](https://gitlab.com/sibmip/gateway/compare/1.3.0...1.4.0-beta.1) (2023-01-17)
 
 
