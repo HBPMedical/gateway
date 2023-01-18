@@ -92,7 +92,18 @@ export default class ExaremeConnector implements Connector {
   ): Promise<Experiment> {
     const domains = await this.engineService.getDomains(request);
 
-    const form = experimentInputToData(data);
+    const oldForm = experimentInputToData(data);
+    const form = {
+      ...oldForm,
+      algorithm: {
+        ...oldForm.algorithm,
+        parameters: oldForm.algorithm.parameters.map(p => p.name === 'bins' ? ({
+          name: 'bins', value: 20
+        })
+          : p
+        )
+      }
+    };
 
     const path =
       this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
@@ -100,6 +111,10 @@ export default class ExaremeConnector implements Connector {
     const resultAPI = await firstValueFrom(
       this.post<ExperimentData>(request, path, form),
     );
+
+    console.log({ path });
+    console.log({ form: JSON.stringify(form, null, 2) });
+    console.log(resultAPI.data);
 
     return dataToExperiment(resultAPI.data, ExaremeConnector.logger, domains);
   }
