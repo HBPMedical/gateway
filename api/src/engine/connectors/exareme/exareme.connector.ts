@@ -92,31 +92,20 @@ export default class ExaremeConnector implements Connector {
   ): Promise<Experiment> {
     const domains = await this.engineService.getDomains(request);
 
-    const oldForm = experimentInputToData(data);
-    const form = {
-      ...oldForm,
-      algorithm: {
-        ...oldForm.algorithm,
-        parameters: oldForm.algorithm.parameters.map(p => p.name === 'bins' ? ({
-          name: 'bins', value: 20
-        })
-          : p
-        )
-      }
-    };
-
+    const form = experimentInputToData(data);
     const path =
       this.options.baseurl + `experiments${isTransient ? '/transient' : ''}`;
 
     const resultAPI = await firstValueFrom(
       this.post<ExperimentData>(request, path, form),
     );
+    const results = dataToExperiment(
+      resultAPI.data,
+      ExaremeConnector.logger,
+      domains,
+    );
 
-    console.log({ path });
-    console.log({ form: JSON.stringify(form, null, 2) });
-    console.log(resultAPI.data);
-
-    return dataToExperiment(resultAPI.data, ExaremeConnector.logger, domains);
+    return results;
   }
 
   async listExperiments(
@@ -326,7 +315,7 @@ export default class ExaremeConnector implements Connector {
     config: AxiosRequestConfig = {},
   ) {
     const conf = this.mergeHeaders(request, config);
-    return this.httpService.get<T>(path, conf);
+    return this.httpService.get<T>(path, conf as any);
   }
 
   private post<T = any>(
@@ -336,7 +325,7 @@ export default class ExaremeConnector implements Connector {
     config: AxiosRequestConfig = {},
   ) {
     const conf = this.mergeHeaders(request, config);
-    return this.httpService.post<T>(path, data, conf);
+    return this.httpService.post<T>(path, data, conf as any);
   }
 
   private patch<T = any>(
@@ -346,7 +335,7 @@ export default class ExaremeConnector implements Connector {
     config: AxiosRequestConfig = {},
   ) {
     const conf = this.mergeHeaders(request, config);
-    return this.httpService.patch<T>(path, data, conf);
+    return this.httpService.patch<T>(path, data, conf as any);
   }
 
   private delete<T = any>(
@@ -355,6 +344,6 @@ export default class ExaremeConnector implements Connector {
     config: AxiosRequestConfig = {},
   ) {
     const conf = this.mergeHeaders(request, config);
-    return this.httpService.delete<T>(path, conf);
+    return this.httpService.delete<T>(path, conf as any);
   }
 }
