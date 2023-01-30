@@ -29,6 +29,11 @@ type ChartAxis {
   categories: [String!]
 }
 
+type BarEnumValues {
+  label: String!
+  values: [Float!]!
+}
+
 type GroupResult {
   name: String!
   description: String
@@ -90,7 +95,10 @@ type BarChartResult {
   yAxis: ChartAxis
 
   """List of bar's value"""
-  barValues: [Float!]!
+  barValues: [Float!]
+
+  """List of group's value"""
+  barEnumValues: [BarEnumValues!]
   hasConnectedBars: Boolean
 }
 

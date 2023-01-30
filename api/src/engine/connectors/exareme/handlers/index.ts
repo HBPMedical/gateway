@@ -2,6 +2,7 @@ import { Domain } from '../../../../engine/models/domain.model';
 import { Experiment } from '../../../../engine/models/experiment/experiment.model';
 import AnovaOneWayHandler from './algorithms/anova-one-way.handler';
 import DescriptiveHandler from './algorithms/descriptive.handler';
+import HistogramHandler from './algorithms/histogram.handler';
 import LinearRegressionCVHandler from './algorithms/linear-regression-cv.handler';
 import LinearRegressionHandler from './algorithms/linear-regression.handler';
 import LogisticRegressionCVHandler from './algorithms/logistic-regression-cv.handler';
@@ -16,6 +17,7 @@ import TTestPairedHandler from './algorithms/ttest-paired.handler';
 const start = new PearsonHandler();
 
 start
+  .setNext(new HistogramHandler())
   .setNext(new DescriptiveHandler())
   .setNext(new AnovaOneWayHandler())
   .setNext(new PCAHandler())
@@ -30,5 +32,6 @@ start
 
 export default (exp: Experiment, data: unknown, domain: Domain): Experiment => {
   start.handle(exp, data, domain);
+
   return exp;
 };
