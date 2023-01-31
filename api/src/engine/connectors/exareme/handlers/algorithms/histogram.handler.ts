@@ -8,6 +8,8 @@ import {
 
 const ALGO_NAME = 'multiple_histograms';
 
+const round = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
+
 export default class HistogramHandler extends BaseHandler {
   private getBarChartResult(data: any): BarChartResult {
     const barChart: BarChartResult = {
@@ -15,11 +17,13 @@ export default class HistogramHandler extends BaseHandler {
       barValues: data.counts.map((c) => c ?? 0),
       xAxis: {
         label: 'bins',
-        categories: data.bins.map((b) => `${b}`),
+        categories: data.bins
+          .filter((_, i) => i < data.bins.length - 1) // upper limit counts for 1 extra
+          .map((b, i) => `${round(b)}-${round(data.bins[i + 1])}`),
       },
-      hasConnectedBars: true,
+      hasConnectedBars: false,
       yAxis: {
-        label: 'Counts',
+        label: 'Count',
       },
     };
 
