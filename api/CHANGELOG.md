@@ -1,3 +1,10 @@
+# [1.4.0-beta.3](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.2...1.4.0-beta.3) (2023-01-18)
+
+
+### Bug Fixes
+
+* **exareme2:** debug for histograms ([622d2d7](https://gitlab.com/sibmip/gateway/commit/622d2d7f1bc1d676a423ff6f44e132f6241fc8a4))
+
 # [1.4.0-beta.2](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.1...1.4.0-beta.2) (2023-01-17)
 
 
