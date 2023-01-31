@@ -1,3 +1,16 @@
+# [1.4.0-beta.4](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.3...1.4.0-beta.4) (2023-01-31)
+
+
+### Bug Fixes
+
+* categories bins ([bf750eb](https://gitlab.com/sibmip/gateway/commit/bf750eba2ade5aba2178c67817f9628e9c8f1c7a))
+* cleanup ([edecf44](https://gitlab.com/sibmip/gateway/commit/edecf440a51fcb832f29dd77583a4fae87da989f))
+
+
+### Features
+
+* Histograms handler ([de0c7c2](https://gitlab.com/sibmip/gateway/commit/de0c7c2fbc6379c2f751192a2e41a5377d92f430))
+
 # [1.4.0-beta.3](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.2...1.4.0-beta.3) (2023-01-18)
 
 
