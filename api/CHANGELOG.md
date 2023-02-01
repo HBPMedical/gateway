@@ -1,3 +1,10 @@
+# [1.4.0-beta.5](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.4...1.4.0-beta.5) (2023-02-01)
+
+
+### Bug Fixes
+
+* **exareme2:** Categorical bins ([bb472ec](https://gitlab.com/sibmip/gateway/commit/bb472ec03aefa788c52d062a8362f3fe80b57a84))
+
 # [1.4.0-beta.4](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.3...1.4.0-beta.4) (2023-01-31)
 
 
