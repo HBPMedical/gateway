@@ -23,9 +23,10 @@ export default class HistogramHandler extends BaseHandler {
     data: Exareme2HistogramData,
     domain: Domain,
   ): BarChartResult {
-    const lookupVar = domain.variables.find((v) => v.id ===  data.var);
-    const categories = lookupVar.type === 'nominal'
-        ? lookupVar.enumerations.map(e => e.value)
+    const lookupVar = domain.variables.find((v) => v.id === data.var);
+    const categories =
+      lookupVar.type === 'nominal'
+        ? lookupVar.enumerations.map((e) => e.value)
         : (data.bins as number[])
             .filter((_, i) => i < data.bins.length - 1) // upper limit counts for 1 extra
             .map(
