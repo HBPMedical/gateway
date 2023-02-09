@@ -1,3 +1,10 @@
+# [1.4.0-rc.3](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.2...1.4.0-rc.3) (2023-02-09)
+
+
+### Bug Fixes
+
+* **Exareme2:** Histograms labels ([fd04921](https://gitlab.com/sibmip/gateway/commit/fd04921e5201a6a944d32dbf214fab3a150f5d20))
+
 # [1.4.0-rc.2](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.1...1.4.0-rc.2) (2023-02-09)
 
 
