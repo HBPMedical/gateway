@@ -1,3 +1,22 @@
+# [1.4.0-rc.1](https://gitlab.com/sibmip/gateway/compare/1.3.0...1.4.0-rc.1) (2023-02-06)
+
+
+### Bug Fixes
+
+* categories bins ([bf750eb](https://gitlab.com/sibmip/gateway/commit/bf750eba2ade5aba2178c67817f9628e9c8f1c7a))
+* cleanup ([edecf44](https://gitlab.com/sibmip/gateway/commit/edecf440a51fcb832f29dd77583a4fae87da989f))
+* enabled LR Cross-Validation, Cast numbers -> strings ([bac2951](https://gitlab.com/sibmip/gateway/commit/bac2951f608076e6863a418d62f1d9ab0b27964f))
+* **exareme2:** Categorical bins ([bb472ec](https://gitlab.com/sibmip/gateway/commit/bb472ec03aefa788c52d062a8362f3fe80b57a84))
+* **exareme2:** debug for histograms ([622d2d7](https://gitlab.com/sibmip/gateway/commit/622d2d7f1bc1d676a423ff6f44e132f6241fc8a4))
+* **exareme2:** lint ([8f5bc14](https://gitlab.com/sibmip/gateway/commit/8f5bc1497ef2b13ed490b9defe1db95d468f47f6))
+* **exareme2:** test for descriptive stats ([a16b9cd](https://gitlab.com/sibmip/gateway/commit/a16b9cd469262c7137cdb11e7192f06f7746c20d))
+
+
+### Features
+
+* Histograms handler ([de0c7c2](https://gitlab.com/sibmip/gateway/commit/de0c7c2fbc6379c2f751192a2e41a5377d92f430))
+* Logistic Regression handler ([e6eb047](https://gitlab.com/sibmip/gateway/commit/e6eb0474491315adf3e91b3a94a0e1f4d196c20d))
+
 # [1.4.0-beta.2](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.1...1.4.0-beta.2) (2023-01-17)
 
 
