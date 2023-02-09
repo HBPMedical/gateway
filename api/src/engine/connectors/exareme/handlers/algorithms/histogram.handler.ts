@@ -26,7 +26,7 @@ export default class HistogramHandler extends BaseHandler {
     const lookupVar = domain.variables.find((v) => v.id === data.var);
     const categories =
       lookupVar.type === 'nominal'
-        ? lookupVar.enumerations.map((e) => e.value)
+        ? lookupVar.enumerations.map((e) => e.label)
         : (data.bins as number[])
             .filter((_, i) => i < data.bins.length - 1) // upper limit counts for 1 extra
             .map(
@@ -37,7 +37,7 @@ export default class HistogramHandler extends BaseHandler {
       name: lookupVar.label,
       barValues: data.counts.map((c) => c ?? 0),
       xAxis: {
-        label: 'bins',
+        label: lookupVar.label,
         categories,
       },
       hasConnectedBars: false,
@@ -52,16 +52,18 @@ export default class HistogramHandler extends BaseHandler {
   private getGroupedBarChartResult(
     groupingVar: string,
     defaultChart: BarChartResult,
-    data: any[],
+    data: Exareme2HistogramData[],
+    domain: Domain,
   ): BarChartResult {
     const groupingVarData = data.filter((d) => d.grouping_var === groupingVar);
     const barEnumValues: BarEnumValues[] = groupingVarData.map((d) => ({
       label: d.grouping_enum,
       values: d.counts.map((c) => (c === null ? 0 : c)),
     }));
+    const lookupVar = domain.variables.find((v) => v.id === groupingVar);
 
     const barChart: BarChartResult = {
-      name: `${defaultChart.name} grouped by ${groupingVar}`,
+      name: `${defaultChart.name} grouped by ${lookupVar.label}`,
       xAxis: defaultChart.xAxis,
       barValues: null,
       yAxis: defaultChart.yAxis,
@@ -106,6 +108,7 @@ export default class HistogramHandler extends BaseHandler {
         groupingVar,
         selectedVariableChart,
         extractedData,
+        domain,
       ),
     );
     if (groupingCharts) groupingCharts.map((gc) => experiment.results.push(gc));
