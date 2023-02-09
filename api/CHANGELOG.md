@@ -1,3 +1,11 @@
+# [1.4.0-rc.2](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.1...1.4.0-rc.2) (2023-02-09)
+
+
+### Bug Fixes
+
+* **Exareme2:** Fixed histogram enumeration casting ([6f2c26b](https://gitlab.com/sibmip/gateway/commit/6f2c26bd01f548796be097a0ebad41c8cf10535b))
+* linter cleanup ([a07ef93](https://gitlab.com/sibmip/gateway/commit/a07ef936f199ecc90d5c8f321b5e09a1d517fd64))
+
 # [1.4.0-rc.1](https://gitlab.com/sibmip/gateway/compare/1.3.0...1.4.0-rc.1) (2023-02-06)
 
 
