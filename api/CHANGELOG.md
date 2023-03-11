@@ -1,3 +1,10 @@
+# [1.4.0-beta.6](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.5...1.4.0-beta.6) (2023-03-11)
+
+
+### Bug Fixes
+
+* **issue-72:** Pearson correlation algorithm ([b46f0eb](https://gitlab.com/sibmip/gateway/commit/b46f0ebc77e9c9578c199ee9c2a28b0cb5ec4726))
+
 # [1.4.0-beta.5](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.4...1.4.0-beta.5) (2023-02-01)
 
 
