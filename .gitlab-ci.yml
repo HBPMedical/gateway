@@ -12,16 +12,6 @@ before_script:
 test:
   image: node:16.14-alpine
   stage: test
-  only:
-    refs:
-    - main
-    - rc
-    - beta
-    - develop
-    # This matches maintenance branches
-    - /^(([0-9]+)\.)?([0-9]+)\.x/
-    # This matches pre-releases
-    - /^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$/
   before_script: []
   script: 
     - cd ./api
