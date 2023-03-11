@@ -1,3 +1,10 @@
+# [1.4.0-beta.7](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.6...1.4.0-beta.7) (2023-03-11)
+
+
+### Bug Fixes
+
+* **issue-71:** Logitistic regression cv matrix ([a51616d](https://gitlab.com/sibmip/gateway/commit/a51616d34830a410fc01baae51349435c1777764))
+
 # [1.4.0-beta.6](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.5...1.4.0-beta.6) (2023-03-11)
 
 
