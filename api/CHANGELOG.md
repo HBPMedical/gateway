@@ -1,3 +1,11 @@
+# [1.4.0-rc.4](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.3...1.4.0-rc.4) (2023-03-12)
+
+
+### Bug Fixes
+
+* **issue-71:** Logitistic regression cv matrix ([a51616d](https://gitlab.com/sibmip/gateway/commit/a51616d34830a410fc01baae51349435c1777764))
+* **issue-72:** Pearson correlation algorithm ([b46f0eb](https://gitlab.com/sibmip/gateway/commit/b46f0ebc77e9c9578c199ee9c2a28b0cb5ec4726))
+
 # [1.4.0-rc.3](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.2...1.4.0-rc.3) (2023-02-09)
 
 
