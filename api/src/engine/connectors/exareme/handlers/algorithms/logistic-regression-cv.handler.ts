@@ -73,7 +73,10 @@ export default class LogisticRegressionCVHandler extends BaseHandler {
 
     return {
       name: 'Confusion matrix',
-      matrix: [[matrix['tp']], [matrix['fp']], [matrix['fn']], [matrix['tn']]],
+      matrix: [
+        [matrix['tp'], matrix['fp']],
+        [matrix['fn'], matrix['tn']],
+      ],
       xAxis: {
         categories: ['Positive', 'Negative'],
         label: 'Actual Values',
