@@ -1,3 +1,10 @@
+# [1.4.0-rc.5](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.4...1.4.0-rc.5) (2023-03-13)
+
+
+### Bug Fixes
+
+* **exareme:** Workaround integer issue ([ce222e9](https://gitlab.com/sibmip/gateway/commit/ce222e9333fad66602aec06d892aedb8c9cd11f2))
+
 # [1.4.0-rc.4](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.3...1.4.0-rc.4) (2023-03-12)
 
 
