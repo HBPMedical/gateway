@@ -1,3 +1,10 @@
+# [1.4.0-rc.6](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.5...1.4.0-rc.6) (2023-03-18)
+
+
+### Bug Fixes
+
+* **exareme:** Type issue on algorithm param (integer) ([9628eda](https://gitlab.com/sibmip/gateway/commit/9628edae7a790b4c997fbfa17d4b9d6f947cd92b)), closes [#75](https://gitlab.com/sibmip/gateway/issues/75)
+
 # [1.4.0-rc.5](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.4...1.4.0-rc.5) (2023-03-13)
 
 
