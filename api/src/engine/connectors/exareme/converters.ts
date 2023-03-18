@@ -47,7 +47,7 @@ export const dataToDataset = (data: Entity): Dataset => {
 
 //FIXME: Dirty workaround should be improved
 const lookupTypes = {
-  integer: 'int',
+  int: 'integer',
 };
 
 export const dataToVariable = (data: VariableEntity): Variable => {
