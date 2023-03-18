@@ -1,6 +1,7 @@
 import { Domain } from '../../../../engine/models/domain.model';
 import { Experiment } from '../../../../engine/models/experiment/experiment.model';
 import AnovaOneWayHandler from './algorithms/anova-one-way.handler';
+import AnovaTwoWayHandler from './algorithms/anova-two-way.handler';
 import DescriptiveHandler from './algorithms/descriptive.handler';
 import HistogramHandler from './algorithms/histogram.handler';
 import LinearRegressionCVHandler from './algorithms/linear-regression-cv.handler';
@@ -20,6 +21,7 @@ start
   .setNext(new HistogramHandler())
   .setNext(new DescriptiveHandler())
   .setNext(new AnovaOneWayHandler())
+  .setNext(new AnovaTwoWayHandler())
   .setNext(new PCAHandler())
   .setNext(new LinearRegressionHandler())
   .setNext(new LinearRegressionCVHandler())
