@@ -1,3 +1,10 @@
+# [1.4.0-beta.8](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.7...1.4.0-beta.8) (2023-03-18)
+
+
+### Features
+
+* **exareme:** Anova two way integration ([008da61](https://gitlab.com/sibmip/gateway/commit/008da61a8c72edbfc1608de34f62739d239ffe3c))
+
 # [1.4.0-beta.7](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.6...1.4.0-beta.7) (2023-03-11)
 
 
