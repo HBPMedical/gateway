@@ -1,3 +1,10 @@
+# [1.4.0-beta.9](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.8...1.4.0-beta.9) (2023-03-18)
+
+
+### Bug Fixes
+
+* **exareme:** Two way anova handler issue ([c21bdea](https://gitlab.com/sibmip/gateway/commit/c21bdea70ea64864d81c53040dbe27e801c17721))
+
 # [1.4.0-beta.8](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.7...1.4.0-beta.8) (2023-03-18)
 
 
