@@ -1,3 +1,16 @@
+# [1.4.0-rc.7](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.6...1.4.0-rc.7) (2023-03-18)
+
+
+### Bug Fixes
+
+* **exareme:** Issue with Linear reg cv result ([35a2ec4](https://gitlab.com/sibmip/gateway/commit/35a2ec4146c038552159bd0847ec0be2384322f6))
+* **exareme:** Two way anova handler issue ([c21bdea](https://gitlab.com/sibmip/gateway/commit/c21bdea70ea64864d81c53040dbe27e801c17721))
+
+
+### Features
+
+* **exareme:** Anova two way integration ([008da61](https://gitlab.com/sibmip/gateway/commit/008da61a8c72edbfc1608de34f62739d239ffe3c))
+
 # [1.4.0-rc.6](https://gitlab.com/sibmip/gateway/compare/1.4.0-rc.5...1.4.0-rc.6) (2023-03-18)
 
 
