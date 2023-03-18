@@ -33,21 +33,21 @@ const domain: Domain = {
 const data = [
   {
     terms: [
-      'parkinsonbroadcategory',
       'gender',
-      'parkinsonbroadcategory:gender',
+      'parkinsonbroadcategory',
+      'gender:parkinsonbroadcategory',
       'Residuals',
     ],
     sum_sq: [
-      0.7427619881331298, 0.004764818481136857, 0.008175662839327025,
-      5.6058179597692295,
+      122.2949665988383, 33.327112053403425, 0.8516104180441744,
+      1801.7985931306575,
     ],
-    df: [2, 1, 2, 74],
-    f_stat: [4.902441313320338, 0.06289832636995628, 0.05396171035628005, null],
+    df: [1.0, 2.0, 2.0, 708.0],
+    f_stat: [48.05466975170338, 6.547789365517223, 0.16731619679191115, null],
     f_pvalue: [
-      0.010014025893247736,
-      0.8026673646098741,
-      0.9475056310046991,
+      9.343970042152705e-12,
+      0.0015216347633810745,
+      0.8459655267774153,
       null,
     ],
   },
@@ -67,6 +67,6 @@ describe('Anova 2 way result handler', () => {
 
     expect(exp.results.length).toBeGreaterThanOrEqual(1);
 
-    expect(summaryTable.data[0].length).toEqual(4);
+    expect(summaryTable.data.length).toEqual(4);
   });
 });

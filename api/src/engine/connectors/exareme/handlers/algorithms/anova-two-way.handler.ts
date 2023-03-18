@@ -10,14 +10,14 @@ import BaseHandler from '../base.handler';
 const NUMBER_PRECISION = 4;
 
 export default class AnovaTwoWayHandler extends BaseHandler {
-  public static readonly ALGO_NAME = 'anova_twoway';
+  public static readonly ALGO_NAME = 'anova';
 
   private canHandle(algorithm: string, data: any): boolean {
     return (
-      algorithm === AnovaTwoWayHandler.ALGO_NAME &&
-      !!data &&
-      !!data[0] &&
-      !!data[0]['terms']
+      algorithm.toLowerCase() === AnovaTwoWayHandler.ALGO_NAME &&
+      data &&
+      data[0] &&
+      data[0]['terms']
     );
   }
 
@@ -29,15 +29,13 @@ export default class AnovaTwoWayHandler extends BaseHandler {
         name,
         type: 'string',
       })),
-      data: [
-        data['terms'].map((term: string, index: number) => [
-          variables.find((variable) => variable.id == term)?.label ?? term,
-          data['df'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
-          data['sum_sq'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
-          data['f_stat'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
-          data['f_pvalue'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
-        ]),
-      ],
+      data: data['terms'].map((term: string, index: number) => [
+        variables.find((variable) => variable.id == term)?.label ?? term,
+        data['df'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
+        data['sum_sq'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
+        data['f_stat'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
+        data['f_pvalue'][index]?.toPrecision(NUMBER_PRECISION) ?? '',
+      ]),
     };
   }
 
