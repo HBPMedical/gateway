@@ -13,7 +13,7 @@ const ALGO_NAME = 'linear_regression_cv';
 const lookupDict = {
   dependent_var: 'Dependent variable',
   indep_vars: 'Independent variables',
-  n_obs: 'Number of observations',
+  n_obs: 'Training set sample sizes',
   mean_sq_error: 'Root mean squared error',
   r_squared: 'R-squared',
   mean_abs_error: 'Mean absolute error',
@@ -22,13 +22,14 @@ const lookupDict = {
 export default class LinearRegressionCVHandler extends BaseHandler {
   private getModel(data: any): TableResult | undefined {
     return {
-      name: 'Data points',
+      name: 'Folds',
       tableStyle: TableStyle.DEFAULT,
-      headers: ['', `${lookupDict['n_obs']} (${data['dependent_var']})`].map(
-        (name) => ({ name, type: 'string' }),
-      ),
-      data: data['indep_vars'].map((name: string, i: number) => [
+      headers: ['', lookupDict['n_obs']].map((name) => ({
         name,
+        type: 'string',
+      })),
+      data: data['n_obs'].map((size: string, i: number) => [
+        'Fold ' + (i + 1),
         data['n_obs'][i],
       ]),
     };
