@@ -1,3 +1,10 @@
+# [1.4.0-beta.10](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.9...1.4.0-beta.10) (2023-03-18)
+
+
+### Bug Fixes
+
+* **exareme:** Issue with Linear reg cv result ([35a2ec4](https://gitlab.com/sibmip/gateway/commit/35a2ec4146c038552159bd0847ec0be2384322f6))
+
 # [1.4.0-beta.9](https://gitlab.com/sibmip/gateway/compare/1.4.0-beta.8...1.4.0-beta.9) (2023-03-18)
 
 
