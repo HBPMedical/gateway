@@ -1,3 +1,30 @@
+# [1.4.0](https://gitlab.com/sibmip/gateway/compare/1.3.1...1.4.0) (2023-03-23)
+
+
+### Bug Fixes
+
+* categories bins ([bf750eb](https://gitlab.com/sibmip/gateway/commit/bf750eba2ade5aba2178c67817f9628e9c8f1c7a))
+* cleanup ([edecf44](https://gitlab.com/sibmip/gateway/commit/edecf440a51fcb832f29dd77583a4fae87da989f))
+* enabled LR Cross-Validation, Cast numbers -> strings ([bac2951](https://gitlab.com/sibmip/gateway/commit/bac2951f608076e6863a418d62f1d9ab0b27964f))
+* **exareme2:** Categorical bins ([bb472ec](https://gitlab.com/sibmip/gateway/commit/bb472ec03aefa788c52d062a8362f3fe80b57a84))
+* **exareme2:** debug for histograms ([622d2d7](https://gitlab.com/sibmip/gateway/commit/622d2d7f1bc1d676a423ff6f44e132f6241fc8a4))
+* **Exareme2:** Fixed histogram enumeration casting ([6f2c26b](https://gitlab.com/sibmip/gateway/commit/6f2c26bd01f548796be097a0ebad41c8cf10535b))
+* **Exareme2:** Histograms labels ([fd04921](https://gitlab.com/sibmip/gateway/commit/fd04921e5201a6a944d32dbf214fab3a150f5d20))
+* **exareme2:** lint ([8f5bc14](https://gitlab.com/sibmip/gateway/commit/8f5bc1497ef2b13ed490b9defe1db95d468f47f6))
+* **exareme:** Issue with Linear reg cv result ([35a2ec4](https://gitlab.com/sibmip/gateway/commit/35a2ec4146c038552159bd0847ec0be2384322f6))
+* **exareme:** Type issue on algorithm param (integer) ([9628eda](https://gitlab.com/sibmip/gateway/commit/9628edae7a790b4c997fbfa17d4b9d6f947cd92b)), closes [#75](https://gitlab.com/sibmip/gateway/issues/75)
+* **exareme:** Workaround integer issue ([ce222e9](https://gitlab.com/sibmip/gateway/commit/ce222e9333fad66602aec06d892aedb8c9cd11f2))
+* **issue-71:** Logitistic regression cv matrix ([a51616d](https://gitlab.com/sibmip/gateway/commit/a51616d34830a410fc01baae51349435c1777764))
+* **issue-72:** Pearson correlation algorithm ([b46f0eb](https://gitlab.com/sibmip/gateway/commit/b46f0ebc77e9c9578c199ee9c2a28b0cb5ec4726))
+* linter cleanup ([a07ef93](https://gitlab.com/sibmip/gateway/commit/a07ef936f199ecc90d5c8f321b5e09a1d517fd64))
+
+
+### Features
+
+* **exareme:** Anova two way integration ([008da61](https://gitlab.com/sibmip/gateway/commit/008da61a8c72edbfc1608de34f62739d239ffe3c))
+* Histograms handler ([de0c7c2](https://gitlab.com/sibmip/gateway/commit/de0c7c2fbc6379c2f751192a2e41a5377d92f430))
+* Logistic Regression handler ([e6eb047](https://gitlab.com/sibmip/gateway/commit/e6eb0474491315adf3e91b3a94a0e1f4d196c20d))
+
 ## [1.3.1](https://gitlab.com/sibmip/gateway/compare/1.3.0...1.3.1) (2022-11-22)
 
 
