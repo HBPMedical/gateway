@@ -37,7 +37,7 @@ export const ResultUnion = createUnionType({
       return LineChartResult;
     }
 
-    if (value.barValues) {
+    if (value.barValues || value.barEnumValues) {
       return BarChartResult;
     }
 

@@ -30,10 +30,10 @@ export default class PearsonHandler extends BaseHandler {
         {
             'name': $lookup($dictName, $k),
             'xAxis': {
-                'categories': $v.variables.($lookup($$.lookupVars, $))
+                'categories': $v.variables.($lookup($$.lookupVars, $))[]
             },
             'yAxis': {
-                'categories': $reverse($keys($v.$sift(function($val, $key) {$key ~> /^(?!variables$)/}))).($lookup($$.lookupVars, $))
+                'categories': $reverse($keys($v.$sift(function($val, $key) {$key ~> /^(?!variables$)/}))).($lookup($$.lookupVars, $))[]
             },
             'matrix': $v.$sift(function($val, $key) {$key ~> /^(?!variables$)/}).$each(function($val, $key) {$val})[]
             }

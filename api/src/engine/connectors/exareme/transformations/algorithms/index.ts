@@ -6,10 +6,14 @@ const transformToAlgorithms = jsonata(`
         'integer': 'NumberParameter',
         'real': 'NumberParameter'
     };
+    $dictTypes:= {
+        'int': 'integer'
+    };
     $checkVal:= function($val) { $val ? $val : undefined};
+    $getOrDefault:= function($v, $d) { $v ? $v : $d };
     $excludedParams:= ['centers', 'formula'];
     $includes:= ['ANOVA_ONEWAY','ANOVA','LINEAR_REGRESSION',
-    'LOGISTIC_REGRESSION','TTEST_INDEPENDENT','TTEST_PAIRED',
+    'LOGISTIC_REGRESSION', 'LOGISTIC_REGRESSION_CV','TTEST_INDEPENDENT','TTEST_PAIRED',
     'PEARSON','ID3','KMEANS','NAIVE_BAYES',
     'TTEST_ONESAMPLE','PCA','CALIBRATION_BELT','CART',
     'KAPLAN_MEIER','THREE_C', 'ONE_WAY_ANOVA', 'PEARSON_CORRELATION', 'LINEAR_REGRESSION_CV', 'TTEST_ONESAMPLE', 'PAIRED_TTEST'];
@@ -20,15 +24,17 @@ const transformToAlgorithms = jsonata(`
         $v='true' ? true : ($v='false'? false : undefined)
     )};
     $extract:= function($v) {
-        $v?
-        {
-           "hint": $v.desc,
-           "isRequired": $truthy($checkVal($v.valueNotBlank)),
-           "hasMultiple": $truthy($checkVal($v.valueMultiple)),
-           "allowedTypes": $v.columnValuesIsCategorical = '' and $v.columnValuesSQLType = '' ?
-           undefined : $append($v.columnValuesIsCategorical = '' ?
-           ['nominal'] : [], $truthy($v.columnValuesIsCategorical) ? 'nominal' : $map(($checkVal($v.columnValuesSQLType) ~> $split(',')), $trim))
-       } : undefined
+        (
+            $categorical:=$v.columnValuesIsCategorical;
+            $varTypes:= ($split($getOrDefault($v.columnValuesSQLType, ''), ',')[]) ~> $map($trim) ~> $map(function($value) { $getOrDefault($lookup($dictTypes, $value), $value) });
+            $v?
+            {
+                "hint": $v.desc,
+                "isRequired": $truthy($checkVal($v.valueNotBlank)),
+                "hasMultiple": $truthy($checkVal($v.valueMultiple)),
+                "allowedTypes": $categorical = '' and $v.columnValuesSQLType = '' ? undefined : $append($categorical = '' ? ['nominal'] : [], $truthy($categorical) ? 'nominal' : $varTypes)
+            } : undefined
+        )
     };
 
    $[name in $includes].{

@@ -45,11 +45,16 @@ export const dataToDataset = (data: Entity): Dataset => {
   };
 };
 
+//FIXME: Dirty workaround should be improved
+const lookupTypes = {
+  int: 'integer',
+};
+
 export const dataToVariable = (data: VariableEntity): Variable => {
   return {
     id: data.code,
     label: data.label,
-    type: data.type,
+    type: lookupTypes[data.type] ?? data.type,
     description: data.description,
     enumerations: data.enumerations
       ? data.enumerations.map(dataToCategory)
