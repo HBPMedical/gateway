@@ -1,3 +1,10 @@
+## [1.4.1](https://gitlab.com/sibmip/gateway/compare/1.4.0...1.4.1) (2023-04-08)
+
+
+### Bug Fixes
+
+* **exareme2:** Anova one way missing categories ([cc60ff1](https://gitlab.com/sibmip/gateway/commit/cc60ff142a27e689b797be22e4e7f99186e26350))
+
 # [1.4.0](https://gitlab.com/sibmip/gateway/compare/1.3.1...1.4.0) (2023-03-23)
 
 
