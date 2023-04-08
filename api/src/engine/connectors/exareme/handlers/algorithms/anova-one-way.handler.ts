@@ -130,20 +130,19 @@ export default class AnovaOneWayHandler extends BaseHandler {
     if (variable) result.anova_table.y_label = variable.label ?? variable.id;
     if (coVariate) result.anova_table.x_label = coVariate.label ?? coVariate.id;
 
+    result.categories = {};
+
     if (coVariate && coVariate.enumerations) {
-      result.categories = coVariate.enumerations.reduce((p, e) => {
-        p[e.value] = e.label ?? e.value;
-        return p;
-      }, {});
-    } else {
-      result.categories = result['min_max_per_group']['categories'].reduce(
-        (p: { [x: string]: string }, e: string) => {
-          p[e] = e;
-          return p;
-        },
-        {},
-      );
+      coVariate.enumerations.forEach((cat) => {
+        result.categories[cat.value] = cat.label ?? cat.value;
+      });
     }
+
+    result['min_max_per_group']['categories'].map((cat: string) => {
+      if (!result.categories[cat]) {
+        result.categories[cat] = cat;
+      }
+    });
 
     const summaryTable = this.getSummaryTable(
       result,
