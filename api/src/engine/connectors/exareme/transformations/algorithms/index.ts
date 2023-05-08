@@ -18,7 +18,7 @@ const transformToAlgorithms = jsonata(`
     'TTEST_ONESAMPLE','PCA','CALIBRATION_BELT','CART',
     'KAPLAN_MEIER','THREE_C', 'ONE_WAY_ANOVA', 'PEARSON_CORRELATION', 'LINEAR_REGRESSION_CV', 'TTEST_ONESAMPLE', 'PAIRED_TTEST'];
     $linkedVars:= ['positive_class', 'positive_level', 'negative_level', 'outcome_neg', 'outcome_pos'];
-    $linkedCoVars:= ['referencevalues', 'xlevels'];
+    $linkedCoVars:= ['referencevalues', 'xlevels', 'groupA', 'groupB'];
     $truthy:= function($val) {(
         $v:= $lowercase($val);
         $v='true' ? true : ($v='false'? false : undefined)
