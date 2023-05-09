@@ -21,11 +21,11 @@ const lookupDict = {
 const NUMBER_PRECISION = 4;
 const EXCLUDE_PRECISION = ['n_obs', 'ci_lower', 'ci_upper'];
 
-const isNumberPrecision = (value: any, name: string) => {
+const isANumber = (value: any, name: string) => {
   if (!EXCLUDE_PRECISION.includes(name) && isNumber(value))
-    return value.toPrecision(NUMBER_PRECISION);
+    return true;
 
-  return value;
+  return false;
 };
 
 export default class TtestOnesampleHandler extends BaseHandler {
@@ -63,7 +63,7 @@ export default class TtestOnesampleHandler extends BaseHandler {
         .filter((name) => data[name] !== undefined)
         .map((name) => [
           lookupDict[name],
-          isNumberPrecision(data[name], name)
+          isANumber(data[name], name)
             ? data[name].toPrecision(NUMBER_PRECISION)
             : data[name],
         ]),
@@ -79,6 +79,7 @@ export default class TtestOnesampleHandler extends BaseHandler {
     const extData = data[0];
 
     const tableModel = this.getTable(extData);
+    // console.log(`tableModel: ${JSON.stringify(tableModel, null, 2)}`)
 
     if (tableModel) experiment.results.push(tableModel);
   }
