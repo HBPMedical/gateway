@@ -1,3 +1,10 @@
+# [1.5.0-rc.2](https://gitlab.com/sibmip/gateway/compare/1.5.0-rc.1...1.5.0-rc.2) (2023-05-09)
+
+
+### Bug Fixes
+
+* handle text value -Infinity ([3f35b47](https://gitlab.com/sibmip/gateway/commit/3f35b476930b7677ca227ccdb6359a23b06688a2))
+
 # [1.5.0-rc.1](https://gitlab.com/sibmip/gateway/compare/1.4.1...1.5.0-rc.1) (2023-05-08)
 
 
