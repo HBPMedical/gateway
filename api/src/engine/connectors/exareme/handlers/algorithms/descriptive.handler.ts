@@ -122,7 +122,12 @@ $fn := function($o, $prefix) {
     return result;
   }
 
-  static readonly descriptiveToTable = (stats: Stat[]): TableResult[] => {
+  static lookup(variable: string, domain: Domain) {
+    return domain.variables
+      .find(lookupVariable => lookupVariable.id === variable)?.label || variable
+  }
+
+  static readonly descriptiveToTable = (stats: Stat[], domain: Domain): TableResult[] => {
     const datasets: string[] = Array.from(new Set(stats.map((d) => d.dataset)));
     const variables: string[] = Array.from(
       new Set(stats.map((d) => d.variable)),
@@ -141,7 +146,7 @@ $fn := function($o, $prefix) {
 
       return (
         (notEnoughData && [[variable, ...data('num_total')]]) || [
-          [variable, ...data('num_total')],
+          [this.lookup(variable, domain), ...data('num_total')],
           ['Datapoints', ...data('num_dtps')],
           ['NA', ...data('num_na')],
           ...(modalities.length > 0
@@ -173,14 +178,14 @@ $fn := function($o, $prefix) {
     }));
   };
 
-  descriptiveDataToTableResult2(data: ResultExperiment): GroupsResult {
+  descriptiveDataToTableResult2(data: ResultExperiment, domain: Domain): GroupsResult {
     const result = new GroupsResult();
 
     result.groups = [
       new GroupResult({
         name: 'Variables',
         description: 'Descriptive statistics for the variables of interest.',
-        results: DescriptiveHandler.descriptiveToTable(data['variable_based']),
+        results: DescriptiveHandler.descriptiveToTable(data['variable_based'], domain),
       }),
     ];
 
@@ -189,7 +194,7 @@ $fn := function($o, $prefix) {
         name: 'Model',
         description:
           'Intersection table for the variables of interest as it appears in the experiment.',
-        results: DescriptiveHandler.descriptiveToTable(data['model_based']),
+        results: DescriptiveHandler.descriptiveToTable(data['model_based'], domain),
       }),
     );
 
@@ -213,7 +218,7 @@ $fn := function($o, $prefix) {
           .forEach((input) => exp.results.push(input));
       else
         inputs
-          .map((input) => this.descriptiveDataToTableResult2(input))
+          .map((input) => this.descriptiveDataToTableResult2(input, domain))
           .forEach((input) => exp.results.push(input));
     }
   }

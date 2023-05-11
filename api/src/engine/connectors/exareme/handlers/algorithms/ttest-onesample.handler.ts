@@ -22,8 +22,7 @@ const NUMBER_PRECISION = 4;
 const EXCLUDE_PRECISION = ['n_obs', 'ci_lower', 'ci_upper'];
 
 const isANumber = (value: any, name: string) => {
-  if (!EXCLUDE_PRECISION.includes(name) && isNumber(value))
-    return true;
+  if (!EXCLUDE_PRECISION.includes(name) && isNumber(value)) return true;
 
   return false;
 };
