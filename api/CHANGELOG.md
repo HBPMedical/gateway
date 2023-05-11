@@ -1,3 +1,17 @@
+# [1.5.0](https://gitlab.com/sibmip/gateway/compare/1.4.1...1.5.0) (2023-05-11)
+
+
+### Bug Fixes
+
+* handle text value -Infinity ([3f35b47](https://gitlab.com/sibmip/gateway/commit/3f35b476930b7677ca227ccdb6359a23b06688a2))
+* Upper 59% -> 95% ([2909f00](https://gitlab.com/sibmip/gateway/commit/2909f004c8961fd41e759358d79756f8dc954602))
+* variable labels for descriptives stats ([0602577](https://gitlab.com/sibmip/gateway/commit/0602577042f95328e0ee5928fdcdbcab82ec2ec9))
+
+
+### Features
+
+* added filter for TTest-independent ([ca70a80](https://gitlab.com/sibmip/gateway/commit/ca70a8026a49030a1d64e553634d1582ef007048))
+
 ## [1.4.1](https://gitlab.com/sibmip/gateway/compare/1.4.0...1.4.1) (2023-04-08)
 
 
