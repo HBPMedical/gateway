@@ -123,11 +123,16 @@ $fn := function($o, $prefix) {
   }
 
   static lookup(variable: string, domain: Domain) {
-    return domain.variables
-      .find(lookupVariable => lookupVariable.id === variable)?.label || variable
+    return (
+      domain.variables.find((lookupVariable) => lookupVariable.id === variable)
+        ?.label || variable
+    );
   }
 
-  static readonly descriptiveToTable = (stats: Stat[], domain: Domain): TableResult[] => {
+  static readonly descriptiveToTable = (
+    stats: Stat[],
+    domain: Domain,
+  ): TableResult[] => {
     const datasets: string[] = Array.from(new Set(stats.map((d) => d.dataset)));
     const variables: string[] = Array.from(
       new Set(stats.map((d) => d.variable)),
@@ -178,14 +183,20 @@ $fn := function($o, $prefix) {
     }));
   };
 
-  descriptiveDataToTableResult2(data: ResultExperiment, domain: Domain): GroupsResult {
+  descriptiveDataToTableResult2(
+    data: ResultExperiment,
+    domain: Domain,
+  ): GroupsResult {
     const result = new GroupsResult();
 
     result.groups = [
       new GroupResult({
         name: 'Variables',
         description: 'Descriptive statistics for the variables of interest.',
-        results: DescriptiveHandler.descriptiveToTable(data['variable_based'], domain),
+        results: DescriptiveHandler.descriptiveToTable(
+          data['variable_based'],
+          domain,
+        ),
       }),
     ];
 
@@ -194,7 +205,10 @@ $fn := function($o, $prefix) {
         name: 'Model',
         description:
           'Intersection table for the variables of interest as it appears in the experiment.',
-        results: DescriptiveHandler.descriptiveToTable(data['model_based'], domain),
+        results: DescriptiveHandler.descriptiveToTable(
+          data['model_based'],
+          domain,
+        ),
       }),
     );
 
