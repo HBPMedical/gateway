@@ -18,7 +18,7 @@ const lookupDict = {
   z_scores: 'z-scores',
   pvalues: 'P{>|z|}',
   lower_ci: 'Lower 95% c.i.',
-  upper_ci: 'Upper 59% c.i.',
+  upper_ci: 'Upper 95% c.i.',
   r_squared_mcf: 'McFadden R^2',
   r_squared_cs: 'Cox-Snell R^2',
   ll0: 'log(L) of null-model',
