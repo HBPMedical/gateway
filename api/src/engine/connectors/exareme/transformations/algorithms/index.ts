@@ -18,7 +18,7 @@ const transformToAlgorithms = jsonata(`
     'TTEST_ONESAMPLE','PCA','CALIBRATION_BELT','CART',
     'KAPLAN_MEIER','THREE_C', 'ONE_WAY_ANOVA', 'PEARSON_CORRELATION', 'LINEAR_REGRESSION_CV', 'TTEST_ONESAMPLE', 'PAIRED_TTEST'];
     $linkedVars:= ['positive_class', 'positive_level', 'negative_level', 'outcome_neg', 'outcome_pos'];
-    $linkedCoVars:= ['referencevalues', 'xlevels', 'groupA', 'groupB'];
+    $linkedCoVars:= ['referencevalues', 'xlevels', 'groupA', 'groupB', 'visit1', 'visit2'];
     $truthy:= function($val) {(
         $v:= $lowercase($val);
         $v='true' ? true : ($v='false'? false : undefined)
@@ -58,6 +58,20 @@ const transformToAlgorithms = jsonata(`
            "max": $checkVal(valueMax),
            "allowedValues":  $checkVal(valueEnumerations).{'value':$, 'label': $}[],
            "linkedTo": (name in $linkedVars) ? "VARIABLE" : ((name in $linkedCoVars) ? "COVARIABLE" : undefined)
+       }[],
+       "preprocessing": preprocessing[$checkVal(name)].{
+            "name": name,
+            "label": label,
+            "hint": $checkVal(desc),
+            "parameters": parameters.{
+                "__typename": $lookup($dict, (valueType ? valueType : 'null')),
+                "name": name,
+                "label": label,
+                "hint":  $checkVal(desc),
+                "isRequired": $truthy(valueNotBlank),
+                "hasMultiple": $truthy(valueMultiple),
+                "allowedValues": (name="strategies") ? ['first', 'second', 'diff'].{'value':$, 'label': $}[] : $checkVal(valueEnumerations).{'value':$, 'label': $}[]
+           }[]      
        }[]
    }[]
 )

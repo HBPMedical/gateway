@@ -357,9 +357,19 @@ type VariableParameter {
   allowedTypes: [String!]
 }
 
+type AlgorithmPreprocessing {
+  name: String
+  label: String
+
+  """Small hint (description) for the end user"""
+  hint: String
+  parameters: [BaseParameter!]
+}
+
 type Algorithm {
   id: String!
   parameters: [BaseParameter!]
+  preprocessing: [AlgorithmPreprocessing!]
   variable: VariableParameter!
   coVariable: VariableParameter
   hasFormula: Boolean
@@ -433,12 +443,18 @@ input ExperimentCreateInput {
 input AlgorithmInput {
   id: String!
   parameters: [AlgorithmParamInput!] = []
+  preprocessing: [AlgorithmPreprocessingInput!] = []
   type: String
 }
 
 input AlgorithmParamInput {
   id: String!
   value: String!
+}
+
+input AlgorithmPreprocessingInput {
+  name: String!
+  parameters: [AlgorithmParamInput!] = []
 }
 
 input FormulaTransformation {

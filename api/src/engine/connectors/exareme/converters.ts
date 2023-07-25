@@ -16,6 +16,29 @@ import { ExperimentData } from './interfaces/experiment/experiment.interface';
 import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import { transformToExperiment } from './transformations';
+import { AlgorithmPreprocessingInput } from 'src/experiments/models/input/algorithm-preprocessing.input';
+import e from 'express';
+
+interface DataObject {
+  [key: string]: string | DataObject | DataObject[]
+}
+
+const transformPreprocessingInputToData = (inputData: AlgorithmPreprocessingInput): DataObject => {
+
+  const { name, parameters } = inputData;
+  const transformedData: DataObject = { strategies: {} };
+
+  parameters.forEach((parameter) => {
+    const { id, value } = parameter
+    if (id === 'visit1' || id === 'visit2') {
+      transformedData[id] = value
+    } else {
+      transformedData['strategies'][id] = value
+    }
+  });
+
+  return { [name]: transformedData };
+};
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -88,11 +111,11 @@ const getFormula = (data: ExperimentCreateInput) => {
 
   return formula
     ? [
-        {
-          name: 'formula',
-          value: JSON.stringify(formula),
-        },
-      ]
+      {
+        name: 'formula',
+        value: JSON.stringify(formula),
+      },
+    ]
     : [];
 };
 
@@ -152,6 +175,7 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
         },
         ...getFormula(data),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
+      preprocessing: data.algorithm.preprocessing.map(transformPreprocessingInputToData),
       type: data.algorithm.type ?? 'string',
       name: data.algorithm.id,
     },

@@ -3,8 +3,9 @@ import { BaseParameter } from './algorithm/base-parameter.model';
 import { NominalParameter } from './algorithm/nominal-parameter.model';
 import { NumberParameter } from './algorithm/number-parameter.model';
 import { VariableParameter } from './algorithm/variable-parameter.model';
+import { AlgorithmPreprocessing } from './algorithm-preprocessing.model';
 
-type Parameter = BaseParameter | NumberParameter | NominalParameter;
+export type Parameter = BaseParameter | NumberParameter | NominalParameter;
 
 @ObjectType()
 export class Algorithm {
@@ -13,6 +14,9 @@ export class Algorithm {
 
   @Field(() => [BaseParameter], { nullable: true, defaultValue: [] })
   parameters?: Parameter[];
+
+  @Field(() => [AlgorithmPreprocessing], { nullable: true, defaultValue: [] })
+  preprocessing?: AlgorithmPreprocessing[];
 
   @Field(() => VariableParameter)
   variable?: VariableParameter;
