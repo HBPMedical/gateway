@@ -47,8 +47,13 @@ export const transformToExperiment = jsonata(`
             "preprocessing": $toArray(algorithm.preprocessing).({
                 "name": name,
                 "desc": label,
-                "label": value
-            })
+                "label": value,
+                "parameters": $toArray(parameters).({
+                    "name": name,
+                    "label": label,
+                    "value": value
+                })
+            })[]
         }
     }
 )

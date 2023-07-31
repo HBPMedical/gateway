@@ -45,6 +45,16 @@ export class ParamValue {
   @Field()
   value: string;
 }
+
+@ObjectType()
+export class Preprocessing {
+  @Field()
+  name: string;
+
+  @Field(() => [ParamValue], { nullable: true, defaultValue: [] })
+  parameters: ParamValue[];
+}
+
 @ObjectType()
 export class AlgorithmResult {
   @Field()
@@ -52,6 +62,9 @@ export class AlgorithmResult {
 
   @Field(() => [ParamValue], { nullable: true, defaultValue: [] })
   parameters?: ParamValue[];
+
+  @Field(() => [Preprocessing], { nullable: true, defaultValue: [] })
+  preprocessing?: Preprocessing[];
 }
 
 @Entity()

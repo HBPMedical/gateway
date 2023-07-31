@@ -17,34 +17,34 @@ import { Hierarchy } from './interfaces/hierarchy.interface';
 import { VariableEntity } from './interfaces/variable-entity.interface';
 import { transformToExperiment } from './transformations';
 import { AlgorithmPreprocessingInput } from 'src/experiments/models/input/algorithm-preprocessing.input';
-import e from 'express';
-
 
 const algoPreprocessingInputToData = (
   inputData: AlgorithmPreprocessingInput,
 ) => {
-  const parameters = []
+  const parameters = [];
   inputData.parameters.forEach((parameter) => {
-    const { id, value } = parameter
+    const { id, value } = parameter;
 
     if (id === 'visit1' || id === 'visit2') {
-      parameters.push({ name: id, value })
+      parameters.push({ name: id, value });
     } else {
       if (parameters.find((p) => p.name === 'strategies')) {
-        parameters.find((p) => p.name === 'strategies').value[id] = value
+        parameters.find((p) => p.name === 'strategies').value[id] = value;
       } else {
-        parameters.push({ name: 'strategies', value: { [id]: value } })
+        parameters.push({ name: 'strategies', value: { [id]: value } });
       }
     }
-  })
+  });
 
-  parameters.find((p) => p.name === 'strategies').value = JSON.stringify(parameters.find((p) => p.name === 'strategies').value)
+  parameters.find((p) => p.name === 'strategies').value = JSON.stringify(
+    parameters.find((p) => p.name === 'strategies').value,
+  );
 
   return {
     name: 'longitudinal_transformer', //inputData.name,
     parameters,
-  }
-}
+  };
+};
 
 export const dataToGroup = (data: Hierarchy): Group => {
   return {
@@ -117,11 +117,11 @@ const getFormula = (data: ExperimentCreateInput) => {
 
   return formula
     ? [
-      {
-        name: 'formula',
-        value: JSON.stringify(formula),
-      },
-    ]
+        {
+          name: 'formula',
+          value: JSON.stringify(formula),
+        },
+      ]
     : [];
 };
 
@@ -181,7 +181,9 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
         },
         ...getFormula(data),
       ].concat(data.algorithm.parameters.map(algoParamInputToData)),
-      preprocessing: data.algorithm.preprocessing.map(algoPreprocessingInputToData),
+      preprocessing: data.algorithm.preprocessing.map(
+        algoPreprocessingInputToData,
+      ),
       type: data.algorithm.type ?? 'string',
       name: data.algorithm.id,
     },
