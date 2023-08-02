@@ -176,9 +176,15 @@ type ParamValue {
   value: String!
 }
 
+type PreprocessingParamValue {
+  name: String!
+  value: String!
+  values: [ParamValue!]
+}
+
 type Preprocessing {
   name: String!
-  parameters: [ParamValue!]
+  parameters: [PreprocessingParamValue!]
 }
 
 type AlgorithmResult {

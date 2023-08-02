@@ -239,7 +239,27 @@ export const dataToExperiment = (
       extractVariablesFromFilter(JSON.parse(exp.filter));
     }
 
-    exp.filterVariables = Array.from(new Set(allVariables));
+
+    if (exp && exp.algorithm && exp.algorithm.preprocessing) {
+      exp.algorithm.preprocessing = exp.algorithm.preprocessing.map(p => {
+        const parameters = p.parameters?.map(param => {
+          if (param.name === 'strategies') {
+            const values = Object.entries(JSON.parse((param.value as string))).map(([key, value]) => ({
+              name: key,
+              value: value
+            })) as ParamValue[]
+
+            return { name: 'strategies', value: '', values };
+          } else {
+            return param;
+          }
+        });
+
+        p.parameters = parameters;
+
+        return p;
+      });
+    }
 
     return exp;
   } catch (e) {

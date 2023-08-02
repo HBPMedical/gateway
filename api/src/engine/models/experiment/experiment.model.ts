@@ -47,12 +47,18 @@ export class ParamValue {
 }
 
 @ObjectType()
+export class PreprocessingParamValue extends ParamValue {
+  @Field(() => [ParamValue], { nullable: true, defaultValue: [] })
+  values?: ParamValue[];
+}
+
+@ObjectType()
 export class Preprocessing {
   @Field()
   name: string;
 
-  @Field(() => [ParamValue], { nullable: true, defaultValue: [] })
-  parameters: ParamValue[];
+  @Field(() => [PreprocessingParamValue], { nullable: true, defaultValue: [] })
+  parameters: PreprocessingParamValue[];
 }
 
 @ObjectType()
