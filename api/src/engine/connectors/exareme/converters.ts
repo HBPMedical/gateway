@@ -239,26 +239,31 @@ export const dataToExperiment = (
       extractVariablesFromFilter(JSON.parse(exp.filter));
     }
 
+    try {
+      if (exp && exp.algorithm && exp.algorithm.preprocessing) {
+        exp.algorithm.preprocessing = exp.algorithm.preprocessing.map(p => {
+          console.log(JSON.stringify(exp.algorithm.preprocessing, null, 2))
+          const parameters = p.parameters?.map(param => {
+            if (param.name === 'strategies') {
+              const values = Object.entries(JSON.parse((param.value as string))).map(([key, value]) => ({
+                name: key,
+                value: value
+              })) as ParamValue[];
 
-    if (exp && exp.algorithm && exp.algorithm.preprocessing) {
-      exp.algorithm.preprocessing = exp.algorithm.preprocessing.map(p => {
-        const parameters = p.parameters?.map(param => {
-          if (param.name === 'strategies') {
-            const values = Object.entries(JSON.parse((param.value as string))).map(([key, value]) => ({
-              name: key,
-              value: value
-            })) as ParamValue[]
+              return { name: 'strategies', value: '', values };
+            } else {
+              return param;
+            }
+          })
 
-            return { name: 'strategies', value: '', values };
-          } else {
-            return param;
-          }
-        });
+          p.parameters = parameters;
 
-        p.parameters = parameters;
-
-        return p;
-      });
+          return p;
+        })
+      }
+    } catch (error) {
+      logger.error('Error parsing experiment\'s preprocessing', data.uuid);
+      logger.debug(error);
     }
 
     return exp;

@@ -11,6 +11,7 @@ export const transformToExperiment = jsonata(`
     $rp := function($v) {$replace($v, /(\\+|\\*|-)/, ',')};
     $strSafe := function($v) { $type($v) = 'string' ? $v : "" };
     $formula := $eval(algorithm.parameters[name = "formula"].value);
+    $checkVal:= function($val) { $val ? $val : undefined};
 
     ($ ~> | algorithm.parameters | {"name": name ? name : label } |){
         "name": name,
@@ -44,7 +45,7 @@ export const transformToExperiment = jsonata(`
                         "value": value
                     })
                 ),
-            "preprocessing": $toArray(algorithm.preprocessing).({
+            "preprocessing": $toArray(algorithm.preprocessing[$checkVal(name)]).({
                 "name": name,
                 "desc": label,
                 "label": value,

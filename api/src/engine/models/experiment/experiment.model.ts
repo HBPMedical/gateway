@@ -58,7 +58,7 @@ export class Preprocessing {
   name: string;
 
   @Field(() => [PreprocessingParamValue], { nullable: true, defaultValue: [] })
-  parameters: PreprocessingParamValue[];
+  parameters?: PreprocessingParamValue[];
 }
 
 @ObjectType()
