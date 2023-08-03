@@ -111,6 +111,7 @@ describe('ExperimentsService', () => {
         algorithm: {
           id: 'dummyAlgo',
           parameters: [],
+          preprocessing: [],
         },
         datasets: ['dummyDataset'],
         filter: '',
