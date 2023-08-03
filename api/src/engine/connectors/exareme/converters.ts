@@ -5,6 +5,7 @@ import { Domain } from '../../../engine/models/domain.model';
 import {
   Experiment,
   ExperimentStatus,
+  ParamValue,
 } from '../../../engine/models/experiment/experiment.model';
 import { Group } from '../../../engine/models/group.model';
 import { Variable } from '../../../engine/models/variable.model';
@@ -241,28 +242,30 @@ export const dataToExperiment = (
 
     try {
       if (exp && exp.algorithm && exp.algorithm.preprocessing) {
-        exp.algorithm.preprocessing = exp.algorithm.preprocessing.map(p => {
-          console.log(JSON.stringify(exp.algorithm.preprocessing, null, 2))
-          const parameters = p.parameters?.map(param => {
+        exp.algorithm.preprocessing = exp.algorithm.preprocessing.map((p) => {
+          console.log(JSON.stringify(exp.algorithm.preprocessing, null, 2));
+          const parameters = p.parameters?.map((param) => {
             if (param.name === 'strategies') {
-              const values = Object.entries(JSON.parse((param.value as string))).map(([key, value]) => ({
+              const values = Object.entries(
+                JSON.parse(param.value as string),
+              ).map(([key, value]) => ({
                 name: key,
-                value: value
+                value: value,
               })) as ParamValue[];
 
               return { name: 'strategies', value: '', values };
             } else {
               return param;
             }
-          })
+          });
 
           p.parameters = parameters;
 
           return p;
-        })
+        });
       }
     } catch (error) {
-      logger.error('Error parsing experiment\'s preprocessing', data.uuid);
+      logger.error("Error parsing experiment's preprocessing", data.uuid);
       logger.debug(error);
     }
 
