@@ -1,3 +1,16 @@
+# [1.6.0-beta.1](https://gitlab.com/sibmip/gateway/compare/1.5.0...1.6.0-beta.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* Preprocessing output ([1cd977d](https://gitlab.com/sibmip/gateway/commit/1cd977d3dab9fabc54137c1e78d3f961610cf38a))
+* preprocessing parsing to [] ([361ed67](https://gitlab.com/sibmip/gateway/commit/361ed67838f884acf0d62902199d4c8d56c5f1b4))
+
+
+### Features
+
+* Longitudinal data handling ([7768770](https://gitlab.com/sibmip/gateway/commit/77687706964def77b910c6508049530c35f2476a))
+
 # [1.5.0](https://gitlab.com/sibmip/gateway/compare/1.4.1...1.5.0) (2023-05-11)
 
 
