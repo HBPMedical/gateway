@@ -1,3 +1,10 @@
+# [1.6.0-beta.2](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.1...1.6.0-beta.2) (2023-08-04)
+
+
+### Bug Fixes
+
+* removed static name for transformer ([21271e0](https://gitlab.com/sibmip/gateway/commit/21271e0a953db00557e4cd9cd6c9c046cac25b28))
+
 # [1.6.0-beta.1](https://gitlab.com/sibmip/gateway/compare/1.5.0...1.6.0-beta.1) (2023-08-03)
 
 
