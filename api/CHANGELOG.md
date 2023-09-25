@@ -1,3 +1,11 @@
+# [1.6.0-beta.3](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.2...1.6.0-beta.3) (2023-09-25)
+
+
+### Bug Fixes
+
+* grouping_var !== undefined in histograms ([10dac52](https://gitlab.com/sibmip/gateway/commit/10dac52f0aa61052364a87d8ceea560eda574e40))
+* grouping_var !== undefined in histograms ([7378ea1](https://gitlab.com/sibmip/gateway/commit/7378ea14aaa65ec6380432359ff60b52babf516d))
+
 # [1.6.0-beta.2](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.1...1.6.0-beta.2) (2023-08-04)
 
 
