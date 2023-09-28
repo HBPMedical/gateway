@@ -1,3 +1,11 @@
+# [1.6.0-beta.4](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.3...1.6.0-beta.4) (2023-09-28)
+
+
+### Features
+
+* naive bayes draft ([80d2aca](https://gitlab.com/sibmip/gateway/commit/80d2acabdce29ebf51a3bbb4d1aabba62f431074))
+* naivebayes draft ([958cd55](https://gitlab.com/sibmip/gateway/commit/958cd556650d5713f3e1f17508467b711a4b535d))
+
 # [1.6.0-beta.3](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.2...1.6.0-beta.3) (2023-09-25)
 
 
