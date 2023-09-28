@@ -99,7 +99,7 @@ export default class HistogramHandler extends BaseHandler {
     const groupingVars: string[] = Array.from(
       new Set(
         extractedData
-          .filter((d) => d.grouping_var !== null)
+          .filter((d) => d.grouping_var !== null &&  d.grouping_var !== undefined)
           .map((d) => d.grouping_var),
       ),
     );

@@ -23,4 +23,7 @@ export class Domain extends BaseModel {
 
   @Field(() => Group)
   rootGroup: Group;
+
+  @Field({ nullable: true, defaultValue: false })
+  longitudinal?: Boolean;
 }

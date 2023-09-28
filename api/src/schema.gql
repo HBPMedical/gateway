@@ -265,7 +265,6 @@ type Configuration {
 type Dataset {
   id: String!
   label: String
-  isLongitudinal: Boolean
 }
 
 type Group {
@@ -307,6 +306,7 @@ type Domain {
   variables: [Variable!]!
   datasets: [Dataset!]!
   rootGroup: Group!
+  longitudinal: Boolean
 }
 
 type OptionValue {
