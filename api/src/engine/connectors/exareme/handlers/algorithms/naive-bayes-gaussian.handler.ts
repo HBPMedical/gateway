@@ -1,15 +1,8 @@
 import { Domain } from '../../../../models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
-import {
-  LineChartResult,
-  LineResult,
-} from '../../../../models/result/line-chart-result.model';
-
 import { TableResult } from '../../../../models/result/table-result.model';
 import BaseHandler from '../base.handler';
-
-const NUMBER_PRECISION = 4;
 
 const lookupDict = {
   dependent_var: 'Dependent variable',
@@ -52,7 +45,7 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
   }
 
   getConfusionMatrix(data: InputData): HeatMapResult {
-    const matrix:any = data['confusion_matrix'];
+    const matrix: any = data['confusion_matrix'];
 
     return {
       name: 'Confusion matrix',
@@ -75,9 +68,7 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
         name: lookupDict[key],
         type: 'string',
       })),
-      data: Object.keys(data.classification_summary).map(k => [
-        JSON.stringify(data.classification_summary[k]  ),
-      ])
+      data: Object.keys(data.classification_summary).map((k) => []),
       // data: ['row_names'].map((key: any, i: number) => [
       //   key,
       //   ...keys.map((k) => `${data['summary'][k][i]}`),

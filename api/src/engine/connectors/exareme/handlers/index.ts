@@ -17,7 +17,6 @@ import TTestPairedHandler from './algorithms/ttest-paired.handler';
 import CategoricalNaiveBayesHandler from './algorithms/naive-bayes-categorical.handler';
 import GaussianNaiveBayesHandler from './algorithms/naive-bayes-gaussian.handler';
 
-
 const start = new PearsonHandler();
 
 start
