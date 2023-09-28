@@ -71,7 +71,6 @@ export const dataToDataset = (data: Entity): Dataset => {
   return {
     id: data.code,
     label: data.label,
-    isLongitudinal: !!data.code.toLowerCase().includes('longitudinal'),
   };
 };
 
@@ -243,7 +242,6 @@ export const dataToExperiment = (
     try {
       if (exp && exp.algorithm && exp.algorithm.preprocessing) {
         exp.algorithm.preprocessing = exp.algorithm.preprocessing.map((p) => {
-          console.log(JSON.stringify(exp.algorithm.preprocessing, null, 2));
           const parameters = p.parameters?.map((param) => {
             if (param.name === 'strategies') {
               const values = Object.entries(
