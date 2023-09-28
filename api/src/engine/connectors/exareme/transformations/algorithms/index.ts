@@ -16,7 +16,9 @@ const transformToAlgorithms = jsonata(`
     'LOGISTIC_REGRESSION', 'LOGISTIC_REGRESSION_CV','TTEST_INDEPENDENT','TTEST_PAIRED',
     'PEARSON','ID3','KMEANS','NAIVE_BAYES',
     'TTEST_ONESAMPLE','PCA','CALIBRATION_BELT','CART',
-    'KAPLAN_MEIER','THREE_C', 'ONE_WAY_ANOVA', 'PEARSON_CORRELATION', 'LINEAR_REGRESSION_CV', 'TTEST_ONESAMPLE', 'PAIRED_TTEST'];
+    'KAPLAN_MEIER','THREE_C', 'ONE_WAY_ANOVA', 'PEARSON_CORRELATION',
+    'LINEAR_REGRESSION_CV', 'TTEST_ONESAMPLE',
+    'PAIRED_TTEST', 'NAIVE_BAYES_GAUSSIAN_CV', 'NAIVE_BAYES_CATEGORICAL_CV'];
     $linkedVars:= ['positive_class', 'positive_level', 'negative_level', 'outcome_neg', 'outcome_pos'];
     $linkedCoVars:= ['referencevalues', 'xlevels', 'groupA', 'groupB', 'visit1', 'visit2'];
     $truthy:= function($val) {(

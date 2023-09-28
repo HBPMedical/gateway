@@ -71,7 +71,6 @@ export const dataToDataset = (data: Entity): Dataset => {
   return {
     id: data.code,
     label: data.label,
-    isLongitudinal: !!data.code.toLowerCase().includes('longitudinal'),
   };
 };
 
