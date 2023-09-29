@@ -1,3 +1,16 @@
+# [1.6.0-beta.5](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.4...1.6.0-beta.5) (2023-09-29)
+
+
+### Bug Fixes
+
+* layout ([0e1ff81](https://gitlab.com/sibmip/gateway/commit/0e1ff8198555123b854fa825f3de6c3e62e0e38d))
+* longitudinal property ([0f70e34](https://gitlab.com/sibmip/gateway/commit/0f70e348bc3888c8be3e8252e5b4a50754ddfa88))
+
+
+### Features
+
+* [domain].longitudinal <.longitudinal- [dataset] ([f1e7235](https://gitlab.com/sibmip/gateway/commit/f1e72358324adffb56e3604d34c5cdc30bfee2cf))
+
 # [1.6.0-beta.4](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.3...1.6.0-beta.4) (2023-09-28)
 
 
