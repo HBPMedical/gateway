@@ -151,6 +151,7 @@ export default class ExaremeConnector implements Connector {
 
     const domains = await this.engineService.getDomains(request);
 
+    // console.log(JSON.stringify(resultAPI.data, null, 2));
     return dataToExperiment(resultAPI.data, ExaremeConnector.logger, domains);
   }
 
@@ -210,6 +211,7 @@ export default class ExaremeConnector implements Connector {
             variables: d.metadataHierarchy
               ? this.flattenVariables(d.metadataHierarchy, groups)
               : [],
+            longitudinal: d.longitudinal,
           };
         }) ?? []
       );
