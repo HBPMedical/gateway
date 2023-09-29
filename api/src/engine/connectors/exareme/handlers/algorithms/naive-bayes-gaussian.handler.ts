@@ -4,27 +4,7 @@ import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import { TableResult } from '../../../../models/result/table-result.model';
 import BaseHandler from '../base.handler';
 
-const lookupDict = {
-  dependent_var: 'Dependent variable',
-  indep_vars: 'Independent variables',
-  n_obs: 'Number of observations',
-  fscore: 'F-score',
-  accuracy: 'Accuracy',
-  precision: 'Precision',
-  recall: 'Recall',
-  average: 'Average',
-  stdev: 'Standard deviation',
-  blank: '',
-};
-
-const keys = ['n_obs', 'accuracy', 'recall', 'precision', 'fscore'];
-
-type LineCurve = {
-  name: string;
-  tpr: number[];
-  fpr: number[];
-  auc: number;
-};
+const keys = ['accuracy', 'precision', 'recall', 'fscore'];
 
 type InputData = {
   dependent_var: string;
@@ -37,7 +17,6 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
   public static readonly ALGO_NAME = 'naive_bayes_gaussian_cv';
 
   private canHandle(experiment: Experiment, data: unknown): boolean {
-    console.log(experiment.algorithm.name.toLowerCase());
     return (
       experiment.algorithm.name.toLowerCase() ===
       NaiveBayesGaussianCVHandler.ALGO_NAME
@@ -61,18 +40,41 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
     };
   }
 
+  round = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
+
   getClassificationSummary(data: InputData): TableResult {
+    const headers = Object.keys(data.classification_summary);
+    const subheaders = Object.keys(data.classification_summary.accuracy);
+    const fullHeaders = keys.map((key) => [subheaders]).flatMap((x) => x);
+
+    const firstColumnKeys = subheaders
+      .filter((_, i) => i === 0)
+      .map((key) => Object.keys(data.classification_summary.accuracy[key]))
+      .flatMap((x) => x);
+
     return {
-      name: 'Summary',
-      headers: ['blank', ...keys].map((key) => ({
-        name: lookupDict[key],
+      name: 'Classification summary',
+      headers: ['Fold', ...fullHeaders, 'n_obs'].map((key, i) => ({
+        name: i > 0 || key !== 'n_obs' ? `${headers[i - 1]}: ${key}` : `${key}`,
         type: 'string',
       })),
-      data: Object.keys(data.classification_summary).map((k) => []),
-      // data: ['row_names'].map((key: any, i: number) => [
-      //   key,
-      //   ...keys.map((k) => `${data['summary'][k][i]}`),
-      // ]),
+      data: firstColumnKeys.map((k, i) => [
+        k,
+        ...[...fullHeaders, ['n_obs']].map((h, j) => {
+          const headerKey = headers[j];
+          let n;
+
+          if (headerKey !== 'n_obs') {
+            n = h.map((h) =>
+              this.round(data.classification_summary[headerKey][h][k]),
+            );
+          } else {
+            n = h.map((h) => data.classification_summary['n_obs'][k]);
+          }
+
+          return `${n}`;
+        }),
+      ]),
     };
   }
 
@@ -93,7 +95,6 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
     });
 
     const improvedData = JSON.parse(jsonData);
-    console.log(improvedData);
 
     const results = [
       this.getConfusionMatrix(improvedData),
