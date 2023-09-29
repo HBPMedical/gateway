@@ -4,7 +4,7 @@ import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
 import { TableResult } from '../../../../models/result/table-result.model';
 import BaseHandler from '../base.handler';
 
-const keys = ['accuracy', 'precision', 'recall',  'fscore'  ];
+const keys = ['accuracy', 'precision', 'recall', 'fscore'];
 
 type InputData = {
   dependent_var: string;
@@ -40,38 +40,41 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
     };
   }
 
-  round = (n) => Math.round((n + Number.EPSILON) * 100) / 100
+  round = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
   getClassificationSummary(data: InputData): TableResult {
     const headers = Object.keys(data.classification_summary);
-    const subheaders = Object.keys(data.classification_summary.accuracy)
-    const fullHeaders = keys.map(key => [subheaders]).flatMap(x => x);
+    const subheaders = Object.keys(data.classification_summary.accuracy);
+    const fullHeaders = keys.map((key) => [subheaders]).flatMap((x) => x);
 
-    const firstColumnKeys = subheaders.filter((_, i) => i === 0).map(key => Object.keys(data.classification_summary.accuracy[key])).flatMap(x => x);
+    const firstColumnKeys = subheaders
+      .filter((_, i) => i === 0)
+      .map((key) => Object.keys(data.classification_summary.accuracy[key]))
+      .flatMap((x) => x);
 
     return {
       name: 'Classification summary',
       headers: ['Fold', ...fullHeaders, 'n_obs'].map((key, i) => ({
-        name: i > 0 ? `${headers[i - 1]}: ${key}`: `${key}`,
+        name: i > 0 || key !== 'n_obs' ? `${headers[i - 1]}: ${key}` : `${key}`,
         type: 'string',
       })),
-      data: firstColumnKeys.map((k,i)=> ([
-        k, 
+      data: firstColumnKeys.map((k, i) => [
+        k,
         ...[...fullHeaders, ['n_obs']].map((h, j) => {
           const headerKey = headers[j];
           let n;
 
           if (headerKey !== 'n_obs') {
-            n = h.map((h) => this.round(data.classification_summary[headerKey][h][k]))
-          }
-          else {
-            n = h.map((h) => data.classification_summary['n_obs'][k])
+            n = h.map((h) =>
+              this.round(data.classification_summary[headerKey][h][k]),
+            );
+          } else {
+            n = h.map((h) => data.classification_summary['n_obs'][k]);
           }
 
-          return  `${n}`
-        }
-        ),
-      ])),
+          return `${n}`;
+        }),
+      ]),
     };
   }
 
