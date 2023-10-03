@@ -46,12 +46,14 @@ type TableResult {
   name: String!
   data: [[String!]!]!
   headers: [Header!]!
+  childHeaders: [Header!]
   tableStyle: TableStyle
 }
 
 enum TableStyle {
   DEFAULT
-  NORMAL
+  STATISTICAL
+  HIERARCHICAL
 }
 
 type RawResult {
@@ -149,7 +151,8 @@ type PointCI {
 }
 
 type Header {
-  name: String!
+  name: String
+  names: [String!]
   type: String!
 }
 

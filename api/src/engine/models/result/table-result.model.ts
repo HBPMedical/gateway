@@ -4,7 +4,8 @@ import { Result } from './common/result.model';
 
 export enum TableStyle {
   DEFAULT,
-  NORMAL,
+  STATISTICAL,
+  HIERARCHICAL,
 }
 
 registerEnumType(TableStyle, {
@@ -21,6 +22,9 @@ export class TableResult extends Result {
 
   @Field(() => [Header])
   headers: Header[];
+
+  @Field(() => [Header], { nullable: true })
+  childHeaders?: Header[];
 
   @Field(() => TableStyle, { defaultValue: TableStyle.DEFAULT, nullable: true })
   tableStyle?: TableStyle;
