@@ -1,3 +1,10 @@
+# [1.6.0-beta.7](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.6...1.6.0-beta.7) (2023-10-03)
+
+
+### Bug Fixes
+
+* removed longitudinal_transformer static string ([cdeb76b](https://gitlab.com/sibmip/gateway/commit/cdeb76b819185478b913bca08db5cd6b170526c5))
+
 # [1.6.0-beta.6](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.5...1.6.0-beta.6) (2023-10-03)
 
 
