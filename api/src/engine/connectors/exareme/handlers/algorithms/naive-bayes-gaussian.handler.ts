@@ -1,10 +1,24 @@
 import { Domain } from '../../../../models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
 import { HeatMapResult } from '../../../../models/result/heat-map-result.model';
-import { TableResult } from '../../../../models/result/table-result.model';
+import {
+  TableResult,
+  TableStyle,
+} from '../../../../models/result/table-result.model';
 import BaseHandler from '../base.handler';
 
-const keys = ['accuracy', 'precision', 'recall', 'fscore'];
+const childDataKeys = ['accuracy', 'precision', 'recall', 'fscore'];
+const headerKeys = ['fold', ...childDataKeys, 'n_obs'];
+
+const lookupDict = {
+  n_obs: 'Number of observations',
+  fscore: 'F-score',
+  accuracy: 'Accuracy',
+  precision: 'Precision',
+  recall: 'Recall',
+  average: 'Average',
+  fold: 'Fold',
+};
 
 type InputData = {
   dependent_var: string;
@@ -43,10 +57,7 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
   round = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
   getClassificationSummary(data: InputData): TableResult {
-    const headers = Object.keys(data.classification_summary);
     const subheaders = Object.keys(data.classification_summary.accuracy);
-    const fullHeaders = keys.map((key) => [subheaders]).flatMap((x) => x);
-
     const firstColumnKeys = subheaders
       .filter((_, i) => i === 0)
       .map((key) => Object.keys(data.classification_summary.accuracy[key]))
@@ -54,26 +65,30 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
 
     return {
       name: 'Classification summary',
-      headers: ['Fold', ...fullHeaders, 'n_obs'].map((key, i) => ({
-        name: i > 0 || key !== 'n_obs' ? `${headers[i - 1]}: ${key}` : `${key}`,
+      tableStyle: TableStyle.HIERARCHICAL,
+      headers: headerKeys.map((key) => ({
+        name: lookupDict[key] || key,
         type: 'string',
       })),
+      childHeaders: ['', ...childDataKeys.map((k) => subheaders), ''].map(
+        (key) => ({
+          name: (!Array.isArray(key) && key) || '',
+          names: (Array.isArray(key) && key) || undefined,
+          type: 'string',
+        }),
+      ),
       data: firstColumnKeys.map((k, i) => [
         k,
-        ...[...fullHeaders, ['n_obs']].map((h, j) => {
-          const headerKey = headers[j];
-          let n;
+        ...childDataKeys.reduce((acc, current) => {
+          const rows = subheaders
+            .map((s) => {
+              return data.classification_summary[current][s][k];
+            })
+            .flat();
 
-          if (headerKey !== 'n_obs') {
-            n = h.map((h) =>
-              this.round(data.classification_summary[headerKey][h][k]),
-            );
-          } else {
-            n = h.map((h) => data.classification_summary['n_obs'][k]);
-          }
-
-          return `${n}`;
-        }),
+          return [...acc, ...rows];
+        }, []),
+        data.classification_summary['n_obs'][k] || '',
       ]),
     };
   }

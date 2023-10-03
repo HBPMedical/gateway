@@ -5,7 +5,7 @@ import NaiveBayesGaussianCVHandler from './naive-bayes-gaussian.handler';
 export default class NaiveBayesCategoricalCVHandler extends NaiveBayesGaussianCVHandler {
   public static readonly ALGO_NAMEE = 'naive_bayes_categorical_cv';
 
-  private canHandlee(experiment: Experiment, data: unknown): boolean {
+  private canHandle2(experiment: Experiment, data: unknown): boolean {
     return (
       experiment.algorithm.name.toLowerCase() ===
       NaiveBayesCategoricalCVHandler.ALGO_NAMEE
@@ -13,7 +13,7 @@ export default class NaiveBayesCategoricalCVHandler extends NaiveBayesGaussianCV
   }
 
   handle(experiment: Experiment, data: unknown, domain?: Domain): void {
-    if (!this.canHandlee(experiment, data))
+    if (!this.canHandle2(experiment, data))
       return super.handle(experiment, data, domain);
 
     const extractedData = data[0];
