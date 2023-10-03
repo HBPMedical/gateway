@@ -42,7 +42,7 @@ const algoPreprocessingInputToData = (
   );
 
   return {
-    name: 'longitudinal_transformer', //inputData.name,
+    name: inputData.name,
     parameters,
   };
 };
