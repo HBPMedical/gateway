@@ -1,3 +1,10 @@
+# [1.6.0-beta.6](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.5...1.6.0-beta.6) (2023-10-03)
+
+
+### Features
+
+* reworked hierarchical table ([d2b61c0](https://gitlab.com/sibmip/gateway/commit/d2b61c06fa81666bec613980b0e495c22fcfc9aa))
+
 # [1.6.0-beta.5](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.4...1.6.0-beta.5) (2023-09-29)
 
 
