@@ -160,6 +160,7 @@ describe('Algorithms', () => {
     ];
 
     const algorithms: Algorithm[] = transformToAlgorithms.evaluate(data);
+    console.log(data)
     const kaplan = algorithms[0];
 
     it('should produce one algorithm', () => {

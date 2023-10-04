@@ -51,18 +51,18 @@ export default class DescriptiveHandler extends BaseHandler {
           ['NA', ...data('num_na')],
           ...(modalities.length > 0
             ? modalities.map((m) => [
-                m,
-                ...stat.map((d) => d.data.counts[m] || ''),
-              ])
+              m,
+              ...stat.map((d) => d.data.counts[m] || ''),
+            ])
             : [
-                ['SE', ...data('std')],
-                ['mean', ...data('mean')],
-                ['min', ...data('num_dtps')],
-                ['Q1', ...data('q1')],
-                ['Q2', ...data('q2')],
-                ['Q3', ...data('q3')],
-                ['max', ...data('max')],
-              ]),
+              ['SE', ...data('std')],
+              ['mean', ...data('mean')],
+              ['min', ...data('num_dtps')],
+              ['Q1', ...data('q1')],
+              ['Q2', ...data('q2')],
+              ['Q3', ...data('q3')],
+              ['max', ...data('max')],
+            ]),
         ]
       );
     };
