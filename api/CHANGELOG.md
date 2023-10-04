@@ -1,3 +1,10 @@
+# [1.6.0-beta.9](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.8...1.6.0-beta.9) (2023-10-04)
+
+
+### Features
+
+* kmeans 2d + table handler ([8e82680](https://gitlab.com/sibmip/gateway/commit/8e82680f1c6569f7d95a8a0d9f928bba439186d1))
+
 # [1.6.0-beta.8](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.7...1.6.0-beta.8) (2023-10-04)
 
 
