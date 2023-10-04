@@ -6,7 +6,7 @@ describe('Algorithms', () => {
   describe('when data is correct (Dummy Kaplan)', () => {
     const data = [
       {
-        name: 'KAPLAN_MEIER',
+        name: 'kaplan_meier',
         desc: 'Kaplan-Meier Estimator for the Survival Function',
         label: 'Kaplan-Meier Estimator',
         type: 'python_local_global',
@@ -218,7 +218,7 @@ describe('Algorithms', () => {
   describe('when data does not contains any parameters', () => {
     const data = [
       {
-        name: 'KAPLAN_MEIER',
+        name: 'kaplan_meier',
         desc: 'Kaplan-Meier Estimator for the Survival Function',
         label: 'Kaplan-Meier Estimator',
         type: 'python_local_global',

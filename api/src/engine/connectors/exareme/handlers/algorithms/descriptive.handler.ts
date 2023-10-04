@@ -1,4 +1,3 @@
-import * as jsonata from 'jsonata'; // old import style needed due to 'export = jsonata'
 import { TableResult } from 'src/engine/models/result/table-result.model';
 import { Domain } from '../../../../models/domain.model';
 import { Experiment } from '../../../../models/experiment/experiment.model';
@@ -16,111 +15,7 @@ interface Stat {
 }
 
 export default class DescriptiveHandler extends BaseHandler {
-  public static readonly ALGO_NAME = 'DESCRIPTIVE_STATS';
-
-  private static readonly headerDescriptive = `
-$fnum := function($x) { $type($x) = 'number' ? $round($number($x),3) : $x };
-
-$e := function($x, $r) {($x != null) ? $fnum($x) : ($r ? $r : '')};
-
-$fn := function($o, $prefix) {
-    $type($o) = 'object' ? 
-    $each($o, function($v, $k) {(
-        $type($v) = 'object' ? { $k: $v.count & ' (' & $v.percentage & '%)' } : {
-            $k: $v
-        }
-    )}) ~> $merge()
-    : {}
-};`;
-
-  static readonly descriptiveModelToTables = jsonata(`
-(   
-    ${this.headerDescriptive}
-    
-    $vars := $count($keys(data.model.*.data))-1;
-    $varNames := $keys(data.model.*.data);
-    $model := data.model;
-
-    [[0..$vars].(
-        $i := $;
-        $varName := $varNames[$i];
-        $ks := $keys($model.*.data.*[$i][$type($) = 'object']);
-        {
-            'name': $varName,
-            'tableStyle': 1,
-            'headers': $append("", $keys($$.data.model)).{
-                'name': $,
-                'type': 'string'
-            },
-            'data': [
-                [$varName, $model.*.($e(num_total))],
-                ['Datapoints', $model.*.($e(num_datapoints))],
-                ['Nulls', $model.*.($e(num_nulls))],
-                ($lookup($model.*.data, $varName).($fn($)) ~> $reduce(function($a, $b) {
-                    $map($ks, function($k) {(
-                        {
-                            $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
-                        }
-                    )}) ~> $merge()
-                })).$each(function($v, $k) {$append($k,$v)})[]
-            ]
-        }
-    )]  
-)`);
-
-  static readonly descriptiveSingleToTables = jsonata(`
-( 
-    ${this.headerDescriptive}
-
-    data.[
-        $.single.*@$p#$i.(
-            $ks := $keys($p.*.data[$type($) = 'object']);
-            {
-            'name': $keys(%)[$i],
-            'tableStyle': 1,
-            'headers': $append("", $keys(*)).{
-                'name': $,
-                'type': 'string'
-            },
-            'data' : [
-                [$keys(%)[$i], $p.*.($e(num_total))],
-                ['Datapoints', $p.*.($e(num_datapoints))],
-                ['Nulls', $p.*.($e(num_nulls))],
-                ($p.*.data.($fn($)) ~> $reduce(function($a, $b) {
-                    $map($ks, function($k) {(
-                        {
-                            $k : [$e($lookup($a,$k), "No data"), $e($lookup($b,$k), "No data")]
-                        }
-                    )}) ~> $merge()
-                })).$each(function($v, $k) {$append($k,$v)})[]
-            ]
-        })
-    ]
-)
-`);
-
-  descriptiveDataToTableResult1(data: ResultExperiment): GroupsResult {
-    const result = new GroupsResult();
-
-    result.groups = [
-      new GroupResult({
-        name: 'Variables',
-        description: 'Descriptive statistics for the variables of interest.',
-        results: DescriptiveHandler.descriptiveSingleToTables.evaluate(data),
-      }),
-    ];
-
-    result.groups.push(
-      new GroupResult({
-        name: 'Model',
-        description:
-          'Intersection table for the variables of interest as it appears in the experiment.',
-        results: DescriptiveHandler.descriptiveModelToTables.evaluate(data),
-      }),
-    );
-
-    return result;
-  }
+  public static readonly ALGO_NAME = 'descriptive_stats';
 
   static lookup(variable: string, domain: Domain) {
     return (
@@ -156,18 +51,18 @@ $fn := function($o, $prefix) {
           ['NA', ...data('num_na')],
           ...(modalities.length > 0
             ? modalities.map((m) => [
-                m,
-                ...stat.map((d) => d.data.counts[m] || ''),
-              ])
+              m,
+              ...stat.map((d) => d.data.counts[m] || ''),
+            ])
             : [
-                ['SE', ...data('std')],
-                ['mean', ...data('mean')],
-                ['min', ...data('num_dtps')],
-                ['Q1', ...data('q1')],
-                ['Q2', ...data('q2')],
-                ['Q3', ...data('q3')],
-                ['max', ...data('max')],
-              ]),
+              ['SE', ...data('std')],
+              ['mean', ...data('mean')],
+              ['min', ...data('num_dtps')],
+              ['Q1', ...data('q1')],
+              ['Q2', ...data('q2')],
+              ['Q3', ...data('q3')],
+              ['max', ...data('max')],
+            ]),
         ]
       );
     };
@@ -222,18 +117,9 @@ $fn := function($o, $prefix) {
     const inputs = data as ResultExperiment[];
 
     if (inputs && Array.isArray(inputs)) {
-      const exareme1 = inputs.filter(
-        (input) => input.type === 'application/json',
-      );
-
-      if (exareme1.length > 0)
-        exareme1
-          .map((input) => this.descriptiveDataToTableResult1(input))
-          .forEach((input) => exp.results.push(input));
-      else
-        inputs
-          .map((input) => this.descriptiveDataToTableResult2(input, domain))
-          .forEach((input) => exp.results.push(input));
+      inputs
+        .map((input) => this.descriptiveDataToTableResult2(input, domain))
+        .forEach((input) => exp.results.push(input));
     }
   }
 }

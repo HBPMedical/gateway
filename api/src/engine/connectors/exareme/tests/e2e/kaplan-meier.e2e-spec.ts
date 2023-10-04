@@ -23,7 +23,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `kaplan-meier-${generateNumber()}`;
-  const algorithmId = 'KAPLAN_MEIER';
+  const algorithmId = 'kaplan-meier';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

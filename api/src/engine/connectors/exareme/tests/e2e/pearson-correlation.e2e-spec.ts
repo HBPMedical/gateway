@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `pearson-${generateNumber()}`;
-  const algorithmId = 'PEARSON_CORRELATION';
+  const algorithmId = 'pearson_correlation';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,
