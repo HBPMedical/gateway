@@ -8,7 +8,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'LINEAR_REGRESSION',
+    name: 'linear_regression',
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',

@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `logistic-${generateNumber()}`;
-  const algorithmId = 'LOGISTIC_REGRESSION';
+  const algorithmId = 'logistic_regression';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

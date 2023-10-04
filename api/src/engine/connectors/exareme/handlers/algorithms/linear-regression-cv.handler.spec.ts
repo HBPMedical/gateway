@@ -38,7 +38,7 @@ const createExperiment = (): Experiment => ({
   id: 'dummy-id',
   name: 'Testing purpose',
   algorithm: {
-    name: 'LINEAR_REGRESSION_CV',
+    name: 'linear_regression_cv',
   },
   datasets: ['desd-synthdata'],
   domain: 'dementia',

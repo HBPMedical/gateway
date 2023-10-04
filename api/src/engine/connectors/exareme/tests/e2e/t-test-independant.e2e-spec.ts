@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `ttest-idp-${generateNumber()}`;
-  const algorithmId = 'TTEST_INDEPENDENT';
+  const algorithmId = 'ttest_independant';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

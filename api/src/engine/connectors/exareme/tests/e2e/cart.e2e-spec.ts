@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `cart-${generateNumber()}`;
-  const algorithmId = 'CART';
+  const algorithmId = 'cart';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

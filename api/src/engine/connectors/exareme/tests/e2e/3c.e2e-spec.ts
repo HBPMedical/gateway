@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
   });
 
   const modelSlug = `3c-${generateNumber()}`;
-  const algorithmId = 'THREE_C';
+  const algorithmId = 'three_c';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

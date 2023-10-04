@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `naivebayes-${generateNumber()}`;
-  const algorithmId = 'NAIVE_BAYES';
+  const algorithmId = 'naive_bayes';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `pca-${generateNumber()}`;
-  const algorithmId = 'PCA';
+  const algorithmId = 'pca';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
   });
 
   const modelSlug = `calibration-belt-${generateNumber()}`;
-  const algorithmId = 'CALIBRATION_BELT';
+  const algorithmId = 'calibration_belt';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,
