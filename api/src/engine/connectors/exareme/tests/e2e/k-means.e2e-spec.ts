@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `kmeans-${generateNumber()}`;
-  const algorithmId = 'KMEANS';
+  const algorithmId = 'kmeans';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

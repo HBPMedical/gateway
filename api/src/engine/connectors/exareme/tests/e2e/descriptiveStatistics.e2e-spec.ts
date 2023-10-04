@@ -25,7 +25,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `statistics-${generateNumber()}`;
-  const algorithmId = 'DESCRIPTIVE_STATS';
+  const algorithmId = 'descriptive_stats';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,

@@ -144,8 +144,8 @@ const getCoVariables = (
 
   const excludes = [
     'Multiple Histograms',
-    'CART',
-    'ID3',
+    'cart',
+    'id3',
     'Naive Bayes Training',
   ];
 
@@ -190,7 +190,7 @@ export const experimentInputToData = (data: ExperimentCreateInput) => {
     name: data.name,
   };
 
-  if (data.algorithm.id === 'DESCRIPTIVE_STATS' && data.coVariables) {
+  if (data.algorithm.id === 'descriptive_stats' && data.coVariables) {
     data.variables.push(...data.coVariables);
     data.coVariables = [];
   }

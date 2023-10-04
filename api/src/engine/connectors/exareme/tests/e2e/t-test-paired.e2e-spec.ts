@@ -24,7 +24,7 @@ describe('ExaremeService', () => {
     exaremeService = await moduleRef.resolve<EngineService>(EngineService);
   });
   const modelSlug = `ttest-paired-${generateNumber()}`;
-  const algorithmId = 'TTEST_PAIRED';
+  const algorithmId = 'ttest_paired';
 
   const input: ExperimentCreateInput = {
     name: modelSlug,
