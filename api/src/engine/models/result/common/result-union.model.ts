@@ -7,6 +7,7 @@ import { LineChartResult } from '../line-chart-result.model';
 import { MeanChartResult } from '../means-chart-result.model';
 import { RawResult } from '../raw-result.model';
 import { TableResult } from '../table-result.model';
+import { ClusterResult } from '../cluster-result.model';
 
 export const ResultUnion = createUnionType({
   name: 'ResultUnion',
@@ -18,6 +19,7 @@ export const ResultUnion = createUnionType({
     LineChartResult,
     BarChartResult,
     MeanChartResult,
+    ClusterResult,
     AlertResult,
   ],
   resolveType(value) {
@@ -43,6 +45,10 @@ export const ResultUnion = createUnionType({
 
     if (value.pointCIs) {
       return MeanChartResult;
+    }
+
+    if (value.nmatrix) {
+      return ClusterResult;
     }
 
     if (value.message) {
