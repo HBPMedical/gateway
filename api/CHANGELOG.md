@@ -1,3 +1,10 @@
+# [1.6.0-beta.8](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.7...1.6.0-beta.8) (2023-10-04)
+
+
+### Bug Fixes
+
+* - console.log ([1015957](https://gitlab.com/sibmip/gateway/commit/10159571b3a278d45ff93fc33a5f5d9553da4b42))
+
 # [1.6.0-beta.7](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.6...1.6.0-beta.7) (2023-10-03)
 
 
