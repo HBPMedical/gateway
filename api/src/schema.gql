@@ -40,7 +40,7 @@ type GroupResult {
   results: [ResultUnion!]!
 }
 
-union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult | MeanChartResult | AlertResult
+union ResultUnion = TableResult | RawResult | GroupsResult | HeatMapResult | LineChartResult | BarChartResult | MeanChartResult | ClusterResult | AlertResult
 
 type TableResult {
   name: String!
@@ -111,6 +111,11 @@ type MeanChartResult {
 
   """List of points with confidence information: min, mean, max"""
   pointCIs: [PointCI!]!
+}
+
+type ClusterResult {
+  name: String!
+  nmatrix: JSON
 }
 
 type AlertResult {
