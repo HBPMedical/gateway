@@ -99,11 +99,15 @@ export default class ExaremeConnector implements Connector {
     const resultAPI = await firstValueFrom(
       this.post<ExperimentData>(request, path, form),
     );
+    ExaremeConnector.logger.debug(`${JSON.stringify(resultAPI.data)}`);
+
     const results = dataToExperiment(
       resultAPI.data,
       ExaremeConnector.logger,
       domains,
     );
+
+    ExaremeConnector.logger.debug(`${JSON.stringify(results)}`);
 
     return results;
   }
@@ -149,10 +153,16 @@ export default class ExaremeConnector implements Connector {
       this.get<ExperimentData>(request, path),
     );
 
+    ExaremeConnector.logger.debug(`${JSON.stringify(resultAPI.data)}`);
     const domains = await this.engineService.getDomains(request);
+    const results = dataToExperiment(
+      resultAPI.data,
+      ExaremeConnector.logger,
+      domains,
+    );
+    ExaremeConnector.logger.debug(`${JSON.stringify(results)}`);
 
-    // console.log(JSON.stringify(resultAPI.data, null, 2));
-    return dataToExperiment(resultAPI.data, ExaremeConnector.logger, domains);
+    return results;
   }
 
   async editExperiment(
