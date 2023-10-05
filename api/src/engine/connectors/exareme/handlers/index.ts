@@ -17,6 +17,7 @@ import TTestPairedHandler from './algorithms/ttest-paired.handler';
 import CategoricalNaiveBayesHandler from './algorithms/naive-bayes-categorical.handler';
 import GaussianNaiveBayesHandler from './algorithms/naive-bayes-gaussian.handler';
 import KMeansHandler from './algorithms/kmeans.handler';
+import SVMHandler from './algorithms/svm.handler';
 
 const start = new PearsonHandler();
 
@@ -36,6 +37,7 @@ start
   .setNext(new CategoricalNaiveBayesHandler())
   .setNext(new GaussianNaiveBayesHandler())
   .setNext(new KMeansHandler())
+  .setNext(new SVMHandler())
   .setNext(new RawHandler()); // should be last handler as it works as a fallback (if other handlers could not process the results)
 
 export default (exp: Experiment, data: unknown, domain: Domain): Experiment => {
