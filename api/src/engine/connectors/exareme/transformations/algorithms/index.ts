@@ -13,8 +13,8 @@ const transformToAlgorithms = jsonata(`
     $getOrDefault:= function($v, $d) { $v ? $v : $d };
     $excludedParams:= ['centers', 'formula'];
     $includes:= ['anova_oneway','anova','linear_regression',
-    'logistic_regression', 'logistic_regression_cv','ttest_independant','ttest_paired',
-    'pearson','id3','kmeans','naive_bayes',
+    'logistic_regression', 'logistic_regression_cv','ttest_independent','ttest_paired',
+    'pearson','id3','kmeans','naive_bayes', 'svm_scikit',
     'ttest_onesample','pca','calibration_belt','cart',
     'kaplan_meier','three_c', 'one_way_anova', 'pearson_correlation',
     'linear_regression_cv', 'paired_ttest', 'naive_bayes_gaussian_cv', 'naive_bayes_categorical_cv'];

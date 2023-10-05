@@ -14,6 +14,8 @@ export default class KMeansHandler extends BaseHandler {
   getCluster(data: any): ClusterResult {
     const matrix = data.centers;
 
+    if (!matrix) return null;
+
     // 2d matrix
     if (matrix[0].length === 2) {
       return {
@@ -27,6 +29,19 @@ export default class KMeansHandler extends BaseHandler {
           [[], []],
         ),
       };
+    } else if (matrix[0].length === 3) {
+      return {
+        name: data.title,
+        nmatrix: matrix.reduce(
+          (acc, val) => {
+            acc[0].push(val[0]);
+            acc[1].push(val[1]);
+            acc[2].push(val[2]);
+            return acc;
+          },
+          [[], [], []],
+        ),
+      };
     }
 
     return {
@@ -37,7 +52,7 @@ export default class KMeansHandler extends BaseHandler {
 
   getTable(data: any): TableResult {
     return {
-      name: `Results for k=(${data.length})`,
+      name: `Results for k=${data.length}`,
       headers: data[0].map(() => ({ name: '', type: 'string' })),
       data,
     };
