@@ -12,7 +12,7 @@ export default class SVMHandler extends BaseHandler {
 
   getRawData(data: any): RawResult {
     return {
-      rawdata: data,
+      rawdata: { type: 'application/json', data },
     };
   }
 
