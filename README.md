@@ -14,3 +14,6 @@ The MIP Gateway is a middleware layer between the [MIP Frontend](https://github.
 ## Technical documentation
 
 Technical documentation can be found at [https://mip-front.gitbook.io/mip-gateway-doc/](https://mip-front.gitbook.io/mip-gateway-doc/)
+
+## Contributing
+see [Contributing](./contributing.md)
