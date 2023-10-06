@@ -34,6 +34,8 @@ export default class DescriptiveHandler extends BaseHandler {
     );
 
     const columns = (variable) => {
+      const stat = stats.filter((s) => s.variable === variable);
+
       const getProperty = (key) =>
         stat.map((d) =>
           d.data === null || d.data === undefined
@@ -42,9 +44,12 @@ export default class DescriptiveHandler extends BaseHandler {
         );
 
       const getKeys = (key) =>
-        stat.map((d) => (d.data === undefined ? {} : d.data[key]));
+        stat
+          .map((d) =>
+            d.data === null || d.data === undefined ? {} : d.data[key],
+          )
+          .filter((d) => d && Object.keys(d).length > 0);
 
-      const stat = stats.filter((s) => s.variable === variable);
       const modalities = Array.from(
         new Set(getKeys('counts').flatMap((c) => Object.keys(c))),
       );

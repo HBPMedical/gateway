@@ -242,6 +242,6 @@ describe('Descriptive Stats result handler', () => {
     expect(tableData1.data[0][1]).toEqual(474);
 
     const tableData2 = result.groups[1].results[0] as TableResult;
-    expect(tableData2.data[0][1]).toBe('No Enough Data');
+    expect(tableData2.data[0][1]).toBe('Not Enough Data');
   });
 });
