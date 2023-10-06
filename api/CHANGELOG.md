@@ -1,3 +1,16 @@
+# [1.6.0-beta.11](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.10...1.6.0-beta.11) (2023-10-06)
+
+
+### Bug Fixes
+
+* descriptive stats defensive coding ([c952cfa](https://gitlab.com/sibmip/gateway/commit/c952cfa21051e2468e253b14db39a12ffd85d431))
+* descriptive stats test ([2d6899b](https://gitlab.com/sibmip/gateway/commit/2d6899b7ac8369bfbef990f7b71e91aec2d517f5))
+
+
+### Features
+
+* post /logout ([f6697c5](https://gitlab.com/sibmip/gateway/commit/f6697c50d3128bc3a1b41ae042fd22689b0665f1))
+
 # [1.6.0-beta.10](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.9...1.6.0-beta.10) (2023-10-05)
 
 
