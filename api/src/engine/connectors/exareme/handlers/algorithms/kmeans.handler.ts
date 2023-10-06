@@ -4,11 +4,11 @@ import BaseHandler from '../base.handler';
 import { ClusterResult } from '../../../../models/result/cluster-result.model';
 import { TableResult } from 'src/engine/models/result/table-result.model';
 
-const ALGO_NAME = 'kmeans';
-
 export default class KMeansHandler extends BaseHandler {
+  public static readonly ALGO_NAME = 'kmeans';
+
   canHandle(exp: Experiment, data: any): boolean {
-    return exp.algorithm.name.toLowerCase() === ALGO_NAME;
+    return exp.algorithm.name.toLowerCase() === KMeansHandler.ALGO_NAME;
   }
 
   getCluster(data: any): ClusterResult {
