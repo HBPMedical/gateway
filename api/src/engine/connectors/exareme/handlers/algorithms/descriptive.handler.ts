@@ -34,34 +34,41 @@ export default class DescriptiveHandler extends BaseHandler {
     );
 
     const columns = (variable) => {
-      const stat = stats.filter((s) => s.variable === variable);
-      const data = (key) =>
+      const getProperty = (key) =>
         stat.map((d) =>
-          d.data === null ? 'No Enough Data' : d.data[key] || '',
+          d.data === null || d.data === undefined
+            ? 'Not Enough Data'
+            : d.data[key] || '',
         );
+
+      const getKeys = (key) =>
+        stat.map((d) => (d.data === undefined ? {} : d.data[key]));
+
+      const stat = stats.filter((s) => s.variable === variable);
       const modalities = Array.from(
-        new Set(data('counts').flatMap((c) => Object.keys(c))),
+        new Set(getKeys('counts').flatMap((c) => Object.keys(c))),
       );
+
       const notEnoughData = stat.map((d) => d.data).includes(null);
 
       return (
-        (notEnoughData && [[variable, ...data('num_total')]]) || [
-          [this.lookup(variable, domain), ...data('num_total')],
-          ['Datapoints', ...data('num_dtps')],
-          ['NA', ...data('num_na')],
+        (notEnoughData && [[variable, ...getProperty('num_total')]]) || [
+          [this.lookup(variable, domain), ...getProperty('num_total')],
+          ['Datapoints', ...getProperty('num_dtps')],
+          ['NA', ...getProperty('num_na')],
           ...(modalities.length > 0
             ? modalities.map((m) => [
                 m,
-                ...stat.map((d) => d.data.counts[m] || ''),
+                ...stat.map((d) => d.data?.counts[m] || ''),
               ])
             : [
-                ['SE', ...data('std')],
-                ['mean', ...data('mean')],
-                ['min', ...data('num_dtps')],
-                ['Q1', ...data('q1')],
-                ['Q2', ...data('q2')],
-                ['Q3', ...data('q3')],
-                ['max', ...data('max')],
+                ['SE', ...getProperty('std')],
+                ['mean', ...getProperty('mean')],
+                ['min', ...getProperty('num_dtps')],
+                ['Q1', ...getProperty('q1')],
+                ['Q2', ...getProperty('q2')],
+                ['Q3', ...getProperty('q3')],
+                ['max', ...getProperty('max')],
               ]),
         ]
       );
