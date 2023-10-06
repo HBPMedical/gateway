@@ -1,3 +1,16 @@
+# [1.6.0-beta.10](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.9...1.6.0-beta.10) (2023-10-05)
+
+
+### Bug Fixes
+
+* support application/json raw vis ([5ae3c2c](https://gitlab.com/sibmip/gateway/commit/5ae3c2c89d89512c932ca03a5a62d6b96cf5ce71))
+
+
+### Features
+
+* enabled SVM and ttest_independent ([7b49b75](https://gitlab.com/sibmip/gateway/commit/7b49b75faae31b9e470c5d8c9ce6727d2e494655))
+* kmeans handler ([95d462b](https://gitlab.com/sibmip/gateway/commit/95d462b0e87b202aa081ae27e25bf27dc2c4aa0d))
+
 # [1.6.0-beta.9](https://gitlab.com/sibmip/gateway/compare/1.6.0-beta.8...1.6.0-beta.9) (2023-10-04)
 
 
