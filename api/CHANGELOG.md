@@ -1,3 +1,32 @@
+# [1.6.0](https://gitlab.com/sibmip/gateway/compare/1.5.0...1.6.0) (2023-10-16)
+
+
+### Bug Fixes
+
+* - console.log ([1015957](https://gitlab.com/sibmip/gateway/commit/10159571b3a278d45ff93fc33a5f5d9553da4b42))
+* descriptive stats defensive coding ([c952cfa](https://gitlab.com/sibmip/gateway/commit/c952cfa21051e2468e253b14db39a12ffd85d431))
+* descriptive stats test ([2d6899b](https://gitlab.com/sibmip/gateway/commit/2d6899b7ac8369bfbef990f7b71e91aec2d517f5))
+* labels for kmeans ([fc8c0a8](https://gitlab.com/sibmip/gateway/commit/fc8c0a8efd7ae991c5b4c30a52a7453dc8bd53b9))
+* layout ([0e1ff81](https://gitlab.com/sibmip/gateway/commit/0e1ff8198555123b854fa825f3de6c3e62e0e38d))
+* longitudinal property ([0f70e34](https://gitlab.com/sibmip/gateway/commit/0f70e348bc3888c8be3e8252e5b4a50754ddfa88))
+* Preprocessing output ([1cd977d](https://gitlab.com/sibmip/gateway/commit/1cd977d3dab9fabc54137c1e78d3f961610cf38a))
+* preprocessing parsing to [] ([361ed67](https://gitlab.com/sibmip/gateway/commit/361ed67838f884acf0d62902199d4c8d56c5f1b4))
+* removed longitudinal_transformer static string ([cdeb76b](https://gitlab.com/sibmip/gateway/commit/cdeb76b819185478b913bca08db5cd6b170526c5))
+* support application/json raw vis ([5ae3c2c](https://gitlab.com/sibmip/gateway/commit/5ae3c2c89d89512c932ca03a5a62d6b96cf5ce71))
+
+
+### Features
+
+* [domain].longitudinal <.longitudinal- [dataset] ([f1e7235](https://gitlab.com/sibmip/gateway/commit/f1e72358324adffb56e3604d34c5cdc30bfee2cf))
+* enabled SVM and ttest_independent ([7b49b75](https://gitlab.com/sibmip/gateway/commit/7b49b75faae31b9e470c5d8c9ce6727d2e494655))
+* kmeans 2d + table handler ([8e82680](https://gitlab.com/sibmip/gateway/commit/8e82680f1c6569f7d95a8a0d9f928bba439186d1))
+* kmeans handler ([95d462b](https://gitlab.com/sibmip/gateway/commit/95d462b0e87b202aa081ae27e25bf27dc2c4aa0d))
+* Longitudinal data handling ([7768770](https://gitlab.com/sibmip/gateway/commit/77687706964def77b910c6508049530c35f2476a))
+* naive bayes draft ([80d2aca](https://gitlab.com/sibmip/gateway/commit/80d2acabdce29ebf51a3bbb4d1aabba62f431074))
+* naivebayes draft ([958cd55](https://gitlab.com/sibmip/gateway/commit/958cd556650d5713f3e1f17508467b711a4b535d))
+* post /logout ([f6697c5](https://gitlab.com/sibmip/gateway/commit/f6697c50d3128bc3a1b41ae042fd22689b0665f1))
+* reworked hierarchical table ([d2b61c0](https://gitlab.com/sibmip/gateway/commit/d2b61c06fa81666bec613980b0e495c22fcfc9aa))
+
 # [1.5.0](https://gitlab.com/sibmip/gateway/compare/1.4.1...1.5.0) (2023-05-11)
 
 
