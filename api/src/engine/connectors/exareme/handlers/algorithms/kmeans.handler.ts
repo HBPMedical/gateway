@@ -53,7 +53,12 @@ export default class KMeansHandler extends BaseHandler {
   getTable(data: any): TableResult {
     return {
       name: `Results for k=${data.length}`,
-      headers: data[0].map(() => ({ name: '', type: 'string' })),
+      headers:
+        data &&
+        data[0].map((_, i) => ({
+          name: data[0].length <= 3 ? ['x', 'y', 'z'][i] : `d${i}`,
+          type: 'string',
+        })),
       data,
     };
   }
