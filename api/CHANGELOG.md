@@ -1,3 +1,15 @@
+# [1.7.0](https://gitlab.com/sibmip/gateway/compare/1.6.0...1.7.0) (2024-04-24)
+
+
+### Bug Fixes
+
+* updated husky ([6ac1c6f](https://gitlab.com/sibmip/gateway/commit/6ac1c6ff3bfceb52a731097249fa8b8eae6ca487))
+
+
+### Features
+
+* Fixed descriptive statistics min output ([4f95226](https://gitlab.com/sibmip/gateway/commit/4f9522679f507680112f9a3b3c947f81d38becb4))
+
 # [1.6.0](https://gitlab.com/sibmip/gateway/compare/1.5.0...1.6.0) (2023-10-16)
 
 
