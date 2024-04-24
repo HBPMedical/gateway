@@ -69,7 +69,7 @@ export default class DescriptiveHandler extends BaseHandler {
             : [
                 ['SE', ...getProperty('std')],
                 ['mean', ...getProperty('mean')],
-                ['min', ...getProperty('num_dtps')],
+                ['min', ...getProperty('min')],
                 ['Q1', ...getProperty('q1')],
                 ['Q2', ...getProperty('q2')],
                 ['Q3', ...getProperty('q3')],
