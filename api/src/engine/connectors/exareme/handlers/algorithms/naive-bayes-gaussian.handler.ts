@@ -94,32 +94,50 @@ export default class NaiveBayesGaussianCVHandler extends BaseHandler {
   }
 
   handle(experiment: Experiment, data: unknown, domain?: Domain): void {
-    if (!this.canHandle(experiment, data))
-      return super.handle(experiment, data, domain);
-
-    const extractedData = data[0];
-
-    const varIds = [...experiment.variables, ...(experiment.coVariables ?? [])];
-    const variables = domain.variables.filter((v) => varIds.includes(v.id));
-
-    let jsonData = JSON.stringify(extractedData);
-
-    variables.forEach((v) => {
-      const regEx = new RegExp(v.id, 'gi');
-      jsonData = jsonData.replaceAll(regEx, v.label);
-    });
-
-    const improvedData = JSON.parse(jsonData);
-
-    const results = [
-      this.getConfusionMatrix(improvedData),
-      this.getClassificationSummary(improvedData),
-    ];
-
-    results
-      .filter((r) => !!r)
-      .forEach((r) => {
-        experiment.results.push(r);
-      });
+  if (!this.canHandle(experiment, data)) {
+    return super.handle(experiment, data, domain);
   }
+
+  const extractedData = data[0];
+
+  // Extract variable IDs to be processed
+  const varIds = [...experiment.variables, ...(experiment.coVariables ?? [])];
+  const variables = domain.variables.filter((v) => varIds.includes(v.id));
+
+  // Stringify the data for easier manipulation
+  let jsonData = JSON.stringify(extractedData);
+
+  // Replace variable IDs with their labels
+  variables.forEach((v) => {
+    console.log("v:", v);
+    const regEx = new RegExp(v.id, 'gi');
+    jsonData = jsonData.replaceAll(regEx, v.label);
+
+    // If the variable has enumerations, replace codes with labels
+    if (v.enumerations && v.enumerations.length > 0) {
+      v.enumerations.forEach((enumItem) => {
+        const enumRegEx = new RegExp(`"${enumItem.value}"`, 'g'); // Match exact code strings
+        jsonData = jsonData.replaceAll(enumRegEx, `"${enumItem.label}"`);
+      });
+    }
+  });
+
+  // Parse the improved data back to JSON
+  const improvedData = JSON.parse(jsonData);
+  console.log(improvedData);
+
+  // Generate results based on improved data
+  const results = [
+    this.getConfusionMatrix(improvedData),
+    this.getClassificationSummary(improvedData),
+  ];
+
+  // Add non-null results to the experiment
+  results
+    .filter((r) => !!r)
+    .forEach((r) => {
+      experiment.results.push(r);
+    });
+}
+
 }
