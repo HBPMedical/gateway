@@ -32,6 +32,14 @@ const domain: Domain = {
     { id: 'rightsogsuperioroccipitalgyrus', label: 'Right superior occipital' },
     { id: 'leftppplanumpolare', label: 'Left Planum polare' },
   ],
+  datasetsVariables: {
+    'desd-synthdata': [
+      'leftocpoccipitalpole',
+      'righthippocampus',
+      'rightsogsuperioroccipitalgyrus',
+      'leftppplanumpolare',
+    ],
+  },
 };
 
 const createExperiment = (): Experiment => ({

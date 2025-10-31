@@ -28,6 +28,13 @@ const domain: Domain = {
     { id: 'gender', label: 'Example label 2' },
     { id: 'parkinsonbroadcategory:gender', label: 'Example label 3' },
   ],
+  datasetsVariables: {
+    'desd-synthdata': [
+      'parkinsonbroadcategory',
+      'gender',
+      'parkinsonbroadcategory:gender',
+    ],
+  },
 };
 
 const data = [

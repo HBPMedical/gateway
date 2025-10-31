@@ -33,6 +33,9 @@ const domain: Domain = {
   },
   datasets: [{ id: 'desd-synthdata', label: 'Dead Synthdata' }],
   variables: [],
+  datasetsVariables: {
+    'desd-synthdata': [],
+  },
 };
 
 const data = [

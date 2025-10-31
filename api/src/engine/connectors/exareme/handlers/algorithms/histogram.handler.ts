@@ -1,10 +1,7 @@
-import { Domain } from '../../../../models/domain.model';
-import { Experiment } from '../../../../models/experiment/experiment.model';
+import {Domain} from '../../../../models/domain.model';
+import {Experiment} from '../../../../models/experiment/experiment.model';
 import BaseHandler from '../base.handler';
-import {
-  BarChartResult,
-  BarEnumValues,
-} from '../../../../models/result/bar-chart-result.model';
+import {BarChartResult, BarEnumValues,} from '../../../../models/result/bar-chart-result.model';
 
 const ALGO_NAME = 'multiple_histograms';
 
@@ -20,24 +17,31 @@ const round = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
 export default class HistogramHandler extends BaseHandler {
   private getBarChartResult(
-    data: Exareme2HistogramData,
-    domain: Domain,
+      data: Exareme2HistogramData,
+      domain: Domain,
   ): BarChartResult {
     const lookupVar = domain.variables.find((v) => v.id === data.var);
-    const categories =
-      lookupVar.type === 'nominal'
-        ? lookupVar.enumerations.map((e) => e.label)
-        : (data.bins as number[])
-            .filter((_, i) => i < data.bins.length - 1) // upper limit counts for 1 extra
-            .map(
-              (b, i) => `${round(b)}-${round((data.bins as number[])[i + 1])}`,
-            );
+    const variableLabel = lookupVar?.label || data.var;
+    const enumMapping = lookupVar?.enumerations?.reduce((map, e) => {
+      map[e.value] = e.label;
+      return map;
+    }, {} as Record<string, string>) || {};
 
-    const barChart: BarChartResult = {
-      name: lookupVar.label,
-      barValues: data.counts.map((c) => c ?? 0),
+    // Ensure proper alignment by explicitly pairing bins with counts
+    const pairedBinsCounts = (data.bins as (string | number)[]).map((bin, index) => ({
+      bin: enumMapping[bin] || bin.toString(), // Convert bin to label if available
+      count: data.counts[index] ?? 0, // Default to 0 if count is null
+    }));
+
+    // Extract categories and values
+    const categories = pairedBinsCounts.map((pair) => pair.bin);
+    const barValues = pairedBinsCounts.map((pair) => pair.count);
+
+    return {
+      name: variableLabel,
+      barValues,
       xAxis: {
-        label: lookupVar.label,
+        label: variableLabel,
         categories,
       },
       hasConnectedBars: false,
@@ -45,75 +49,87 @@ export default class HistogramHandler extends BaseHandler {
         label: 'Count',
       },
     };
-
-    return barChart;
   }
 
   private getGroupedBarChartResult(
-    groupingVar: string,
-    defaultChart: BarChartResult,
-    data: Exareme2HistogramData[],
-    domain: Domain,
+      groupingVar: string,
+      defaultChart: BarChartResult,
+      data: Exareme2HistogramData[],
+      domain: Domain,
   ): BarChartResult {
-    const groupingVarData = data.filter((d) => d.grouping_var === groupingVar);
-    const barEnumValues: BarEnumValues[] = groupingVarData.map((d) => ({
-      label: d.grouping_enum,
-      values: d.counts.map((c) => (c === null ? 0 : c)),
-    }));
-    const lookupVar = domain.variables.find((v) => v.id === groupingVar);
+    const lookupGroupingVar = domain.variables.find((v) => v.id === groupingVar);
+    const groupingVarLabel = lookupGroupingVar?.label || groupingVar;
+    const enumMapping = lookupGroupingVar?.enumerations?.reduce((map, e) => {
+      map[e.value] = e.label;
+      return map;
+    }, {} as Record<string, string>) || {};
 
-    const barChart: BarChartResult = {
-      name: `${defaultChart.name} grouped by ${lookupVar.label}`,
+    const groupingVarData = data.filter((d) => d.grouping_var === groupingVar);
+    const barEnumValues: BarEnumValues[] = groupingVarData.map((d) => {
+      const label = enumMapping[d.grouping_enum] || d.grouping_enum;
+      return {
+        label,
+        values: d.counts.map((c) => (c === null ? 0 : c)),
+      };
+    });
+
+    return {
+      name: `${defaultChart.name} grouped by ${groupingVarLabel}`,
       xAxis: defaultChart.xAxis,
       barValues: null,
       yAxis: defaultChart.yAxis,
       barEnumValues: barEnumValues,
     };
-
-    return barChart;
   }
 
   canHandle(exp: Experiment, data: any): boolean {
     return (
-      exp.algorithm.name.toLowerCase() === ALGO_NAME &&
-      data &&
-      data[0] &&
-      data[0].histogram
+        exp.algorithm.name.toLowerCase() === ALGO_NAME &&
+        data &&
+        data[0] &&
+        data[0].histogram
     );
   }
 
   handle(experiment: Experiment, data: unknown, domain: Domain): void {
-    if (!this.canHandle(experiment, data))
+    if (!this.canHandle(experiment, data)) {
       return super.handle(experiment, data, domain);
+    }
 
     const extractedData: Exareme2HistogramData[] = data[0].histogram;
     const selectedVariableChartData = extractedData.find(
-      (d) => d.var && !d.grouping_var,
+        (d) => d.var && !d.grouping_var,
     );
+
     const selectedVariableChart = this.getBarChartResult(
-      selectedVariableChartData,
-      domain,
+        selectedVariableChartData,
+        domain,
     );
     experiment.results.push(selectedVariableChart);
 
     const groupingVars: string[] = Array.from(
-      new Set(
-        extractedData
-          .filter(
-            (d) => d.grouping_var !== null && d.grouping_var !== undefined,
-          )
-          .map((d) => d.grouping_var),
-      ),
+        new Set(
+            extractedData
+                .filter(
+                    (d) => d.grouping_var !== null && d.grouping_var !== undefined,
+                )
+                .map((d) => d.grouping_var),
+        ),
     );
+
     const groupingCharts = groupingVars.map((groupingVar) =>
-      this.getGroupedBarChartResult(
-        groupingVar,
-        selectedVariableChart,
-        extractedData,
-        domain,
-      ),
+        this.getGroupedBarChartResult(
+            groupingVar,
+            selectedVariableChart,
+            extractedData,
+            domain,
+        ),
     );
-    if (groupingCharts) groupingCharts.map((gc) => experiment.results.push(gc));
+    if (groupingCharts) {
+      groupingCharts.forEach((gc) => {
+        experiment.results.push(gc);
+      });
+    }
 
     this.next?.handle(experiment, data, domain);
   }

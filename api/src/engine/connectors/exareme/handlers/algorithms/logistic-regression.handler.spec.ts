@@ -37,6 +37,9 @@ const domain: Domain = {
     { id: 'ppmicategory', label: 'PPMI Category' },
     { id: 'righthippocampus', label: 'Right Hippo Campus' },
   ],
+  datasetsVariables: {
+    'desd-synthdata': ['ppmicategory', 'righthippocampus'],
+  },
 };
 
 const createExperiment = (): Experiment => ({
