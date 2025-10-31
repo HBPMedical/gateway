@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
 import { Dataset } from './dataset.model';
 import { BaseModel } from './entity.model';
 import { Group } from './group.model';
@@ -26,4 +27,7 @@ export class Domain extends BaseModel {
 
   @Field({ nullable: true, defaultValue: false })
   longitudinal?: boolean;
+
+  @Field(() => GraphQLJSON)
+  datasetsVariables: Record<string, string[]>;
 }

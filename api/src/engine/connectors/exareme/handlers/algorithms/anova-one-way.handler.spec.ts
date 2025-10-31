@@ -27,6 +27,9 @@ const domain: Domain = {
     { id: 'rightcerebralwhitematter', label: 'Example label' },
     { id: 'ppmicategory', label: 'Example label 2' },
   ],
+  datasetsVariables: {
+    'desd-synthdata': ['rightcerebralwhitematter', 'ppmicategory'],
+  },
 };
 
 const data = [

@@ -222,6 +222,7 @@ export default class ExaremeConnector implements Connector {
               ? this.flattenVariables(d.metadataHierarchy, groups)
               : [],
             longitudinal: d.longitudinal,
+            datasetsVariables: d.datasetsVariables,
           };
         }) ?? []
       );

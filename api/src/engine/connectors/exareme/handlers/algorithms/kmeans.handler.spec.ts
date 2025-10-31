@@ -34,6 +34,23 @@ const domain: Domain = {
     { id: 'leftacgganteriorcingulategyrus', label: 'Example label 2' },
     { id: 'rightmcggmiddlecingulategyrus', label: 'Example label 3' },
   ],
+  datasetsVariables: {
+    'desd-synthdata': [
+      'rightcerebralwhitematter',
+      'leftacgganteriorcingulategyrus',
+      'rightmcggmiddlecingulategyrus',
+    ],
+    edsd: [
+      'rightcerebralwhitematter',
+      'leftacgganteriorcingulategyrus',
+      'rightmcggmiddlecingulategyrus',
+    ],
+    ppmi: [
+      'rightcerebralwhitematter',
+      'leftacgganteriorcingulategyrus',
+      'rightmcggmiddlecingulategyrus',
+    ],
+  },
 };
 
 const data = [

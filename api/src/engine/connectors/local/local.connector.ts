@@ -34,6 +34,9 @@ export default class LocalConnector implements Connector {
         ],
         rootGroup: { id: 'DummyGroup' },
         variables: [{ id: 'DummyVar', type: 'string' }],
+        datasetsVariables: {
+          DummyDataset: ['DummyVar'],
+        },
       },
     ];
   }

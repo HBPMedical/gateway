@@ -6,6 +6,7 @@ export interface Pathology {
   label: string;
   version: string;
   datasets: VariableEntity[];
+  datasetsVariables: Record<string, string[]>;
   metadataHierarchy: Hierarchy;
   longitudinal: boolean;
 }

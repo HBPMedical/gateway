@@ -110,6 +110,9 @@ export default class CSVConnector implements Connector {
         groups: Object.values(groups),
         rootGroup: rootGroup,
         variables: vars,
+        datasetsVariables: {
+          DummyDataset: vars.map((v) => v.id),
+        },
       },
     ];
   }
