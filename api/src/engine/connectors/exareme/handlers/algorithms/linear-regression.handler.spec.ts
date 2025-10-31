@@ -37,6 +37,9 @@ const domain: Domain = {
     { id: 'righthippocampus', label: 'Right Hippo Campus' },
     { id: 'leftamygdala', label: 'Left Amygdala' },
   ],
+  datasetsVariables: {
+    'desd-synthdata': ['lefthippocampus', 'righthippocampus', 'leftamygdala'],
+  },
 };
 
 const createExperiment = (): Experiment => ({
